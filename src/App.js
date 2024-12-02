@@ -108,20 +108,20 @@ function App() {
     });
   };
 
-  const handleMouseMove = (e) => {
-    if (isDragging) {
-      setDragPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
-      });
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
   useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (isDragging) {
+        setDragPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y,
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
@@ -131,7 +131,7 @@ function App() {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging]);
+  }, [isDragging, dragOffset]);
 
   const toggleQuadrant = (quadrantId) => {
     setExpandedQuadrants((prev) => ({
