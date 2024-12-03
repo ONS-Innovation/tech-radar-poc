@@ -94,14 +94,14 @@ body {
   font-size: 24px;
   fill: hsl(var(--foreground));
   text-anchor: middle;
-  font-family: Arial, sans-serif;
+  font-family: inherit;
 }
 
 .ring-label {
   font-size: 16px;
   fill: hsl(var(--muted-foreground));
   text-anchor: middle;
-  font-family: Arial, sans-serif;
+  font-family: inherit;
 }
 
 .blip {
@@ -146,6 +146,8 @@ body {
   grid-template-rows: 1fr 1fr;
   gap: 20px;
   height: calc(100vh - 40px);
+  position: relative;
+  z-index: 1;
 }
 
 .radar-container {
@@ -169,14 +171,21 @@ body {
   background: hsl(var(--card));
   border-radius: var(--radius);
   box-shadow: 0 2px 4px hsl(var(--foreground) / 0.1);
-  transition: all 0.3s ease;
+  transition: none;
   display: flex;
   flex-direction: column;
   height: calc(50vh - 40px);
+  width: 258px;
+  border: 1px solid hsl(var(--border));
 }
 
 .quadrant-list.collapsed {
-  height: 40px; /* Height of just the header */
+  height: 60px;
+  /* overflow: hidden; */
+}
+
+.expanded .quadrant-header {
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .quadrant-list.expanded {
@@ -210,10 +219,34 @@ body {
 }
 
 .quadrant-list ul {
-  padding: 0 16px;
+  /* padding: 0 16px; */
+  padding: 0;
   margin: 0;
   overflow-y: auto;
   flex-grow: 1;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted)) transparent;
+}
+
+.quadrant-list ul li {
+  padding: 8px 16px;
+}
+
+.quadrant-list ul li:hover {
+  background-color: hsl(var(--muted) / 0.8);
+}
+
+.quadrant-list ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.quadrant-list ul::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.quadrant-list ul::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted));
+  border-radius: 3px;
 }
 
 .quadrant-list ul.expanded,
@@ -226,6 +259,12 @@ body {
   align-items: center;
   padding: 8px 0;
   border-bottom: 1px solid hsl(var(--border));
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quadrant-list li:hover {
+  background-color: hsl(var(--background));
 }
 
 .quadrant-list li:last-child {
@@ -240,6 +279,7 @@ body {
 .entry-title {
   flex: 1;
   margin: 0 10px;
+  font-size: 14px;
 }
 
 .entry-ring {
@@ -368,6 +408,10 @@ circle, line, text {
   .quadrant-list {
     grid-column: 1;
     max-height: none;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100%;
   }
 
   .quadrant-list.top-left,
@@ -408,8 +452,9 @@ circle, line, text {
   width: 400px;
   background: hsl(var(--card));
   border-radius: var(--radius);
-  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.1);
-  padding: 15px;
+  border: 1px solid hsl(var(--border));
+  padding: 16px;
+  box-sizing: border-box; 
   z-index: 1000;
   min-height: 64px;
   display: flex;
@@ -604,7 +649,7 @@ foreignObject {
   align-items: center;
   padding: 0 30px;
   border-bottom: 1px solid hsl(var(--border));
-  z-index: 1000;
+  z-index: 999;
 }
 
 .header-left h1 {
@@ -625,6 +670,7 @@ foreignObject {
   font-size: 14px;
   outline: none;
   transition: all 0.2s;
+  font-family: inherit;
 }
 
 .search-input:focus {
@@ -685,7 +731,7 @@ foreignObject {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000;
+  z-index: 999;
 }
 
 .modal-content {
@@ -728,11 +774,14 @@ foreignObject {
 
 .modal-ring {
   display: inline-block;
-  padding: 4px 12px;
+  padding: 2px 12px;
   border-radius: 12px;
-  font-size: 12px;
-  font-weight: bold;
-  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+
+  background: hsl(var(--muted));
+
 }
 
 .modal-links {
@@ -767,45 +816,26 @@ foreignObject {
   padding-top: 90px; 
 }
 
-/* Add ring colors to modal */
-.modal-ring.adopt {
-  background: #e6ffe6;
-  color: #008a00;
-}
 
-.modal-ring.trial {
-  background: #ffe6f9;
-  color: #cb00b4;
-}
-
-.modal-ring.assess {
-  background: #e6f0ff;
-  color: #0069e5;
-}
-
-.modal-ring.hold {
-  background: #ffe6e8;
-  color: #de001a;
-}
 
 .search-result-ring.adopt {
-  background: #e6ffe6;
-  color: #008a00;
+  background: var(--color-bg-adopt);
+  color: var(--color-adopt);
 }
 
 .search-result-ring.trial {
-  background: #ffe6f9;
-  color: #cb00b4;
+  background: var(--color-bg-trial);
+  color: var(--color-trial);
 }
 
 .search-result-ring.assess {
-  background: #e6f0ff;
-  color: #0069e5;
+  background: var(--color-bg-assess);
+  color: var(--color-assess);
 }
 
 .search-result-ring.hold {
-  background: #ffe6e8;
-  color: #de001a;
+  background: var(--color-bg-hold);
+  color: var(--color-hold);
 }
 
 .info-box-close {
@@ -835,21 +865,26 @@ foreignObject {
 
 /* Update quadrant list styles */
 .quadrant-header {
+  height: 60px;
+  min-height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  padding: 16px;
+  padding: 0 16px;
   box-sizing: border-box;
+  border-radius: var(--radius) var(--radius) 0 0;
   background: hsl(var(--card));
   position: sticky;
   top: 0;
   z-index: 1;
   border-bottom: 1px solid hsl(var(--border));
+  transition: all 0.2s ease;
+  border-radius: var(--radius);
 }
 
 .quadrant-header:hover {
-  background-color: hsl(var(--background));
+  background-color: hsl(var(--muted) / 0.8) !important;
 }
 
 .quadrant-list ul {
@@ -862,6 +897,12 @@ foreignObject {
 .quadrant-list ul.collapsed {
   max-height: none;
 }
+
+.quadrant-list.collapsed ul {
+  display: none;
+}
+
+
 
 /* Update the arrow rotation */
 .accordion-arrow {
@@ -892,21 +933,27 @@ foreignObject {
 
 /* Ring status badges */
 .entry-ring,
-.search-result-ring,
-.modal-ring,
-.info-box-ring {
-  padding: 2px 8px;
+.search-result-ring {
+  padding: 2px 12px;
   margin: 0 !important;
   border-radius: 12px;
   font-size: 10px;
-  font-weight: bold;
+  font-weight: 500;
+}
+
+.info-box-ring {
+  padding: 2px 12px;
+  margin: 0;
+  margin-top: 2px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
 }
 
 /* Apply ring colors using CSS variables */
 .adopt,
 .entry-ring.adopt,
 .search-result-ring.adopt,
-.modal-ring.adopt,
 .info-box-ring.adopt {
   background: var(--color-bg-adopt);
   color: var(--color-adopt);
@@ -915,7 +962,6 @@ foreignObject {
 .trial,
 .entry-ring.trial,
 .search-result-ring.trial,
-.modal-ring.trial,
 .info-box-ring.trial {
   background: var(--color-bg-trial);
   color: var(--color-trial);
@@ -924,7 +970,6 @@ foreignObject {
 .assess,
 .entry-ring.assess,
 .search-result-ring.assess,
-.modal-ring.assess,
 .info-box-ring.assess {
   background: var(--color-bg-assess);
   color: var(--color-assess);
@@ -933,7 +978,6 @@ foreignObject {
 .hold,
 .entry-ring.hold,
 .search-result-ring.hold,
-.modal-ring.hold,
 .info-box-ring.hold {
   background: var(--color-bg-hold);
   color: var(--color-hold);
@@ -951,3 +995,235 @@ foreignObject {
 .ring.trial { stroke: var(--color-trial); }
 .ring.assess { stroke: var(--color-assess); }
 .ring.hold { stroke: var(--color-hold); }
+
+.projects-list {
+  margin-top: 20px;
+}
+
+.projects-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.projects-list h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: hsl(var(--foreground));
+}
+
+.projects-list p {
+  margin: 0 0 20px 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+}
+
+
+.project-item {
+  cursor: pointer;
+  padding: 8px;
+  margin: 4px 0;
+  border-radius: 4px;
+  background-color: hsl(var(--muted));
+  transition: background-color 0.2s ease;
+}
+
+.project-item:hover {
+  background-color: hsl(var(--muted) / 0.8);
+}
+
+.project-modal {
+  max-width: 800px;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+}
+
+.project-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+  max-width: 800px;
+}
+
+.detail-item {
+  background-color: hsl(var(--muted));
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.detail-item h3 {
+  margin: 0 0 8px 0;
+  font-size: 1em;
+  color: hsl(var(--foreground));
+}
+
+.detail-item p {
+  margin: 0;
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.detail-item a {
+  color: #0069e5;
+  text-decoration: none;
+}
+
+.detail-item a:hover {
+  text-decoration: underline;
+}
+
+.info-box-projects {
+  margin-top: 12px;
+  border-top: 1px solid hsl(var(--border));
+  padding-top: 12px;
+}
+
+.info-box-projects h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: hsl(var(--foreground));
+}
+
+.info-box-projects ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.info-box-project-item {
+  padding: 6px 10px;
+  margin: 4px 0;
+  border-radius: 4px;
+  background-color: hsl(var(--muted));
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.info-box-project-item:hover {
+  background-color: hsl(var(--muted) / 0.8);
+}
+
+.clickable-tech {
+  color: var(--color-assess);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 4px;
+}
+
+.clickable-tech:hover {
+  /* color: hsl(var(--primary)); */
+  opacity: 0.8;
+}
+
+
+.info-icon {
+  color: hsl(var(--muted-foreground));
+  margin-left: 8px;
+  font-size: 16px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 2px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.info-icon:hover {
+  opacity: 1;
+}
+
+.info-icon:hover .tooltip {
+  opacity: 1;
+}
+
+/* Update tooltip position slightly */
+.tooltip {
+  position: absolute;
+  background: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 9999999;
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.1);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(100% + 8px);
+  font-weight: normal;
+}
+
+/* Add back the tooltip arrow */
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: hsl(var(--popover)) transparent transparent transparent;
+}
+
+/* Update these styles */
+.quadrant-list.collapsed .quadrant-header {
+  background: hsl(var(--card));
+}
+
+.quadrant-list:not(.collapsed) .quadrant-header {
+  background: hsl(var(--muted));
+}
+
+/* Add these styles */
+.quadrant-header {
+  cursor: default; /* Remove grab cursor from header */
+}
+
+.drag-handle {
+  cursor: grab;
+  padding: 8px;
+  box-sizing: border-box;
+  margin-right: 8px;
+  margin-left: -4px;
+  border-radius: var(--radius);
+  color: hsl(var(--muted-foreground));
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.drag-handle:hover {
+  opacity: 1;
+  background: hsl(var(--muted));
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Update this style */
+.quadrant-header {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.quadrant-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 2px;
+  flex: 1;
+}

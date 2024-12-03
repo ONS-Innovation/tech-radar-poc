@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./styles/App.css";
 import Header from './components/Header/Header';
 import { ThemeProvider } from './contexts/ThemeContext';
+import Papa from 'papaparse';
+import { IoInformationCircle, IoGridOutline } from "react-icons/io5";
 
 function App() {
   const [data, setData] = useState(null);
@@ -21,11 +23,36 @@ function App() {
     3: true,
     4: true,
   });
+  const [projectsData, setProjectsData] = useState(null);
+  const [projectsForTech, setProjectsForTech] = useState([]);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [draggingQuadrant, setDraggingQuadrant] = useState(null);
+  const [quadrantPositions, setQuadrantPositions] = useState({
+    "4": null, // top-left
+    "1": null, // top-right
+    "3": null, // bottom-left
+    "2": null  // bottom-right
+  });
+  const [quadrantDragOffset, setQuadrantDragOffset] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     fetch("/tech_radar/onsRadarSkeleton.json")
       .then((response) => response.json())
       .then((data) => setData(data));
+  }, []);
+
+  useEffect(() => {
+    fetch("/tech_radar/onsTechDataAdoption.csv")
+      .then((response) => response.text())
+      .then((csvText) => {
+        Papa.parse(csvText, {
+          header: true,
+          complete: (results) => {
+            setProjectsData(results.data);
+          },
+        });
+      });
   }, []);
 
   const quadrantAngles = {
@@ -58,7 +85,7 @@ function App() {
     const radius = innerRadius + (radiusIndex + 1) * radiusStep;
 
     const angleStep = Math.PI / 2.4 / angleSteps;
-    const adjustedBaseAngle = (baseAngle - 37.5) * (Math.PI / 180);
+    const adjustedBaseAngle = (baseAngle - 117.5) * (Math.PI / 180);
     const angle = adjustedBaseAngle + angleIndex * angleStep;
 
     return {
@@ -116,28 +143,82 @@ function App() {
           y: e.clientY - dragOffset.y,
         });
       }
+      
+      if (draggingQuadrant) {
+        setQuadrantPositions(prev => ({
+          ...prev,
+          [draggingQuadrant]: {
+            x: e.clientX - quadrantDragOffset.x,
+            y: e.clientY - quadrantDragOffset.y
+          }
+        }));
+      }
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
+      setDraggingQuadrant(null);
     };
 
-    if (isDragging) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
+    if (isDragging || draggingQuadrant) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
     }
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragOffset]);
+  }, [isDragging, dragOffset, draggingQuadrant, quadrantDragOffset]);
 
   const toggleQuadrant = (quadrantId) => {
     setExpandedQuadrants((prev) => ({
       ...prev,
       [quadrantId]: !prev[quadrantId],
     }));
+  };
+
+  const findProjectsUsingTechnology = (tech) => {
+    if (!projectsData) return [];
+    
+    return projectsData.filter(project => {
+      const columnsToCheck = [
+        'Language_Main', 'Language_Others', 'Language_Frameworks',
+        'Languages_Adopt', 'Languages_Trial', 'Languages_Assess', 'Languages_Hold',
+        'Frameworks_Adopt', 'Frameworks_Trial', 'Frameworks_Assess', 'Frameworks_Hold',
+        'Infrastructure_Adopt', 'Infrastructure_Trial', 'Infrastructure_Assess', 'Infrastructure_Hold',
+        'CICD_Adopt', 'CICD_Trial', 'CICD_Assess', 'CICD_Hold'
+      ];
+
+      return columnsToCheck.some(column => {
+        const value = project[column];
+        return value && value.split('; ').some(item => 
+          item.toLowerCase() === tech.toLowerCase()
+        );
+      });
+    });
+  };
+
+  const handleBlipClick = (entry) => {
+    const projects = findProjectsUsingTechnology(entry.title);
+    setProjectsForTech(projects);
+    setIsInfoBoxVisible(true);
+    
+    const quadrant = entry.quadrant;
+    const entryWithNumber = numberedEntries[quadrant].find(e => e.id === entry.id);
+    
+    if (lockedBlip?.id === entry.id) {
+      setLockedBlip(null);
+      setSelectedBlip(null);
+    } else {
+      setLockedBlip(entryWithNumber);
+      setSelectedBlip(entryWithNumber);
+    }
+  };
+
+  const handleProjectClick = (project) => {
+    setSelectedProject(project);
+    setIsProjectModalOpen(true);
   };
 
   if (!data) return <div>Loading...</div>;
@@ -169,6 +250,65 @@ function App() {
     });
   });
 
+  const isTechnologyInRadar = (techName) => {
+    return data.entries.some(entry => 
+      entry.title.toLowerCase() === techName.toLowerCase().trim()
+    );
+  };
+
+  const handleTechClick = (tech) => {
+    const radarEntry = data.entries.find(entry => 
+      entry.title.toLowerCase() === tech.toLowerCase().trim()
+    );
+    
+    if (radarEntry) {
+      const quadrant = radarEntry.quadrant;
+      const entryWithNumber = numberedEntries[quadrant].find(entry => 
+        entry.id === radarEntry.id
+      );
+      
+      setIsProjectModalOpen(false);
+      handleBlipClick(entryWithNumber);
+    }
+  };
+
+  const renderTechnologyList = (technologies) => {
+    if (!technologies) return null;
+    
+    return technologies.split(';').map((tech, index) => {
+      const trimmedTech = tech.trim();
+      const isInRadar = isTechnologyInRadar(trimmedTech);
+      
+      return (
+        <span key={index}>
+          {index > 0 && '; '}
+          {isInRadar ? (
+            <span 
+              className="clickable-tech"
+              onClick={() => handleTechClick(trimmedTech)}
+            >
+              {trimmedTech}
+            </span>
+          ) : (
+            trimmedTech
+          )}
+        </span>
+      );
+    });
+  };
+
+  const handleQuadrantMouseDown = (e, quadrantId) => {
+    e.stopPropagation();
+    if (e.target.closest('.drag-handle')) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setQuadrantDragOffset({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
+      setDraggingQuadrant(quadrantId);
+    }
+  };
+
   return (
     <ThemeProvider>
       <div className="radar-page">
@@ -199,6 +339,26 @@ function App() {
                   {selectedSearchResult.timeline[0].ringId}
                 </span>
                 </div>
+                
+                {projectsForTech.length > 0 && (
+                  <div className="projects-list">
+                    <h4>Projects using this technology:</h4>
+                    <p>Click a project to view more details</p>
+
+                    <ul>
+                      {projectsForTech.map((project, index) => (
+                        <li 
+                          key={index} 
+                          onClick={() => handleProjectClick(project)}
+                          className="project-item clickable-tech"
+                        >
+                          {project.Project || project.Project_Short}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {selectedSearchResult.links &&
                   selectedSearchResult.links.length > 0 && (
                     <div className="modal-links">
@@ -232,6 +392,7 @@ function App() {
               top: dragPosition.y,
               transform: "none",
               cursor: isDragging ? "grabbing" : "grab",
+              boxShadow: isDragging ? "0 4px 10px 0 rgba(0, 0, 0, 0.1)" : "0 2px 5px 0 rgba(0, 0, 0, 0.1)",
             }}
             onMouseDown={handleMouseDown}
           >
@@ -245,8 +406,8 @@ function App() {
               <>
                 <div className="info-box-header">
                   <span className="info-box-number">
-                    #{(selectedBlip || lockedBlip).number}
-                  </span>
+                  #{(selectedBlip || lockedBlip).number}
+                    </span>
                   <h3>{(selectedBlip || lockedBlip).title}</h3>
                 </div>
                 <div className="info-box-header">
@@ -259,6 +420,24 @@ function App() {
                     {(selectedBlip || lockedBlip).timeline[0].ringId}
                   </span>
                 </div>
+
+                {projectsForTech.length > 0 && (
+                  <div className="info-box-projects">
+                    <h4>Projects using this technology:</h4>
+                    <p>Click a project to view more details</p>
+                    <ul>
+                      {projectsForTech.map((project, index) => (
+                        <li 
+                          key={index}
+                          onClick={() => handleProjectClick(project)}
+                          className="info-box-project-item clickable-tech"
+                        >
+                          {project.Project || project.Project_Short}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {(selectedBlip || lockedBlip).links &&
                   (selectedBlip || lockedBlip).links.length > 0 && (
@@ -289,21 +468,49 @@ function App() {
             className={`quadrant-list top-left ${
               expandedQuadrants["4"] ? "expanded" : "collapsed"
             }`}
+            style={{
+              ...(quadrantPositions["4"] ? {
+                position: 'fixed',
+                left: quadrantPositions["4"].x,
+                top: quadrantPositions["4"].y,
+                margin: 0,
+                zIndex: draggingQuadrant === "4" ? 1000 : 100
+              } : {}),
+              cursor: draggingQuadrant === "4" ? 'grabbing' : 'auto'
+            }}
+            onMouseDown={(e) => handleQuadrantMouseDown(e, "4")}
           >
-            <div className="quadrant-header" onClick={() => toggleQuadrant("4")}>
-              <h2>{data.quadrants.find((q) => q.id === "4").name}</h2>
-              <span
-                className={`accordion-arrow ${
-                  expandedQuadrants["4"] ? "expanded" : ""
-                }`}
-              >
-                ▼
+            <div className="quadrant-header">
+              <span className="drag-handle">
+                <IoGridOutline size={12} />
               </span>
+              <div className="quadrant-header-content" onClick={() => toggleQuadrant("4")}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <h2>{data.quadrants.find((q) => q.id === "4").name}</h2>
+                  <span className="info-icon">
+                    <IoInformationCircle size={18} />
+                    <span className="tooltip">
+                      Click a technology to view more details and related projects
+                    </span>
+                  </span>
+                </div>
+                <span
+                  className={`accordion-arrow ${
+                    expandedQuadrants["4"] ? "expanded" : ""
+                  }`}
+                >
+                  ▼
+                </span>
+              </div>
             </div>
             {expandedQuadrants["4"] && (
               <ul>
                 {numberedEntries["4"]?.map((entry) => (
-                  <li key={entry.id}>
+                  <li 
+                    key={entry.id}
+                    onClick={() => handleBlipClick(entry)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <span className="entry-number">{entry.number}.</span>
                     <span className="entry-title">{entry.title}</span>
                     <span
@@ -321,20 +528,48 @@ function App() {
             className={`quadrant-list top-right ${
               expandedQuadrants["1"] ? "expanded" : "collapsed"
             }`}
+            style={{
+              ...(quadrantPositions["1"] ? {
+                position: 'fixed',
+                left: quadrantPositions["1"].x,
+                top: quadrantPositions["1"].y,
+                margin: 0,
+                zIndex: draggingQuadrant === "1" ? 1000 : 100
+              } : {}),
+              cursor: draggingQuadrant === "1" ? 'grabbing' : 'auto'
+            }}
+            onMouseDown={(e) => handleQuadrantMouseDown(e, "1")}
           >
-            <div className="quadrant-header" onClick={() => toggleQuadrant("1")}>
-              <h2>{data.quadrants.find((q) => q.id === "1").name}</h2>
-              <span
-                className={`accordion-arrow ${
-                  expandedQuadrants["1"] ? "expanded" : ""
-                }`}
-              >
-                ▼
+            <div className="quadrant-header">
+              <span className="drag-handle">
+                <IoGridOutline size={12} />
               </span>
+              <div className="quadrant-header-content" onClick={() => toggleQuadrant("1")}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <h2>{data.quadrants.find((q) => q.id === "1").name}</h2>
+                  <span className="info-icon">
+                    <IoInformationCircle size={18} />
+                    <span className="tooltip">
+                      Click a technology to view more details and related projects
+                    </span>
+                  </span>
+                </div>
+                <span
+                  className={`accordion-arrow ${
+                    expandedQuadrants["1"] ? "expanded" : ""
+                  }`}
+                >
+                  ▼
+                </span>
+              </div>
             </div>
             <ul>
               {numberedEntries["1"]?.map((entry) => (
-                <li key={entry.id}>
+                <li 
+                  key={entry.id}
+                  onClick={() => handleBlipClick(entry)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <span className="entry-number">{entry.number}.</span>
                   <span className="entry-title">{entry.title}</span>
                   <span
@@ -409,18 +644,11 @@ function App() {
                         transform={`translate(${position.x}, ${position.y})`}
                         className="blip-container"
                         onMouseEnter={() =>
-                          !lockedBlip && setSelectedBlip({ ...entry, number })
+                          !lockedBlip && setSelectedBlip(numberedEntries[quadrant].find(e => e.id === entry.id))
                         }
                         onMouseLeave={() => !lockedBlip && setSelectedBlip(null)}
                         onClick={() => {
-                          setIsInfoBoxVisible(true);
-                          if (lockedBlip?.id === entry.id) {
-                            setLockedBlip(null);
-                            setSelectedBlip(null);
-                          } else {
-                            setLockedBlip({ ...entry, number });
-                            setSelectedBlip({ ...entry, number });
-                          }
+                          handleBlipClick(entry);
                         }}
                       >
                         <circle r="15" className={`blip ${ring.toLowerCase()}`} />
@@ -452,20 +680,48 @@ function App() {
             className={`quadrant-list bottom-left ${
               expandedQuadrants["3"] ? "expanded" : "collapsed"
             }`}
+            style={{
+              ...(quadrantPositions["3"] ? {
+                position: 'fixed',
+                left: quadrantPositions["3"].x,
+                top: quadrantPositions["3"].y,
+                margin: 0,
+                zIndex: draggingQuadrant === "3" ? 1000 : 100
+              } : {}),
+              cursor: draggingQuadrant === "3" ? 'grabbing' : 'auto'
+            }}
+            onMouseDown={(e) => handleQuadrantMouseDown(e, "3")}
           >
-            <div className="quadrant-header" onClick={() => toggleQuadrant("3")}>
-              <h2>{data.quadrants.find((q) => q.id === "3").name}</h2>
-              <span
-                className={`accordion-arrow ${
-                  expandedQuadrants["3"] ? "expanded" : ""
-                }`}
-              >
-                ▼
+            <div className="quadrant-header">
+              <span className="drag-handle">
+                <IoGridOutline size={12} />
               </span>
+              <div className="quadrant-header-content" onClick={() => toggleQuadrant("3")}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <h2>{data.quadrants.find((q) => q.id === "3").name}</h2>
+                  <span className="info-icon">
+                    <IoInformationCircle size={18} />
+                    <span className="tooltip">
+                      Click a technology to view more details and related projects
+                    </span>
+                  </span>
+                </div>
+                <span
+                  className={`accordion-arrow ${
+                    expandedQuadrants["3"] ? "expanded" : ""
+                  }`}
+                >
+                  ▼
+                </span>
+              </div>
             </div>
             <ul>
               {numberedEntries["3"]?.map((entry) => (
-                <li key={entry.id}>
+                <li 
+                  key={entry.id}
+                  onClick={() => handleBlipClick(entry)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <span className="entry-number">{entry.number}.</span>
                   <span className="entry-title">{entry.title}</span>
                   <span
@@ -482,20 +738,48 @@ function App() {
             className={`quadrant-list bottom-right ${
               expandedQuadrants["2"] ? "expanded" : "collapsed"
             }`}
+            style={{
+              ...(quadrantPositions["2"] ? {
+                position: 'fixed',
+                left: quadrantPositions["2"].x,
+                top: quadrantPositions["2"].y,
+                margin: 0,
+                zIndex: draggingQuadrant === "2" ? 1000 : 100
+              } : {}),
+              cursor: draggingQuadrant === "2" ? 'grabbing' : 'auto'
+            }}
+            onMouseDown={(e) => handleQuadrantMouseDown(e, "2")}
           >
-            <div className="quadrant-header" onClick={() => toggleQuadrant("2")}>
-              <h2>{data.quadrants.find((q) => q.id === "2").name}</h2>
-              <span
-                className={`accordion-arrow ${
-                  expandedQuadrants["2"] ? "expanded" : ""
-                }`}
-              >
-                ▼
+            <div className="quadrant-header">
+              <span className="drag-handle">
+                <IoGridOutline size={12} />
               </span>
+              <div className="quadrant-header-content" onClick={() => toggleQuadrant("2")}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <h2>{data.quadrants.find((q) => q.id === "2").name}</h2>
+                  <span className="info-icon">
+                    <IoInformationCircle size={18} />
+                    <span className="tooltip">
+                      Click a technology to view more details and related projects
+                    </span>
+                  </span>
+                </div>
+                <span
+                  className={`accordion-arrow ${
+                    expandedQuadrants["2"] ? "expanded" : ""
+                  }`}
+                >
+                  ▼
+                </span>
+              </div>
             </div>
             <ul>
               {numberedEntries["2"]?.map((entry) => (
-                <li key={entry.id}>
+                <li 
+                  key={entry.id}
+                  onClick={() => handleBlipClick(entry)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <span className="entry-number">{entry.number}.</span>
                   <span className="entry-title">{entry.title}</span>
                   <span
@@ -508,6 +792,68 @@ function App() {
             </ul>
           </div>
         </div>
+
+        {isProjectModalOpen && (
+          <div className="modal-overlay" onClick={() => setIsProjectModalOpen(false)}>
+            <div className="modal-content project-modal" onClick={(e) => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => setIsProjectModalOpen(false)}>×</button>
+              <h2>{selectedProject.Project || selectedProject.Project_Short}</h2>
+              
+              <div className="project-details">
+                {selectedProject.Project_Area && (
+                  <div className="detail-item">
+                    <h3>Project Area:</h3>
+                    <p>{selectedProject.Project_Area}</p>
+                  </div>
+                )}
+                
+                {selectedProject.Team && (
+                  <div className="detail-item">
+                    <h3>Team:</h3>
+                    <p>{selectedProject.Team}</p>
+                  </div>
+                )}
+                
+                {selectedProject.Language_Main && (
+                  <div className="detail-item">
+                    <h3>Main Language:</h3>
+                    <p>{renderTechnologyList(selectedProject.Language_Main)}</p>
+                  </div>
+                )}
+                
+                {selectedProject.Language_Others && (
+                  <div className="detail-item">
+                    <h3>Other Languages:</h3>
+                    <p>{renderTechnologyList(selectedProject.Language_Others)}</p>
+                  </div>
+                )}
+                
+                {selectedProject.Language_Frameworks && (
+                  <div className="detail-item">
+                    <h3>Frameworks:</h3>
+                    <p>{renderTechnologyList(selectedProject.Language_Frameworks)}</p>
+                  </div>
+                )}
+                
+                {selectedProject.Hosted && (
+                  <div className="detail-item">
+                    <h3>Hosted On:</h3>
+                    <p>{selectedProject.Hosted}</p>
+                  </div>
+                )}
+                
+                {selectedProject.Documentation && (
+                  <div className="detail-item">
+                    <h3>Documentation:</h3>
+                    <a href={selectedProject.Documentation} target="_blank" rel="noopener noreferrer">
+                      View Documentation
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </ThemeProvider>
   );
