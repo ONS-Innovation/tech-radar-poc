@@ -51,9 +51,33 @@
             "timeline": [
                 {
                     "moved": 0,
-                    "ringId": "adopt",
+                    "ringId": "trial",
                     "date": "2024-05-10",
                     "description": "UI Review 2024-05-10"
+                },
+                {
+                    "moved": 1,
+                    "ringId": "adopt",
+                    "date": "2024-06-10",
+                    "description": "UI Review 2024-06-10"
+                },
+                {
+                    "moved": 0,
+                    "ringId": "adopt",
+                    "date": "2024-07-10",
+                    "description": "UI Review 2024-07-10"
+                },
+                {
+                    "moved": -2,
+                    "ringId": "assess",
+                    "date": "2024-08-10",
+                    "description": "UI Review 2024-08-10"
+                },
+                {
+                    "moved": 2,
+                    "ringId": "adopt",
+                    "date": "2024-09-10",
+                    "description": "UI Review 2024-09-10"
                 }
             ],
             "links": []

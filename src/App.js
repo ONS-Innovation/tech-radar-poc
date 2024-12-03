@@ -3,7 +3,9 @@ import "./styles/App.css";
 import Header from './components/Header/Header';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Papa from 'papaparse';
-import { IoInformationCircle, IoGridOutline } from "react-icons/io5";
+import { IoInformationCircle, IoGridOutline, IoChevronUpOutline, IoChevronDownOutline, IoArrowUpOutline, IoArrowDownOutline, IoRemoveOutline } from "react-icons/io5";
+import { Toaster } from 'react-hot-toast';
+import { FaSortAmountDownAlt, FaSortAmountUpAlt } from "react-icons/fa";
 
 function App() {
   const [data, setData] = useState(null);
@@ -11,8 +13,6 @@ function App() {
   const [lockedBlip, setLockedBlip] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSearchResult, setSelectedSearchResult] = useState(null);
   const [isInfoBoxVisible, setIsInfoBoxVisible] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 50, y: 80 });
@@ -35,6 +35,9 @@ function App() {
     "2": null  // bottom-right
   });
   const [quadrantDragOffset, setQuadrantDragOffset] = useState({ x: 0, y: 0 });
+  const [allBlips, setAllBlips] = useState([]);
+  const [selectedTimelineItem, setSelectedTimelineItem] = useState(null);
+  const [timelineAscending, setTimelineAscending] = useState(false);
 
   useEffect(() => {
     fetch("/tech_radar/onsRadarSkeleton.json")
@@ -54,6 +57,48 @@ function App() {
         });
       });
   }, []);
+
+  useEffect(() => {
+    if (!data) return;
+    
+    const blipsArray = Object.values(data.quadrants).flatMap(quadrant => {
+      const quadrantId = quadrant.id;
+      return numberedEntries[quadrantId] || [];
+    }).sort((a, b) => a.number - b.number);
+    
+    setAllBlips(blipsArray);
+  }, [data]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!lockedBlip || !allBlips.length) return;
+
+      const currentIndex = allBlips.findIndex(blip => blip.id === lockedBlip.id);
+      if (currentIndex === -1) return;
+
+      let nextBlip;
+      
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        if (currentIndex > 0) {
+          nextBlip = allBlips[currentIndex - 1];
+        }
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        if (currentIndex < allBlips.length - 1) {
+          nextBlip = allBlips[currentIndex + 1];
+        }
+      }
+
+      if (nextBlip) {
+        const projects = findProjectsUsingTechnology(nextBlip.title);
+        setProjectsForTech(projects);
+        setLockedBlip(nextBlip);
+        setSelectedBlip(nextBlip);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lockedBlip, allBlips]);
 
   const quadrantAngles = {
     1: 45,
@@ -111,17 +156,33 @@ function App() {
       return;
     }
 
-    const results = data.entries.filter(
-      (entry) =>
+    const results = data.entries
+      .filter(entry =>
         entry.title.toLowerCase().includes(term.toLowerCase()) ||
         entry.description.toLowerCase().includes(term.toLowerCase())
-    );
+      )
+      .map(entry => ({
+        ...entry,
+        // Sort timeline by date and get the most recent entry
+        timeline: [...entry.timeline].sort((a, b) => 
+          new Date(b.date) - new Date(a.date)
+        )
+      }));
+
     setSearchResults(results);
   };
 
   const handleSearchResultClick = (entry) => {
-    setSelectedSearchResult(entry);
-    setIsModalOpen(true);
+    const quadrant = entry.quadrant;
+    const entryWithNumber = numberedEntries[quadrant].find(e => e.id === entry.id);
+    
+    const projects = findProjectsUsingTechnology(entry.title);
+    
+    setProjectsForTech(projects);
+    setLockedBlip(entryWithNumber);
+    setSelectedBlip(entryWithNumber);
+    setIsInfoBoxVisible(true);
+    
     setSearchTerm("");
     setSearchResults([]);
   };
@@ -237,16 +298,49 @@ function App() {
     setIsProjectModalOpen(true);
   };
 
-  if (!data) return <div>Loading...</div>;
+  const handleFileUpload = (convertedData) => {
+    setProjectsData(prevData => {
+      const existingData = prevData || [];
+      return [...existingData, ...convertedData];
+    });
+  };
+
+  const checkForDuplicates = (newData) => {
+    const existingProjects = new Set(
+      projectsData?.map(project => project.Project) || []
+    );
+    
+    const newProjects = [];
+    const duplicates = [];
+
+    newData.forEach(project => {
+      if (existingProjects.has(project.Project)) {
+        duplicates.push(project);
+      } else {
+        newProjects.push(project);
+        existingProjects.add(project.Project);
+      }
+    });
+
+    return { newProjects, duplicates };
+  };
+
+  if (!data) return <div className="loading-container">Loading...</div>;
 
   const groupedEntries = data.entries.reduce((acc, entry) => {
     const quadrant = entry.quadrant;
-    const ring = entry.timeline[0].ringId;
+    const sortedTimeline = [...entry.timeline].sort((a, b) => 
+      new Date(b.date) - new Date(a.date)
+    );
+    const currentRing = sortedTimeline[0].ringId;
 
     if (!acc[quadrant]) acc[quadrant] = {};
-    if (!acc[quadrant][ring]) acc[quadrant][ring] = [];
+    if (!acc[quadrant][currentRing]) acc[quadrant][currentRing] = [];
 
-    acc[quadrant][ring].push(entry);
+    acc[quadrant][currentRing].push({
+      ...entry,
+      timeline: sortedTimeline
+    });
     return acc;
   }, {});
 
@@ -336,76 +430,37 @@ function App() {
   return (
     <ThemeProvider>
       <div className="radar-page">
+        <Toaster 
+          position="top-center"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: 'hsl(var(--card))',
+              color: 'hsl(var(--foreground))',
+              border: '1px solid hsl(var(--border))',
+            },
+            success: {
+              iconTheme: {
+                primary: 'var(--color-adopt)',
+                secondary: 'white',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: 'var(--color-hold)',
+                secondary: 'white',
+              },
+            },
+          }}
+        />
         <Header 
           searchTerm={searchTerm}
           onSearchChange={handleSearch}
           searchResults={searchResults}
           onSearchResultClick={handleSearchResultClick}
+          onFileUpload={handleFileUpload}
+          checkForDuplicates={checkForDuplicates}
         />
-
-        {isModalOpen && (
-          <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <button
-                className="modal-close"
-                onClick={() => setIsModalOpen(false)}
-              >
-                ×
-              </button>
-              <h2>{selectedSearchResult.title}</h2>
-              
-              <div className="modal-info">
-                <div className="modal-info-tags">
-                <p className="modal-ring">{selectedSearchResult.description}</p>
-                <span
-                  className={`modal-ring ${selectedSearchResult.timeline[0].ringId.toLowerCase()}`}
-                >
-                  {selectedSearchResult.timeline[0].ringId}
-                </span>
-                </div>
-                
-                {projectsForTech.length > 0 && (
-                  <div className="projects-list">
-                    <h4>Projects using this technology:</h4>
-                    <p>Click a project to view more details</p>
-
-                    <ul>
-                      {projectsForTech.map((project, index) => (
-                        <li 
-                          key={index} 
-                          onClick={() => handleProjectClick(project)}
-                          className="project-item clickable-tech"
-                        >
-                          {project.Project || project.Project_Short}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {selectedSearchResult.links &&
-                  selectedSearchResult.links.length > 0 && (
-                    <div className="modal-links">
-                      <h3>Links:</h3>
-                      <ul>
-                        {selectedSearchResult.links.map((link, index) => (
-                          <li key={index}>
-                            <a
-                              href={link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {link}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-              </div>
-            </div>
-          </div>
-        )}
 
         {isInfoBoxVisible && (
           <div
@@ -445,9 +500,53 @@ function App() {
                   </span>
                 </div>
 
+                <div className="timeline-header">
+                  <div className="timeline-header-title">
+                    <h4>Timeline</h4>
+                    <button 
+                      className="timeline-sort-button"
+                      onClick={() => setTimelineAscending(!timelineAscending)}
+                      title={timelineAscending ? "Newest first" : "Oldest first"}
+                    >
+                      {timelineAscending ? <FaSortAmountDownAlt size={12} /> : <FaSortAmountUpAlt size={12} />}
+                    </button>
+                  </div>
+                  <p>Click a box to show the description of the event</p>
+                </div>
+
+                <div className="timeline-container">
+                  {[...(selectedBlip || lockedBlip).timeline]
+                    .sort((a, b) => {
+                      const comparison = new Date(b.date) - new Date(a.date);
+                      return timelineAscending ? -comparison : comparison;
+                    })
+                    .map((timelineItem, index, array) => (
+                      <div key={timelineItem.date} className="timeline-item">
+                        <div 
+                          className={`timeline-node ${timelineItem.ringId.toLowerCase()}`}
+                          onClick={() => setSelectedTimelineItem(timelineItem === selectedTimelineItem ? null : timelineItem)}
+                        >
+                          <span className="timeline-movement">
+                            {timelineItem.moved > 0 && <IoArrowUpOutline size={10} />}
+                            {timelineItem.moved === 0 && <IoRemoveOutline size={10} />}
+                            {timelineItem.moved < 0 && <IoArrowDownOutline size={10} />}
+                          </span>
+                          {selectedTimelineItem === timelineItem ? 
+                            timelineItem.description :
+                            new Date(timelineItem.date).toLocaleDateString('en-GB', {
+                              month: 'short',
+                              year: 'numeric'
+                            })
+                          }
+                        </div>
+                        {index < array.length - 1 && <div className="timeline-connector" />}
+                      </div>
+                    ))}
+                </div>
+
                 {projectsForTech.length > 0 && (
                   <div className="info-box-projects">
-                    <h4>Projects using this technology:</h4>
+                    <h4><strong>{projectsForTech.length} {projectsForTech.length === 1 ? 'project' : 'projects'}</strong> using this technology:</h4>
                     <p>Click a project to view more details</p>
                     <ul>
                       {projectsForTech.map((project, index) => (
@@ -523,7 +622,7 @@ function App() {
                     expandedQuadrants["4"] ? "expanded" : ""
                   }`}
                 >
-                  ▼
+                  {expandedQuadrants["4"] ? <IoChevronUpOutline size={16} /> : <IoChevronDownOutline size={16} />}
                 </span>
               </div>
             </div>
@@ -583,7 +682,7 @@ function App() {
                     expandedQuadrants["1"] ? "expanded" : ""
                   }`}
                 >
-                  ▼
+                  {expandedQuadrants["1"] ? <IoChevronUpOutline size={16} /> : <IoChevronDownOutline size={16} />}
                 </span>
               </div>
             </div>
@@ -735,7 +834,7 @@ function App() {
                     expandedQuadrants["3"] ? "expanded" : ""
                   }`}
                 >
-                  ▼
+                  {expandedQuadrants["3"] ? <IoChevronUpOutline size={16} /> : <IoChevronDownOutline size={16} />}
                 </span>
               </div>
             </div>
@@ -793,7 +892,7 @@ function App() {
                     expandedQuadrants["2"] ? "expanded" : ""
                   }`}
                 >
-                  ▼
+                  {expandedQuadrants["2"] ? <IoChevronUpOutline size={16} /> : <IoChevronDownOutline size={16} />}
                 </span>
               </div>
             </div>
