@@ -582,6 +582,10 @@ foreignObject {
   padding-right: 30px;
 }
 
+.info-box-header:nth-child(3) {
+  margin-top: 4px;
+}
+
 .info-box-links {
   padding: 0;
   margin: 0;
@@ -731,12 +735,13 @@ foreignObject {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 1001;
 }
 
 .modal-content {
   background: hsl(var(--card));
   border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
   padding: 30px;
   width: 500px;
   max-width: 90vw;
@@ -744,6 +749,7 @@ foreignObject {
   overflow-y: auto;
   position: relative;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
 }
 
 .modal-content h2 {
@@ -772,14 +778,15 @@ foreignObject {
   margin-top: 20px;
 }
 
-.modal-ring {
+.modal-ring, .info-box-ring {
   display: inline-block;
   padding: 2px 12px;
   border-radius: 12px;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 10px !important;
+  font-weight: 500;
   margin: 0;
 
+  color: hsl(var(--muted-foreground));
   background: hsl(var(--muted));
 
 }
@@ -943,7 +950,7 @@ foreignObject {
 
 .info-box-ring {
   padding: 2px 12px;
-  margin: 0;
+  margin: 0 !important;
   margin-top: 2px;
   border-radius: 12px;
   font-size: 10px;
@@ -1044,7 +1051,6 @@ foreignObject {
   grid-template-columns: 1fr 1fr;
   gap: 20px;
   margin-top: 20px;
-  max-width: 800px;
 }
 
 .detail-item {
@@ -1068,6 +1074,7 @@ foreignObject {
 .detail-item a {
   color: #0069e5;
   text-decoration: none;
+  font-size: 14px;
 }
 
 .detail-item a:hover {
@@ -1075,7 +1082,7 @@ foreignObject {
 }
 
 .info-box-projects {
-  margin-top: 12px;
+  margin-top: 4px;
   border-top: 1px solid hsl(var(--border));
   padding-top: 12px;
 }
@@ -1118,8 +1125,23 @@ foreignObject {
   text-underline-offset: 4px;
 }
 
+.clickable-tech.adopt {
+  color: var(--color-adopt);
+}
+
+.clickable-tech.trial {
+  color: var(--color-trial);
+}
+
+.clickable-tech.assess {
+  color: var(--color-assess);
+}
+
+.clickable-tech.hold {
+  color: var(--color-hold);
+}
+
 .clickable-tech:hover {
-  /* color: hsl(var(--primary)); */
   opacity: 0.8;
 }
 
@@ -1226,4 +1248,64 @@ foreignObject {
   justify-content: space-between;
   padding: 18px 2px;
   flex: 1;
+}
+
+.project-title-section {
+  margin-bottom: 20px;
+}
+
+.project-title-section h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.project-short-name {
+  color: hsl(var(--muted-foreground));
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.project-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.detail-item {
+  background-color: hsl(var(--muted));
+  padding: 16px;
+  border-radius: var(--radius);
+  height: fit-content;
+}
+
+.detail-item h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+}
+
+.detail-item p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: hsl(var(--foreground));
+}
+
+.detail-item a:hover {
+  text-decoration: underline;
+}
+
+.project-modal {
+  width: 50vw;
+  max-width: 1200px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 1200px) {
+  .project-modal {
+    width: 90vw;
+    max-height: 90vh;
+  }
 }

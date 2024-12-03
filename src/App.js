@@ -182,18 +182,34 @@ function App() {
     if (!projectsData) return [];
     
     return projectsData.filter(project => {
-      const columnsToCheck = [
-        'Language_Main', 'Language_Others', 'Language_Frameworks',
-        'Languages_Adopt', 'Languages_Trial', 'Languages_Assess', 'Languages_Hold',
-        'Frameworks_Adopt', 'Frameworks_Trial', 'Frameworks_Assess', 'Frameworks_Hold',
-        'Infrastructure_Adopt', 'Infrastructure_Trial', 'Infrastructure_Assess', 'Infrastructure_Hold',
-        'CICD_Adopt', 'CICD_Trial', 'CICD_Assess', 'CICD_Hold'
+      const allTechColumns = [
+        'Language_Main',
+        'Language_Others',
+        'Language_Frameworks',
+        'Languages_Adopt',
+        'Languages_Trial',
+        'Languages_Assess',
+        'Languages_Hold',
+        'Frameworks_Adopt',
+        'Frameworks_Trial',
+        'Frameworks_Assess',
+        'Frameworks_Hold',
+        'Infrastructure_Adopt',
+        'Infrastructure_Trial',
+        'Infrastructure_Assess',
+        'Infrastructure_Hold',
+        'CICD_Adopt',
+        'CICD_Trial',
+        'CICD_Assess',
+        'CICD_Hold'
       ];
 
-      return columnsToCheck.some(column => {
+      return allTechColumns.some(column => {
         const value = project[column];
-        return value && value.split('; ').some(item => 
-          item.toLowerCase() === tech.toLowerCase()
+        if (!value) return false;
+        
+        return value.split(';').some(item => 
+          item.trim().toLowerCase() === tech.toLowerCase()
         );
       });
     });
@@ -272,19 +288,27 @@ function App() {
     }
   };
 
+  const getTechnologyStatus = (tech) => {
+    const entry = data.entries.find(entry => 
+      entry.title.toLowerCase() === tech.trim().toLowerCase()
+    );
+    return entry ? entry.timeline[0].ringId.toLowerCase() : null;
+  };
+
   const renderTechnologyList = (technologies) => {
     if (!technologies) return null;
     
     return technologies.split(';').map((tech, index) => {
       const trimmedTech = tech.trim();
       const isInRadar = isTechnologyInRadar(trimmedTech);
+      const status = isInRadar ? getTechnologyStatus(trimmedTech) : null;
       
       return (
         <span key={index}>
           {index > 0 && '; '}
           {isInRadar ? (
             <span 
-              className="clickable-tech"
+              className={`clickable-tech ${status}`}
               onClick={() => handleTechClick(trimmedTech)}
             >
               {trimmedTech}
@@ -797,9 +821,17 @@ function App() {
           <div className="modal-overlay" onClick={() => setIsProjectModalOpen(false)}>
             <div className="modal-content project-modal" onClick={(e) => e.stopPropagation()}>
               <button className="modal-close" onClick={() => setIsProjectModalOpen(false)}>×</button>
-              <h2>{selectedProject.Project || selectedProject.Project_Short}</h2>
+              
+              {/* Project Title Section */}
+              <div className="project-title-section">
+                <h2>{selectedProject.Project}</h2>
+                {selectedProject.Project_Short && (
+                  <div className="project-short-name">({selectedProject.Project_Short})</div>
+                )}
+              </div>
               
               <div className="project-details">
+                {/* Core Details */}
                 {selectedProject.Project_Area && (
                   <div className="detail-item">
                     <h3>Project Area:</h3>
@@ -814,6 +846,14 @@ function App() {
                   </div>
                 )}
                 
+                {selectedProject.DST_Area && (
+                  <div className="detail-item">
+                    <h3>DST Area:</h3>
+                    <p>{selectedProject.DST_Area}</p>
+                  </div>
+                )}
+
+                {/* Languages & Frameworks */}
                 {selectedProject.Language_Main && (
                   <div className="detail-item">
                     <h3>Main Language:</h3>
@@ -834,14 +874,105 @@ function App() {
                     <p>{renderTechnologyList(selectedProject.Language_Frameworks)}</p>
                   </div>
                 )}
-                
+
+                {/* Testing */}
+                {selectedProject.Testing_Frameworks && (
+                  <div className="detail-item">
+                    <h3>Testing Frameworks:</h3>
+                    <p>{renderTechnologyList(selectedProject.Testing_Frameworks)}</p>
+                  </div>
+                )}
+
+                {/* Infrastructure */}
                 {selectedProject.Hosted && (
                   <div className="detail-item">
                     <h3>Hosted On:</h3>
                     <p>{selectedProject.Hosted}</p>
                   </div>
                 )}
-                
+
+                {selectedProject.Containers && (
+                  <div className="detail-item">
+                    <h3>Containers:</h3>
+                    <p>{renderTechnologyList(selectedProject.Containers)}</p>
+                  </div>
+                )}
+
+                {selectedProject.Architectures && (
+                  <div className="detail-item">
+                    <h3>Architecture:</h3>
+                    <p>{selectedProject.Architectures}</p>
+                  </div>
+                )}
+
+                {/* Source Control */}
+                {selectedProject.Source_Control && (
+                  <div className="detail-item">
+                    <h3>Source Control:</h3>
+                    <p>{selectedProject.Source_Control}</p>
+                  </div>
+                )}
+
+                {selectedProject.Branching_Strategy && (
+                  <div className="detail-item">
+                    <h3>Branching Strategy:</h3>
+                    <p>{selectedProject.Branching_Strategy}</p>
+                  </div>
+                )}
+
+                {/* Development Tools */}
+                {selectedProject.Static_Analysis && (
+                  <div className="detail-item">
+                    <h3>Static Analysis:</h3>
+                    <p>{renderTechnologyList(selectedProject.Static_Analysis)}</p>
+                  </div>
+                )}
+
+                {selectedProject.Code_Formatter && (
+                  <div className="detail-item">
+                    <h3>Code Formatter:</h3>
+                    <p>{renderTechnologyList(selectedProject.Code_Formatter)}</p>
+                  </div>
+                )}
+
+                {/* Data & Monitoring */}
+                {selectedProject.Monitoring && (
+                  <div className="detail-item">
+                    <h3>Monitoring:</h3>
+                    <p>{renderTechnologyList(selectedProject.Monitoring)}</p>
+                  </div>
+                )}
+
+                {selectedProject.Datastores && (
+                  <div className="detail-item">
+                    <h3>Datastores:</h3>
+                    <p>{renderTechnologyList(selectedProject.Datastores)}</p>
+                  </div>
+                )}
+
+                {selectedProject.Data_Output_Formats && (
+                  <div className="detail-item">
+                    <h3>Data Output Formats:</h3>
+                    <p>{renderTechnologyList(selectedProject.Data_Output_Formats)}</p>
+                  </div>
+                )}
+
+                {/* Integrations */}
+                {selectedProject.Integrations_ONS && (
+                  <div className="detail-item">
+                    <h3>ONS Integrations:</h3>
+                    <p>{renderTechnologyList(selectedProject.Integrations_ONS)}</p>
+                  </div>
+                )}
+
+                {selectedProject.Integrations_External && (
+                  <div className="detail-item">
+                    <h3>External Integrations:</h3>
+                    <p>{renderTechnologyList(selectedProject.Integrations_External)}</p>
+                  </div>
+                )}
+
+                {/* Documentation */}
                 {selectedProject.Documentation && (
                   <div className="detail-item">
                     <h3>Documentation:</h3>
