@@ -1,0 +1,7 @@
+aws_account_id                    = ""
+aws_access_key_id                 = ""
+aws_secret_access_key             = ""
+domain                            = "sdp-dev"
+s3_bucket_name                    = "sdp-dev-tech-radar"
+container_ver                     = "v0.0.1"
+container_ver_backend             = "v0.0.1"

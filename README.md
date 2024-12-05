@@ -2,65 +2,88 @@
 
 Tech Radar is a tool that helps you track the infrastructure, languages, frameworks and CI/CD used in the ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
 
-## How to use
+## How to setup
 
 Clone the repository:
 ```bash
 git clone https://github.com/ONS-innovation/keh-tech-radar.git
 ```
 
-Run to install the dependencies:
+Install both backend and frontend dependencies:
 ```bash
-npm install
+make install
 ```
 
-Run the project:
+## How to run locally
+
+Remember to export AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
 ```bash
-npm start
+export AWS_ACCESS_KEY_ID=<your_access_key>
+export AWS_SECRET_ACCESS_KEY=<your_secret_key>
 ```
 
-This should install the dependencies and start the project locally on port 3000.
+Make dev.sh executable:
+```bash
+chmod +x dev.sh
+```
+
+To run the project locally:
+```bash
+make dev
+```
+This runs the frontend and backend locally on ports 3000 and 5001.
+
+To run the frontend only:
+```bash
+make frontend
+```
+
+To run the backend only:
+```bash
+make backend
+```
 
 ## How to deploy locally
 
 ```bash
-npm run build
+make docker-build
 ```
 
 ```bash
-npm i -g serve
-```
-
-```bash
-serve -s build
+make docker-up
 ```
 
 This should build the project and then start the project locally on port 5000.
 
-## How to containerise
-
+To stop the project:
 ```bash
-docker build -t keh-tech-radar .
-```
-
-```bash
-docker run -p 5000:5000 keh-tech-radar
+make docker-down
 ```
 
 ## How to containerise and deploy to ECR on AWS
 
+Build the frontend container:
+
 ```bash
-docker build -t <account_id>.dkr.ecr.<region>.amazonaws.com/<repo>:<version_tag> .
+docker build -t <account_id>.dkr.ecr.<region>.amazonaws.com/<repo>:<version_tag> ./frontend
 ```
+
+Push the frontend container to ECR:
 
 ```bash
 docker push <account_id>.dkr.ecr.<region>.amazonaws.com/<repo>:<version_tag>
 ```
 
-For example:
+Build the backend container:
 
 ```bash
-docker push 999999999999.dkr.ecr.eu-west-2.amazonaws.com/keh-tech-radar:v0.0.1
+docker build -t <account_id>.dkr.ecr.<region>.amazonaws.com/<repo>:<version_tag> ./backend
+```
+
+Push the backend container to ECR:
+
+```bash
+docker push <account_id>.dkr.ecr.<region>.amazonaws.com/<repo>:<version_tag>
 ```
 
 ## How to deploy infrastructure to AWS
@@ -77,6 +100,8 @@ Change directory to the authentication folder:
 cd terraform/authentication
 ```
 
+Set the environment variables. Check the terraform/service/env/dev/example_tfvars.txt file for the correct values.
+
 Run Terraform:
 
 ```bash
@@ -90,6 +115,8 @@ Change directory to the service folder (if in authentication folder):
 ```bash
 cd ../service
 ```
+
+Set the environment variables. Check the terraform/service/env/dev/example_tfvars.txt file for the correct values.
 
 Run Terraform:
 

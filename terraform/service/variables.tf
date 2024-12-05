@@ -22,7 +22,13 @@ variable "container_image" {
 variable "container_ver" {
   description = "Container tag"
   type        = string
-  default     = "v0.0.22"
+  default     = "v0.0.41"
+}
+
+variable "container_ver_backend" {
+  description = "Container tag"
+  type        = string
+  default     = "v0.0.1"
 }
 
 variable "container_port" {
@@ -113,6 +119,24 @@ variable "force_deployment" {
   description = "Force new task definition deployment"
   type        = string
   default     = "true"
+}
+
+variable "s3_bucket_name" {
+  description = "Name of the S3 bucket that the application needs to access"
+  type        = string
+  default     = "sdp-dev-tech-radar"
+}
+
+variable "frontend_ecr_repo" {
+  description = "Frontend ECR repository"
+  type        = string
+  default     = "sdp-dev-tech-radar"
+}
+
+variable "backend_ecr_repo" {
+  description = "Backend ECR repository"
+  type        = string
+  default     = "sdp-dev-tech-radar-backend"
 }
 
 locals {

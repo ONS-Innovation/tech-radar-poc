@@ -10,9 +10,14 @@ terraform {
 
 }
 
-# Required for task execution to ensure logs are created in CloudWatch
-resource "aws_cloudwatch_log_group" "ecs_service_logs" {
-  name              = "/ecs/ecs-service-${var.service_subdomain}-application"
+# Create CloudWatch Log Groups beforehand
+resource "aws_cloudwatch_log_group" "frontend_logs" {
+  name              = "/ecs/ecs-service-${var.service_subdomain}-frontend"
+  retention_in_days = var.log_retention_days
+}
+
+resource "aws_cloudwatch_log_group" "backend_logs" {
+  name              = "/ecs/ecs-service-${var.service_subdomain}-backend"
   retention_in_days = var.log_retention_days
 }
 
@@ -20,62 +25,73 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
   family = "ecs-service-${var.service_subdomain}-application"
   container_definitions = jsonencode([
     {
+      # Frontend Container
       name      = "${var.service_subdomain}-task-application"
-      image     = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.container_image}:${var.container_ver}"
-      cpu       = 0,
+      image     = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.frontend_ecr_repo}:${var.container_ver}"
+      cpu       = 512
       essential = true
       portMappings = [
         {
-          name          = "${var.service_subdomain}-${var.container_port}-tcp",
-          containerPort = var.container_port,
-          hostPort      = var.container_port,
-          protocol      = "tcp",
-          appProtocol   = "http"
+          containerPort = 3000,
+          hostPort      = 3000,
+          protocol      = "tcp"
+        }
+      ],
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          "awslogs-group"         = "/ecs/ecs-service-${var.service_subdomain}-frontend",
+          "awslogs-region"        = var.region,
+          "awslogs-stream-prefix" = "ecs"
+        }
+      },
+      environment = [
+        {
+          name  = "BACKEND_URL",
+          value = "http://localhost:5001"
+        }
+      ]
+    },
+    {
+      # Backend Container
+      name      = "${var.service_subdomain}-backend"
+      image     = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.backend_ecr_repo}:${var.container_ver_backend}"
+      cpu       = 512
+      essential = true
+      portMappings = [
+        {
+          containerPort = 5001,
+          hostPort      = 5001,
+          protocol      = "tcp"
         }
       ],
       environment = [
         {
-          name  = "AWS_ACCESS_KEY_ID"
-          value = var.aws_access_key_id
-        },
-        {
-          name  = "AWS_SECRET_ACCESS_KEY"
-          value = var.aws_secret_access_key
-        },
-        {
-          name  = "AWS_DEFAULT_REGION"
+          name  = "AWS_REGION",
           value = var.region
-        },
-        {
-          name  = "AWS_ACCOUNT_NAME"
-          value = var.domain
-        },
-        {
-          name  = "GITHUB_ORG"
-          value = var.github_org
         }
       ],
       logConfiguration = {
         logDriver = "awslogs",
         options = {
           "awslogs-create-group"  = "true",
-          "awslogs-group"         = "/ecs/ecs-service-${var.service_subdomain}-application",
-          "awslogs-region"        = "${var.region}",
+          "awslogs-group"         = "/ecs/ecs-service-${var.service_subdomain}-backend",
+          "awslogs-region"        = var.region,
           "awslogs-stream-prefix" = "ecs"
         }
       }
     }
   ])
   execution_role_arn       = "arn:aws:iam::${var.aws_account_id}:role/ecsTaskExecutionRole"
+  task_role_arn           = aws_iam_role.ecs_task_role.arn
   requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"
-  cpu                      = var.service_cpu
-  memory                   = var.service_memory
+  network_mode            = "awsvpc"
+  cpu                     = var.service_cpu
+  memory                  = var.service_memory
   runtime_platform {
     operating_system_family = "LINUX"
-    cpu_architecture        = "X86_64"
+    cpu_architecture       = "X86_64"
   }
-
 }
 
 resource "aws_ecs_service" "application" {

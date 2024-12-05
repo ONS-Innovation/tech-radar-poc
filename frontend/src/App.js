@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./styles/App.css";
 import Header from './components/Header/Header';
 import { ThemeProvider } from './contexts/ThemeContext';
-import Papa from 'papaparse';
 import { IoInformationCircle, IoGridOutline, IoChevronUpOutline, IoChevronDownOutline, IoArrowUpOutline, IoArrowDownOutline, IoRemoveOutline } from "react-icons/io5";
 import { Toaster } from 'react-hot-toast';
 import { FaSortAmountDownAlt, FaSortAmountUpAlt } from "react-icons/fa";
+import { fetchCSVFromS3 } from './components/getCSVData';
+import { toast } from 'react-hot-toast';
 
 function App() {
   const [data, setData] = useState(null);
@@ -15,7 +16,7 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [isInfoBoxVisible, setIsInfoBoxVisible] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragPosition, setDragPosition] = useState({ x: 50, y: 80 });
+  const [dragPosition, setDragPosition] = useState({ x: 277, y: 80 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [expandedQuadrants, setExpandedQuadrants] = useState({
     1: true,
@@ -46,16 +47,17 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetch("/tech_radar/onsTechDataAdoption.csv")
-      .then((response) => response.text())
-      .then((csvText) => {
-        Papa.parse(csvText, {
-          header: true,
-          complete: (results) => {
-            setProjectsData(results.data);
-          },
-        });
-      });
+    const fetchData = async () => {
+      try {
+        const data = await fetchCSVFromS3();
+        setProjectsData(data);
+      } catch (error) {
+        console.error("Error loading project data:", error);
+        toast.error("Error loading project data from S3");
+      }
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -163,7 +165,6 @@ function App() {
       )
       .map(entry => ({
         ...entry,
-        // Sort timeline by date and get the most recent entry
         timeline: [...entry.timeline].sort((a, b) => 
           new Date(b.date) - new Date(a.date)
         )
@@ -429,6 +430,14 @@ function App() {
 
   return (
     <ThemeProvider>
+      <Header 
+          searchTerm={searchTerm}
+          onSearchChange={handleSearch}
+          searchResults={searchResults}
+          onSearchResultClick={handleSearchResultClick}
+          onFileUpload={handleFileUpload}
+          checkForDuplicates={checkForDuplicates}
+        />
       <div className="radar-page">
         <Toaster 
           position="top-center"
@@ -453,14 +462,7 @@ function App() {
             },
           }}
         />
-        <Header 
-          searchTerm={searchTerm}
-          onSearchChange={handleSearch}
-          searchResults={searchResults}
-          onSearchResultClick={handleSearchResultClick}
-          onFileUpload={handleFileUpload}
-          checkForDuplicates={checkForDuplicates}
-        />
+        
 
         {isInfoBoxVisible && (
           <div
@@ -471,7 +473,7 @@ function App() {
               top: dragPosition.y,
               transform: "none",
               cursor: isDragging ? "grabbing" : "grab",
-              boxShadow: isDragging ? "0 4px 10px 0 rgba(0, 0, 0, 0.1)" : "0 2px 5px 0 rgba(0, 0, 0, 0.1)",
+              boxShadow: isDragging ? "0 4px 10px 0 hsl(var(--foreground) / 0.1)" : "none",
             }}
             onMouseDown={handleMouseDown}
           >
@@ -599,7 +601,8 @@ function App() {
                 margin: 0,
                 zIndex: draggingQuadrant === "4" ? 1000 : 100
               } : {}),
-              cursor: draggingQuadrant === "4" ? 'grabbing' : 'auto'
+              cursor: draggingQuadrant === "4" ? 'grabbing' : 'auto',
+              boxShadow: draggingQuadrant === "4" ? "0 4px 10px 0 hsl(var(--foreground) / 0.1)" : "none",
             }}
             onMouseDown={(e) => handleQuadrantMouseDown(e, "4")}
           >
@@ -659,7 +662,8 @@ function App() {
                 margin: 0,
                 zIndex: draggingQuadrant === "1" ? 1000 : 100
               } : {}),
-              cursor: draggingQuadrant === "1" ? 'grabbing' : 'auto'
+              cursor: draggingQuadrant === "1" ? 'grabbing' : 'auto',
+              boxShadow: draggingQuadrant === "1" ? "0 4px 10px 0 hsl(var(--foreground) / 0.1)" : "none",
             }}
             onMouseDown={(e) => handleQuadrantMouseDown(e, "1")}
           >
@@ -811,7 +815,8 @@ function App() {
                 margin: 0,
                 zIndex: draggingQuadrant === "3" ? 1000 : 100
               } : {}),
-              cursor: draggingQuadrant === "3" ? 'grabbing' : 'auto'
+              cursor: draggingQuadrant === "3" ? 'grabbing' : 'auto',
+              boxShadow: draggingQuadrant === "3" ? "0 4px 10px 0 hsl(var(--foreground) / 0.1)" : "none",
             }}
             onMouseDown={(e) => handleQuadrantMouseDown(e, "3")}
           >
@@ -869,7 +874,8 @@ function App() {
                 margin: 0,
                 zIndex: draggingQuadrant === "2" ? 1000 : 100
               } : {}),
-              cursor: draggingQuadrant === "2" ? 'grabbing' : 'auto'
+              cursor: draggingQuadrant === "2" ? 'grabbing' : 'auto',
+              boxShadow: draggingQuadrant === "2" ? "0 4px 10px 0 hsl(var(--foreground) / 0.1)" : "none",
             }}
             onMouseDown={(e) => handleQuadrantMouseDown(e, "2")}
           >
