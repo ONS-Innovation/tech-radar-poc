@@ -28,12 +28,13 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
       # Frontend Container
       name      = "${var.service_subdomain}-task-application"
       image     = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.frontend_ecr_repo}:${var.container_ver}"
-      cpu       = 512
+      cpu       = var.service_cpu / 2
+      memory    = var.service_memory / 2
       essential = true
       portMappings = [
         {
-          containerPort = 3000,
-          hostPort      = 3000,
+          containerPort = var.frontend_port,
+          hostPort      = var.frontend_port,
           protocol      = "tcp"
         }
       ],
@@ -48,7 +49,7 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
       environment = [
         {
           name  = "BACKEND_URL",
-          value = "http://localhost:5001"
+          value = "https://${local.service_url}"
         }
       ]
     },
@@ -56,12 +57,13 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
       # Backend Container
       name      = "${var.service_subdomain}-backend"
       image     = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.backend_ecr_repo}:${var.container_ver_backend}"
-      cpu       = 512
+      cpu       = var.service_cpu / 2
+      memory    = var.service_memory / 2
       essential = true
       portMappings = [
         {
-          containerPort = 5001,
-          hostPort      = 5001,
+          containerPort = var.backend_port,
+          hostPort      = var.backend_port,
           protocol      = "tcp"
         }
       ],
@@ -69,6 +71,10 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
         {
           name  = "AWS_REGION",
           value = var.region
+        },
+        {
+          name  = "PORT",
+          value = tostring(var.backend_port)
         }
       ],
       logConfiguration = {
@@ -77,9 +83,23 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
           "awslogs-create-group"  = "true",
           "awslogs-group"         = "/ecs/ecs-service-${var.service_subdomain}-backend",
           "awslogs-region"        = var.region,
-          "awslogs-stream-prefix" = "ecs"
+          "awslogs-stream-prefix" = "ecs",
+          "mode"                  = "non-blocking"
         }
-      }
+      },
+      healthcheck = {
+        command     = ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:${var.backend_port}/api/health || exit 1"]
+        interval    = 30
+        timeout     = 10
+        retries     = 5
+        startPeriod = 120
+      },
+      dependsOn = [
+        {
+          containerName = "${var.service_subdomain}-task-application"
+          condition     = "START"
+        }
+      ]
     }
   ])
   execution_role_arn       = "arn:aws:iam::${var.aws_account_id}:role/ecsTaskExecutionRole"
@@ -109,10 +129,22 @@ resource "aws_ecs_service" "application" {
   enable_ecs_managed_tags = true # It will tag the network interface with service name
   wait_for_steady_state   = true # Terraform will wait for the service to reach a steady state before continuing
 
+  # Add dependencies to ensure target groups are created first
+  depends_on = [
+    aws_lb_listener_rule.frontend_rule,
+    aws_lb_listener_rule.backend_rule
+  ]
+
   load_balancer {
-    target_group_arn = aws_lb_target_group.github_audit_fargate_tg.arn
+    target_group_arn = aws_lb_target_group.frontend_tg.arn
     container_name   = "${var.service_subdomain}-task-application"
-    container_port   = var.container_port
+    container_port   = var.frontend_port
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.backend_tg.arn
+    container_name   = "${var.service_subdomain}-backend"
+    container_port   = var.backend_port
   }
 
   # We need to wait until the target group is attached to the listener

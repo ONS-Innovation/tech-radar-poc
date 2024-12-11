@@ -21,7 +21,9 @@ BACKEND_PID=$!
 
 # Start frontend
 echo "Starting frontend..."
-cd frontend && npm start &
+cd frontend
+export REACT_APP_BACKEND_URL=http://localhost:5001
+npm start &
 FRONTEND_PID=$!
 
 # Wait for both processes

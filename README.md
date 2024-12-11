@@ -2,7 +2,7 @@
 
 Tech Radar is a tool that helps you track the infrastructure, languages, frameworks and CI/CD used in the ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
 
-## How to setup
+## Getting started
 
 Clone the repository:
 ```bash
@@ -13,21 +13,38 @@ Install both backend and frontend dependencies:
 ```bash
 make install
 ```
+## How to setup
 
-## How to run locally
+First, ensure you have Node.js installed. It is recommended to use Node Version Manager (nvm) to manage Node.js versions:
 
-Remember to export AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
+1. Install nvm:
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+```
+
+2. Install Node.js using nvm:
+```bash
+nvm install 22.12.0
+```
+
+3. Set the Node.js version to use:
+```bash
+nvm use 22.12.0
+```
+
+4. Remember to export AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
 ```bash
 export AWS_ACCESS_KEY_ID=<your_access_key>
 export AWS_SECRET_ACCESS_KEY=<your_secret_key>
 ```
+## Running locally
 
 Make dev.sh executable:
 ```bash
 chmod +x dev.sh
 ```
 
-To run the project locally:
+To run the project locally (frontend and backend together):
 ```bash
 make dev
 ```
@@ -53,7 +70,7 @@ make docker-build
 make docker-up
 ```
 
-This should build the project and then start the project locally on port 5000.
+This should build the project and then start the project locally on port 3000 and 5001.
 
 To stop the project:
 ```bash

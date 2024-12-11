@@ -973,6 +973,20 @@ foreignObject {
   margin: 0;
   max-height: 200px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted)) transparent;
+}
+
+.info-box-projects ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.info-box-projects ul::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.info-box-projects ul::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted));
 }
 
 .info-box-project-item {

@@ -22,7 +22,7 @@ variable "container_image" {
 variable "container_ver" {
   description = "Container tag"
   type        = string
-  default     = "v0.0.41"
+  default     = "v0.0.1"
 }
 
 variable "container_ver_backend" {
@@ -64,13 +64,13 @@ variable "domain_extension" {
 variable "service_cpu" {
   description = "Service CPU"
   type        = string
-  default     = "1024"
+  default     = 1024
 }
 
 variable "service_memory" {
   description = "Service memory"
   type        = string
-  default     = "3072"
+  default     = 3072
 }
 
 variable "task_count" {
@@ -137,6 +137,18 @@ variable "backend_ecr_repo" {
   description = "Backend ECR repository"
   type        = string
   default     = "sdp-dev-tech-radar-backend"
+}
+
+variable "frontend_port" {
+  description = "Frontend port"
+  type        = number
+  default     = 3000
+}
+
+variable "backend_port" {
+  description = "Backend port"
+  type        = number
+  default     = 5001
 }
 
 locals {

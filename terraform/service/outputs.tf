@@ -13,3 +13,7 @@ output "security_group_id" {
 output "service_url" {
   value = local.service_url
 }
+
+output "backend_log_group" {
+  value = aws_cloudwatch_log_group.backend_logs.name
+}

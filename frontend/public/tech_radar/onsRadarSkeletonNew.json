@@ -3,19 +3,19 @@
     "quadrants": [
         {
             "id": "1",
-            "name": "Languages"
+            "name": "Languages & Frameworks"
         },
         {
             "id": "2",
-            "name": "Frameworks"
+            "name": "Tools & CI/CD"
         },
         {
             "id": "3",
-            "name": "CI/CD"
+            "name": "Platforms"
         },
         {
             "id": "4",
-            "name": "Infrastructure"
+            "name": "Design Pattern"
         }
     ],
     "rings": [
@@ -51,9 +51,33 @@
             "timeline": [
                 {
                     "moved": 0,
-                    "ringId": "adopt",
+                    "ringId": "trial",
                     "date": "2024-05-10",
                     "description": "UI Review 2024-05-10"
+                },
+                {
+                    "moved": 1,
+                    "ringId": "adopt",
+                    "date": "2024-06-10",
+                    "description": "UI Review 2024-06-10"
+                },
+                {
+                    "moved": 0,
+                    "ringId": "adopt",
+                    "date": "2024-07-10",
+                    "description": "UI Review 2024-07-10"
+                },
+                {
+                    "moved": -2,
+                    "ringId": "assess",
+                    "date": "2024-08-10",
+                    "description": "UI Review 2024-08-10"
+                },
+                {
+                    "moved": 2,
+                    "ringId": "adopt",
+                    "date": "2024-09-10",
+                    "description": "UI Review 2024-09-10"
                 }
             ],
             "links": []
@@ -353,7 +377,7 @@
             "description": "CICD",
             "key": "concourse",
             "url": "#",
-            "quadrant": "3",
+            "quadrant": "2",
             "timeline": [
                 {
                     "moved": 0,
@@ -370,7 +394,7 @@
             "description": "CICD",
             "key": "azure_devops",
             "url": "#",
-            "quadrant": "3",
+            "quadrant": "2",
             "timeline": [
                 {
                     "moved": 0,
@@ -387,7 +411,7 @@
             "description": "CICD",
             "key": "jenkins",
             "url": "#",
-            "quadrant": "3",
+            "quadrant": "2",
             "timeline": [
                 {
                     "moved": 0,
@@ -404,7 +428,7 @@
             "description": "CICD",
             "key": "spinnaker",
             "url": "#",
-            "quadrant": "3",
+            "quadrant": "2",
             "timeline": [
                 {
                     "moved": 0,
@@ -421,7 +445,7 @@
             "description": "CICD",
             "key": "google_cloud_build",
             "url": "#",
-            "quadrant": "3",
+            "quadrant": "2",
             "timeline": [
                 {
                     "moved": 0,
@@ -438,7 +462,7 @@
             "description": "CICD",
             "key": "github_action",
             "url": "#",
-            "quadrant": "3",
+            "quadrant": "2",
             "timeline": [
                 {
                     "moved": 0,
@@ -455,7 +479,7 @@
             "description": "Infrastructure",
             "key": "aws_fargate",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -472,7 +496,7 @@
             "description": "Infrastructure",
             "key": "ansible",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -489,7 +513,7 @@
             "description": "Infrastructure",
             "key": "gcp_app_engine",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -506,7 +530,7 @@
             "description": "Infrastructure",
             "key": "gcp_bucket",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -523,7 +547,7 @@
             "description": "Infrastructure",
             "key": "talend",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -540,7 +564,7 @@
             "description": "Infrastructure",
             "key": "gcp_cloud_functions",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -557,7 +581,7 @@
             "description": "Infrastructure",
             "key": "grafana",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -574,7 +598,7 @@
             "description": "Infrastructure",
             "key": "gcp_api_gateway",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -591,7 +615,7 @@
             "description": "Infrastructure",
             "key": "cloudera_data_science_workbench",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -608,7 +632,7 @@
             "description": "Infrastructure",
             "key": "docker",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -625,7 +649,7 @@
             "description": "Infrastructure",
             "key": "splunk",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -642,7 +666,7 @@
             "description": "Infrastructure",
             "key": "redis",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -659,7 +683,7 @@
             "description": "Infrastructure",
             "key": "dynamodb",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -676,7 +700,7 @@
             "description": "Infrastructure",
             "key": "ingres",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -693,7 +717,7 @@
             "description": "Infrastructure",
             "key": "ms_active_directory",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -710,7 +734,7 @@
             "description": "Infrastructure",
             "key": "gcp_dataflow",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -727,7 +751,7 @@
             "description": "Infrastructure",
             "key": "kms",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -744,7 +768,7 @@
             "description": "Infrastructure",
             "key": "oracle",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -761,7 +785,7 @@
             "description": "Infrastructure",
             "key": "aws_cloudwatch",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -778,7 +802,7 @@
             "description": "Infrastructure",
             "key": "elasticsearch",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -795,7 +819,7 @@
             "description": "Infrastructure",
             "key": "gcp_cloud_task",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -812,7 +836,7 @@
             "description": "Infrastructure",
             "key": "gcp_dataproc",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -829,7 +853,7 @@
             "description": "Infrastructure",
             "key": "nginx",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -846,7 +870,7 @@
             "description": "Infrastructure",
             "key": "gcp_cloud_datastore",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -863,7 +887,7 @@
             "description": "Infrastructure",
             "key": "gcp_cloud_run",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -880,7 +904,7 @@
             "description": "Infrastructure",
             "key": "oracle_weblogic",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -897,7 +921,7 @@
             "description": "Infrastructure",
             "key": "gcp_artifact_registry",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -914,7 +938,7 @@
             "description": "Infrastructure",
             "key": "terraform",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -931,7 +955,7 @@
             "description": "Infrastructure",
             "key": "gcp_container_registry",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -948,7 +972,7 @@
             "description": "Infrastructure",
             "key": "gcp_stackdriver",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -965,7 +989,7 @@
             "description": "Infrastructure",
             "key": "aws_cognito",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -982,7 +1006,7 @@
             "description": "Infrastructure",
             "key": "oozie_workflows",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -999,7 +1023,7 @@
             "description": "Infrastructure",
             "key": "gcp_cloud_storage",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -1016,7 +1040,7 @@
             "description": "Infrastructure",
             "key": "postgres",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -1033,7 +1057,7 @@
             "description": "Infrastructure",
             "key": "kubernetes",
             "url": "#",
-            "quadrant": "4",
+            "quadrant": "3",
             "timeline": [
                 {
                     "moved": 0,
@@ -1050,7 +1074,7 @@
             "description": "Frameworks",
             "key": "spring",
             "url": "#",
-            "quadrant": "2",
+            "quadrant": "1",
             "timeline": [
                 {
                     "moved": 0,
@@ -1067,7 +1091,7 @@
             "description": "Frameworks",
             "key": "python_flask",
             "url": "#",
-            "quadrant": "2",
+            "quadrant": "1",
             "timeline": [
                 {
                     "moved": 0,
@@ -1084,7 +1108,7 @@
             "description": "Frameworks",
             "key": "cypress",
             "url": "#",
-            "quadrant": "2",
+            "quadrant": "1",
             "timeline": [
                 {
                     "moved": 0,
@@ -1101,7 +1125,7 @@
             "description": "Frameworks",
             "key": "moment",
             "url": "#",
-            "quadrant": "2",
+            "quadrant": "1",
             "timeline": [
                 {
                     "moved": 0,
@@ -1118,7 +1142,7 @@
             "description": "Frameworks",
             "key": "stitches",
             "url": "#",
-            "quadrant": "2",
+            "quadrant": "1",
             "timeline": [
                 {
                     "moved": 0,
@@ -1135,7 +1159,7 @@
             "description": "Frameworks",
             "key": "nodejs",
             "url": "#",
-            "quadrant": "2",
+            "quadrant": "1",
             "timeline": [
                 {
                     "moved": 0,

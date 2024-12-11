@@ -7,11 +7,14 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - BACKEND_URL=http://backend:5001
+      - REACT_APP_BACKEND_URL=http://localhost:5001
     networks:
       - app-network
     depends_on:
       - backend
+    user: appuser
+    security_opt:
+      - no-new-privileges:true
 
   backend:
     build: ./backend
@@ -25,6 +28,9 @@ services:
       - AWS_REGION=eu-west-2
     networks:
       - app-network
+    user: appuser
+    security_opt:
+      - no-new-privileges:true
 
 networks:
   app-network:
