@@ -89,10 +89,10 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
       },
       healthcheck = {
         command     = ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:${var.backend_port}/api/health || exit 1"]
-        interval    = 30
-        timeout     = 10
-        retries     = 5
-        startPeriod = 120
+        interval    = var.healthcheck_interval
+        timeout     = var.healthcheck_timeout
+        retries     = var.healthcheck_retries
+        startPeriod = var.healthcheck_start_period
       },
       dependsOn = [
         {

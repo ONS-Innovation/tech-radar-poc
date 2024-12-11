@@ -151,6 +151,30 @@ variable "backend_port" {
   default     = 5001
 }
 
+variable "healthcheck_interval" {
+  description = "Healthcheck interval"
+  type        = number
+  default     = 30
+}
+
+variable "healthcheck_timeout" {
+  description = "Healthcheck timeout"
+  type        = number
+  default     = 10
+}
+
+variable "healthcheck_retries" {
+  description = "Healthcheck retries"
+  type        = number
+  default     = 5
+}
+
+variable "healthcheck_start_period" {
+  description = "Healthcheck start period"
+  type        = number
+  default     = 120
+}
+
 locals {
   url         = "${var.domain}.${var.domain_extension}"
   service_url = "${var.service_subdomain}.${local.url}"
