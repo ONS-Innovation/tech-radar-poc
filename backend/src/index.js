@@ -85,7 +85,7 @@ app.get("/api/health", (req, res) => {
     pid: process.pid
   };
 
-  console.log("Health check response:", healthResponse);
+  console.log("Health check:", healthResponse.timestamp);
   
   res.status(200).json(healthResponse);
 });

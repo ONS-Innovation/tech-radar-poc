@@ -2,6 +2,11 @@
 
 Tech Radar is a tool that helps you track the infrastructure, languages, frameworks and CI/CD used in the ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
 
+Use the following keyboard shortcuts to navigate the tech radar:
+
+- `ctrl + A` or `ctrl + S` to move up the list of technologies
+- `ctrl + D` or `ctrl + W` to move down the list of technologies
+
 ## Getting started
 
 Clone the repository:

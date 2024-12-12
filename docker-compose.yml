@@ -1,13 +1,16 @@
-version: '3.8'
-
 services:
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - NODE_ENV=development
     ports:
       - "3000:3000"
+    env_file:
+      - ./frontend/.env
     environment:
       - NODE_ENV=development
-      - REACT_APP_BACKEND_URL=http://localhost:5001
+      - BACKEND_URL=http://backend:5001
     networks:
       - app-network
     depends_on:

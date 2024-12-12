@@ -107,7 +107,7 @@ body {
 
 .quadrant-lists {
   display: grid;
-  grid-template-columns: auto 1000px auto;
+  grid-template-columns: 1fr 2fr 1fr;
   grid-template-rows: 1fr 1fr;
   gap: 20px;
   height: calc(100vh - 90px);
@@ -135,7 +135,7 @@ body {
   display: flex;
   flex-direction: column;
   max-height: calc(50vh - 70px);
-  width: 258px;
+  width: 350px;
   border: 1px solid hsl(var(--border));
 }
 
@@ -187,7 +187,7 @@ body {
   scrollbar-color: hsl(var(--muted)) transparent;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1400px) {
   .quadrant-list ul {
     max-height: calc(50vh - 70px);
   }
@@ -315,7 +315,7 @@ circle, line, text {
 /* Responsive styles */
 @media (max-width: 1600px) {
   .quadrant-lists {
-    grid-template-columns: 1fr 800px 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
   }
 
   .quadrant-list {
@@ -331,9 +331,9 @@ circle, line, text {
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   .quadrant-lists {
-    grid-template-columns: 1fr 600px 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
   }
 
   .quadrant-list {
@@ -345,7 +345,7 @@ circle, line, text {
   }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1400px) {
 
   .quadrant-lists {
     grid-template-columns: 1fr;
@@ -391,6 +391,7 @@ circle, line, text {
   .quadrant-list.top-right { grid-row: 3; }
   .quadrant-list.bottom-left { grid-row: 4; }
   .quadrant-list.bottom-right { grid-row: 5; }
+
 }
 
 @media (max-width: 850px) {
@@ -500,7 +501,7 @@ foreignObject {
 }
 
 /* Responsive radar size */
-@media (max-width: 1000px) {
+@media (max-width: 1400px) {
   .radar-container svg {
     width: 800px;
     height: 800px;
@@ -786,17 +787,9 @@ foreignObject {
   align-items: center;
   justify-content: center;
   transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
-/* Remove these since we're not rotating the arrows anymore
-.accordion-arrow.expanded {
-  transform: rotate(180deg);
-}
-
-.accordion-arrow:not(.expanded) {
-  transform: rotate(0deg);
-}
-*/
 
 /* Base styles */
 :root {
@@ -1119,6 +1112,12 @@ foreignObject {
   cursor: grabbing;
 }
 
+@media (max-width: 1400px) {
+  .drag-handle {
+    display: none;
+  }
+}
+
 /* Update this style */
 .quadrant-header {
   display: flex;
@@ -1187,7 +1186,7 @@ foreignObject {
   overflow-y: auto;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   .project-modal {
     width: 90vw;
     max-height: 90vh;

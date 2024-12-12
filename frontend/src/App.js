@@ -52,7 +52,7 @@ function App() {
       .then((response) => response.json())
       .then((data) => setData(data));
   }, []);
-
+  console.log(process.env.REACT_APP_BACKEND_URL, process.env.BACKEND_URL, process.env.NODE_ENV);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -109,11 +109,11 @@ function App() {
 
       let nextBlip;
 
-      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      if ((e.key === "a" || e.key === "s") && e.ctrlKey) {
         if (currentIndex > 0) {
           nextBlip = allBlips[currentIndex - 1];
         }
-      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      } else if ((e.key === "d" || e.key === "w") && e.ctrlKey) {
         if (currentIndex < allBlips.length - 1) {
           nextBlip = allBlips[currentIndex + 1];
         }
@@ -153,8 +153,9 @@ function App() {
 
     const radiusSteps = Math.ceil(Math.sqrt(total));
     const angleSteps = Math.ceil(total / radiusSteps);
+    console.log(quadrant, ring, radiusSteps, angleSteps, total);
 
-    const radiusIndex = Math.floor(index / angleSteps + 0.5);
+    const radiusIndex = Math.floor(index / angleSteps + 0.75);
     const angleIndex = index % angleSteps;
 
     const radiusStep = ringWidth / (radiusSteps + 1);
@@ -689,8 +690,7 @@ function App() {
                   <span className="info-icon">
                     <IoInformationCircle size={18} />
                     <span className="tooltip">
-                      Click a technology to view more details and related
-                      projects
+                      Click to view more details
                     </span>
                   </span>
                 </div>
@@ -763,8 +763,7 @@ function App() {
                   <span className="info-icon">
                     <IoInformationCircle size={18} />
                     <span className="tooltip">
-                      Click a technology to view more details and related
-                      projects
+                      Click to view more details
                     </span>
                   </span>
                 </div>
@@ -951,8 +950,7 @@ function App() {
                   <span className="info-icon">
                     <IoInformationCircle size={18} />
                     <span className="tooltip">
-                      Click a technology to view more details and related
-                      projects
+                      Click to view more details
                     </span>
                   </span>
                 </div>
@@ -1023,8 +1021,7 @@ function App() {
                   <span className="info-icon">
                     <IoInformationCircle size={18} />
                     <span className="tooltip">
-                      Click a technology to view more details and related
-                      projects
+                      Click to view more details
                     </span>
                   </span>
                 </div>

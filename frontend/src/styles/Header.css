@@ -29,8 +29,6 @@
   color: hsl(var(--foreground));
   background: transparent;
   transition: all 0.2s ease;
-  background: hsl(var(--muted));
-  border: 1px solid hsl(var(--border));
   box-sizing: border-box;
   padding: 8px 16px;
 }
@@ -52,7 +50,7 @@
 .header-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 8px;
 }
 
 .search-container {
@@ -209,10 +207,6 @@
   }
 
   .search-input {
-    width: 250px;
-  }
-
-  .search-results {
     width: 250px;
   }
 }

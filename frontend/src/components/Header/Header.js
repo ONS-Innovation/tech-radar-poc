@@ -1,6 +1,6 @@
 import React from "react";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
-import FileUpload from "./FileUpload";
+// import FileUpload from "./FileUpload";
 import "../../styles/Header.css";
 import Logo from "../../assets/logo.png";
 import { IoClose } from "react-icons/io5";
@@ -24,8 +24,8 @@ function Header({
   onSearchChange,
   searchResults,
   onSearchResultClick,
-  onFileUpload,
-  checkForDuplicates,
+  // onFileUpload,
+  // checkForDuplicates,
 }) {
   /**
    * Clears the search term.
@@ -76,10 +76,10 @@ function Header({
           )}
         </div>
 
-        <FileUpload
+        {/* <FileUpload
           onFileUpload={onFileUpload}
           checkForDuplicates={checkForDuplicates}
-        />
+        /> */}
 
         <ThemeToggle />
       </div>
