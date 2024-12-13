@@ -52,7 +52,6 @@ function App() {
       .then((response) => response.json())
       .then((data) => setData(data));
   }, []);
-  console.log(process.env.REACT_APP_BACKEND_URL, process.env.BACKEND_URL, process.env.NODE_ENV);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -109,11 +108,11 @@ function App() {
 
       let nextBlip;
 
-      if ((e.key === "a" || e.key === "s") && e.ctrlKey) {
+      if ((e.key === "1")) {
         if (currentIndex > 0) {
           nextBlip = allBlips[currentIndex - 1];
         }
-      } else if ((e.key === "d" || e.key === "w") && e.ctrlKey) {
+      } else if ((e.key === "2")) {
         if (currentIndex < allBlips.length - 1) {
           nextBlip = allBlips[currentIndex + 1];
         }
@@ -153,12 +152,11 @@ function App() {
 
     const radiusSteps = Math.ceil(Math.sqrt(total));
     const angleSteps = Math.ceil(total / radiusSteps);
-    console.log(quadrant, ring, radiusSteps, angleSteps, total);
 
     const radiusIndex = Math.floor(index / angleSteps + 0.75);
     const angleIndex = index % angleSteps;
 
-    const radiusStep = ringWidth / (radiusSteps + 1);
+    const radiusStep = ringWidth / (radiusSteps + 1.5);
     const radius = innerRadius + (radiusIndex + 1) * radiusStep;
 
     const angleStep = Math.PI / 2.4 / angleSteps;
@@ -310,7 +308,7 @@ function App() {
     });
   };
 
-  const handleBlipClick = (entry) => {
+  const handleBlipClick = (entry, fromModal = false) => {
     const projects = findProjectsUsingTechnology(entry.title);
     setProjectsForTech(projects);
     setIsInfoBoxVisible(true);
@@ -320,7 +318,10 @@ function App() {
       (e) => e.id === entry.id
     );
 
-    if (lockedBlip?.id === entry.id) {
+    if (fromModal) {
+      setLockedBlip(entryWithNumber);
+      setSelectedBlip(entryWithNumber);
+    } else if (lockedBlip?.id === entry.id) {
       setLockedBlip(null);
       setSelectedBlip(null);
     } else {
@@ -414,7 +415,7 @@ function App() {
       );
 
       setIsProjectModalOpen(false);
-      handleBlipClick(entryWithNumber);
+      handleBlipClick(entryWithNumber, true);
     }
   };
 

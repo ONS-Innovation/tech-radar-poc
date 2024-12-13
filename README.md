@@ -4,8 +4,8 @@ Tech Radar is a tool that helps you track the infrastructure, languages, framewo
 
 Use the following keyboard shortcuts to navigate the tech radar:
 
-- `ctrl + A` or `ctrl + S` to move up the list of technologies
-- `ctrl + D` or `ctrl + W` to move down the list of technologies
+- `2` to move up the list of technologies
+- `1`to move down the list of technologies
 
 ## Getting started
 
