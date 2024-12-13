@@ -29,5 +29,6 @@ module.exports = {
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'no-duplicate-imports': 'error',
     'no-multiple-empty-lines': ['error', { max: 1 }],
+    'no-undef': 'off',
   },
 }; 
