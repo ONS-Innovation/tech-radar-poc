@@ -99,3 +99,7 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
 }
+
+button {
+  font-family: 'Inter Tight', sans-serif;
+}

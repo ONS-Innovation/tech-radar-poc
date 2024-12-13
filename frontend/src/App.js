@@ -417,6 +417,8 @@ function App() {
       );
 
       setIsProjectModalOpen(false);
+      setIsProjectsModalOpen(false);
+      
       handleBlipClick(entryWithNumber, true);
     }
   };
