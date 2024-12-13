@@ -243,11 +243,9 @@ const Projects = ({ isOpen, onClose, projectsData, handleProjectClick, getTechno
           </button>
 
           <div className="projects-search-results">
-            {searchTerm && (
               <span className="projects-search-count">
                 Found {filteredAndSortedProjects.length} project{filteredAndSortedProjects.length !== 1 ? 's' : ''}
               </span>
-            )}
           </div>
         </div>
 
