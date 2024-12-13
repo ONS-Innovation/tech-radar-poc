@@ -225,7 +225,7 @@ body {
   padding: 8px 0;
   border-bottom: 1px solid hsl(var(--border));
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
 }
 
 .quadrant-list li:hover {
@@ -731,7 +731,7 @@ foreignObject {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .info-box-close:hover {
@@ -869,28 +869,6 @@ foreignObject {
 .ring.assess { stroke: var(--color-assess); }
 .ring.hold { stroke: var(--color-hold); }
 
-.projects-list {
-  margin-top: 20px;
-}
-
-.projects-list ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.projects-list h4 {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  font-weight: 400;
-  color: hsl(var(--foreground));
-}
-
-.projects-list p {
-  margin: 0 0 20px 0;
-  color: hsl(var(--muted-foreground));
-  font-size: 12px;
-}
 
 
 .project-item {

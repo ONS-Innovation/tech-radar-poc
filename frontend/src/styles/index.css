@@ -72,11 +72,24 @@
   }
 }
 
+
 html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  min-width: 100vw;
+}
+
+html {
+  scrollbar-width: 1px;
+  scrollbar-color: hsl(var(--border)) hsl(var(--card));
+}
+
+html::-webkit-scrollbar {
+  width: 1px;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--border));
 }
 
 body {

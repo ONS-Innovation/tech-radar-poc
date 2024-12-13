@@ -3,7 +3,7 @@ import ThemeToggle from "../ThemeToggle/ThemeToggle";
 // import FileUpload from "./FileUpload";
 import "../../styles/Header.css";
 import Logo from "../../assets/logo.png";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoSearch } from "react-icons/io5";
 
 /**
  * Header component for the Tech Radar application.
@@ -18,6 +18,7 @@ import { IoClose } from "react-icons/io5";
  * @param {Function} props.onSearchResultClick - Function to call when a search result is clicked.
  * @param {Function} props.onFileUpload - Function to call when a file is uploaded.
  * @param {Function} props.checkForDuplicates - Function to call to check for duplicates.
+ * @param {Function} props.onOpenProjects - Function to call when the projects button is clicked.
  */
 function Header({
   searchTerm,
@@ -26,6 +27,7 @@ function Header({
   onSearchResultClick,
   // onFileUpload,
   // checkForDuplicates,
+  onOpenProjects,
 }) {
   /**
    * Clears the search term.
@@ -41,6 +43,8 @@ function Header({
       </div>
       <div className="header-right">
         <div className="search-container">
+          <IoSearch className="search-icon" />
+
           <input
             type="text"
             placeholder="Search technologies..."
@@ -75,6 +79,13 @@ function Header({
             </div>
           )}
         </div>
+
+        <button 
+          className="projects-button"
+          onClick={onOpenProjects}
+        >
+          View Projects
+        </button>
 
         {/* <FileUpload
           onFileUpload={onFileUpload}

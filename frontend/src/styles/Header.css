@@ -101,6 +101,12 @@
   margin-top: 2px;
 }
 
+.search-icon {
+  color: hsl(var(--muted-foreground));
+  font-size: 16px;
+  margin-left: 8px;
+}
+
 .search-input:focus-within + .search-container,
 .search-container:has(.search-input:focus) {
   border-color: hsl(var(--primary) / .5);
@@ -209,4 +215,20 @@
   .search-input {
     width: 250px;
   }
+}
+
+.projects-button {
+  padding: 8px 16px;
+  width: 50%;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.projects-button:hover {
+  background: hsl(var(--background) / 0.9);
 }
