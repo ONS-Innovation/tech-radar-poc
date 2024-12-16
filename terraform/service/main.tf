@@ -136,13 +136,13 @@ resource "aws_ecs_service" "application" {
   ]
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.frontend_tg.arn
+    target_group_arn = aws_lb_target_group.frontend_new_tg.arn
     container_name   = "${var.service_subdomain}-task-application"
     container_port   = var.frontend_port
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.backend_tg.arn
+    target_group_arn = aws_lb_target_group.backend_new_tg.arn
     container_name   = "${var.service_subdomain}-backend"
     container_port   = var.backend_port
   }

@@ -29,12 +29,12 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
 2. Install Node.js using nvm:
 ```bash
-nvm install 22.12.0
+nvm install 18.19.0
 ```
 
 3. Set the Node.js version to use:
 ```bash
-nvm use 22.12.0
+nvm use 18.19.0
 ```
 
 4. Remember to export AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
