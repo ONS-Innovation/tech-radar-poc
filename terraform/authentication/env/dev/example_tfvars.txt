@@ -1,0 +1,7 @@
+aws_region     = "eu-west-2"
+app_name       = "tech-radar"
+environment    = "dev"
+container_port = 80
+cpu            = 256
+memory         = 512
+desired_count  = 1

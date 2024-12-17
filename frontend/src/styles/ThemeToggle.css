@@ -1,0 +1,21 @@
+.theme-toggle {
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  cursor: pointer;
+  font-size: 20px;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  font-size: 14px;
+  color: hsl(var(--foreground));
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.theme-toggle:hover {
+  background: hsl(var(--accent));
+} 

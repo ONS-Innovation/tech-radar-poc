@@ -1,0 +1,40 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NODE_ENV: development
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
+    environment:
+      - NODE_ENV=development
+      - BACKEND_URL=http://backend:5001
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    user: appuser
+    security_opt:
+      - no-new-privileges:true
+
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=development
+      - PORT=5001
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=eu-west-2
+    networks:
+      - app-network
+    user: appuser
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  app-network:
+    driver: bridge
