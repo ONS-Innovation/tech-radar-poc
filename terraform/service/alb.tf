@@ -44,6 +44,49 @@ resource "aws_lb_target_group" "backend_tg" {
   deregistration_delay = 60
 }
 
+resource "aws_lb_target_group" "frontend_new_tg" {
+  name        = "${var.service_subdomain}-frontend-fargate-tg"
+  port        = var.frontend_port
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = data.terraform_remote_state.ecs_infrastructure.outputs.vpc_id
+
+  health_check {
+    path                = "/"
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    interval            = 30
+    timeout             = 5
+    matcher             = "200-399"
+  }
+}
+
+# Backend target group
+resource "aws_lb_target_group" "backend_new_tg" {
+  name        = "${var.service_subdomain}-backend-fargate-tg"
+  port        = var.backend_port
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = data.terraform_remote_state.ecs_infrastructure.outputs.vpc_id
+
+  health_check {
+    path                = "/api/health"
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+    interval            = 60
+    timeout             = 30
+    matcher             = "200"
+  }
+
+  stickiness {
+    type            = "lb_cookie"
+    cookie_duration = 86400
+    enabled         = true
+  }
+
+  deregistration_delay = 60
+}
+
 # Use the module to get highest current priority
 module "alb_listener_priority" {
   source                = "git::https://github.com/ONS-Innovation/keh-alb-listener-tf-module.git?ref=v1.0.0"
@@ -56,7 +99,7 @@ module "alb_listener_priority" {
 # Backend listener rule (higher priority to catch /api/* first)
 resource "aws_lb_listener_rule" "backend_rule" {
   listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
-  priority     = module.alb_listener_priority.highest_priority + 50
+  priority     = module.alb_listener_priority.highest_priority + 1
 
   condition {
     host_header {
@@ -82,14 +125,14 @@ resource "aws_lb_listener_rule" "backend_rule" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.backend_tg.arn
+    target_group_arn = aws_lb_target_group.backend_new_tg.arn
   }
 }
 
 # Frontend listener rule (lower priority to catch all other traffic)
 resource "aws_lb_listener_rule" "frontend_rule" {
   listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
-  priority     = module.alb_listener_priority.highest_priority + 51
+  priority     = module.alb_listener_priority.highest_priority + 2
 
   condition {
     host_header {
@@ -109,6 +152,6 @@ resource "aws_lb_listener_rule" "frontend_rule" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.frontend_tg.arn
+    target_group_arn = aws_lb_target_group.frontend_new_tg.arn
   }
 }

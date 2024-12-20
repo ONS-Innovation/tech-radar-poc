@@ -1,8 +1,18 @@
-FROM node:16-alpine as builder
+FROM node:18-alpine
 WORKDIR /app
 
 # Create non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Add build argument for NODE_ENV
+ARG NODE_ENV="production"
+# Make NODE_ENV available at runtime too
+ENV NODE_ENV=$NODE_ENV
+
+# Install serve globally if production (do this before switching to non-root user)
+RUN if [ "$NODE_ENV" = "production" ]; then \
+        npm install -g serve; \
+    fi
 
 # Copy package files first
 COPY package*.json ./
@@ -15,31 +25,17 @@ RUN chown -R appuser:appgroup /app && \
 # Switch to non-root user
 USER appuser
 
-# Install dependencies
-RUN npm ci --only=production
+# Install all dependencies (including devDependencies)
+RUN npm ci
 
 # Copy the rest of the application files
 COPY --chown=appuser:appgroup . .
 
-# Build the application
-RUN npm run build
-
-# Production stage
-FROM node:16-alpine
-WORKDIR /app
-
-# Create non-root user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
-# Install serve for production static file serving
-RUN npm install -g serve
-
-# Copy only the built files
-COPY --from=builder --chown=appuser:appgroup /app/build ./build
-
-USER appuser
+# Build for production or start dev server based on NODE_ENV
+CMD if [ "$NODE_ENV" = "production" ]; then \
+        npm run build && serve -s build -l 3000; \
+    else \
+        npm start; \
+    fi
 
 EXPOSE 3000
-
-# Serve the static files
-CMD ["serve", "-s", "build", "-l", "3000"]
