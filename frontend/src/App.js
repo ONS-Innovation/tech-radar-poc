@@ -330,6 +330,15 @@ function App() {
     }
   };
 
+  const handleBlipHover = (entry) => {
+    setSelectedBlip(entry);
+    if (entry !== null) {
+      const projects = findProjectsUsingTechnology(entry.title);
+      setProjectsForTech(projects);
+      setIsInfoBoxVisible(true);
+    }
+  };
+
   const handleProjectClick = (project) => {
     setSelectedProject(project);
     setIsProjectModalOpen(true);
@@ -875,14 +884,14 @@ function App() {
                         className="blip-container"
                         onMouseEnter={() =>
                           !lockedBlip &&
-                          setSelectedBlip(
+                          handleBlipHover(
                             numberedEntries[quadrant].find(
                               (e) => e.id === entry.id
                             )
                           )
                         }
                         onMouseLeave={() =>
-                          !lockedBlip && setSelectedBlip(null)
+                          !lockedBlip && handleBlipHover(null)
                         }
                         onClick={() => {
                           handleBlipClick(entry);
