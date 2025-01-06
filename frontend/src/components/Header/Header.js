@@ -25,8 +25,6 @@ function Header({
   onSearchChange,
   searchResults,
   onSearchResultClick,
-  // onFileUpload,
-  // checkForDuplicates,
   onOpenProjects,
 }) {
   /**
@@ -86,11 +84,6 @@ function Header({
         >
           View Projects
         </button>
-
-        {/* <FileUpload
-          onFileUpload={onFileUpload}
-          checkForDuplicates={checkForDuplicates}
-        /> */}
 
         <ThemeToggle />
       </div>

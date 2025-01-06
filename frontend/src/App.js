@@ -346,33 +346,6 @@ function App() {
     setIsProjectModalOpen(true);
   };
 
-  // const handleFileUpload = (convertedData) => {
-  //   setProjectsData((prevData) => {
-  //     const existingData = prevData || [];
-  //     return [...existingData, ...convertedData];
-  //   });
-  // };
-
-  // const checkForDuplicates = (newData) => {
-  //   const existingProjects = new Set(
-  //     projectsData?.map((project) => project.Project) || []
-  //   );
-
-  //   const newProjects = [];
-  //   const duplicates = [];
-
-  //   newData.forEach((project) => {
-  //     if (existingProjects.has(project.Project)) {
-  //       duplicates.push(project);
-  //     } else {
-  //       newProjects.push(project);
-  //       existingProjects.add(project.Project);
-  //     }
-  //   });
-
-  //   return { newProjects, duplicates };
-  // };
-
   if (!data) return <div className="loading-container">Loading...</div>;
 
   const groupedEntries = data.entries.reduce((acc, entry) => {
