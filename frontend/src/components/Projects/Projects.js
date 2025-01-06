@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { IoSearch, IoClose, IoOptions, IoChevronDown, IoRefresh } from 'react-icons/io5';
 import '../../styles/Projects.css';
 
@@ -8,14 +8,6 @@ const Projects = ({ isOpen, onClose, projectsData, handleProjectClick, getTechno
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedType, setSelectedType] = useState('adopt');
   const [selectedRatio, setSelectedRatio] = useState('most');
-
-  const [originalOrder] = useState(() => {
-    if (!projectsData) return new Map();
-    return new Map(projectsData.map((project, index) => [
-      project.Project || project.Project_Short,
-      index
-    ]));
-  });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -28,7 +20,7 @@ const Projects = ({ isOpen, onClose, projectsData, handleProjectClick, getTechno
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isFilterOpen]);
 
-  const calculateTechnologyDistribution = (project) => {
+  const calculateTechnologyDistribution = useCallback((project) => {
     const techColumns = [
       'Language_Main',
       'Language_Others',
@@ -67,7 +59,7 @@ const Projects = ({ isOpen, onClose, projectsData, handleProjectClick, getTechno
     });
 
     return distribution;
-  };
+  }, [getTechnologyStatus]);
 
   const filteredAndSortedProjects = useMemo(() => {
     let filtered = projectsData || [];
@@ -117,7 +109,7 @@ const Projects = ({ isOpen, onClose, projectsData, handleProjectClick, getTechno
           return 0;
       }
     });
-  }, [projectsData, searchTerm, sortBy, getTechnologyStatus, originalOrder]);
+  }, [projectsData, searchTerm, sortBy, calculateTechnologyDistribution]);
 
   if (!isOpen || !projectsData) return null;
 
