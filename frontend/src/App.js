@@ -14,6 +14,7 @@ import {
 import { Toaster, toast } from "react-hot-toast";
 import { FaSortAmountDownAlt, FaSortAmountUpAlt } from "react-icons/fa";
 import { fetchCSVFromS3 } from "./utilities/getCSVData";
+import Projects from './components/Projects/Projects';
 
 function App() {
   const [data, setData] = useState(null);
@@ -46,6 +47,7 @@ function App() {
   const [allBlips, setAllBlips] = useState([]);
   const [selectedTimelineItem, setSelectedTimelineItem] = useState(null);
   const [timelineAscending, setTimelineAscending] = useState(false);
+  const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
 
   useEffect(() => {
     fetch("/tech_radar/onsRadarSkeleton.json")
@@ -344,33 +346,6 @@ function App() {
     setIsProjectModalOpen(true);
   };
 
-  const handleFileUpload = (convertedData) => {
-    setProjectsData((prevData) => {
-      const existingData = prevData || [];
-      return [...existingData, ...convertedData];
-    });
-  };
-
-  const checkForDuplicates = (newData) => {
-    const existingProjects = new Set(
-      projectsData?.map((project) => project.Project) || []
-    );
-
-    const newProjects = [];
-    const duplicates = [];
-
-    newData.forEach((project) => {
-      if (existingProjects.has(project.Project)) {
-        duplicates.push(project);
-      } else {
-        newProjects.push(project);
-        existingProjects.add(project.Project);
-      }
-    });
-
-    return { newProjects, duplicates };
-  };
-
   if (!data) return <div className="loading-container">Loading...</div>;
 
   const groupedEntries = data.entries.reduce((acc, entry) => {
@@ -424,6 +399,8 @@ function App() {
       );
 
       setIsProjectModalOpen(false);
+      setIsProjectsModalOpen(false);
+      
       handleBlipClick(entryWithNumber, true);
     }
   };
@@ -473,6 +450,17 @@ function App() {
     }
   };
 
+  const handleRefresh = async () => {
+    try {
+      const newData = await fetchCSVFromS3();
+      setProjectsData(newData);
+      toast.success('Data refreshed successfully');
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+      toast.error('Failed to refresh data');
+    }
+  };
+
   return (
     <ThemeProvider>
       <Header
@@ -480,8 +468,7 @@ function App() {
         onSearchChange={handleSearch}
         searchResults={searchResults}
         onSearchResultClick={handleSearchResultClick}
-        onFileUpload={handleFileUpload}
-        checkForDuplicates={checkForDuplicates}
+        onOpenProjects={() => setIsProjectsModalOpen(true)}
       />
       <div className="radar-page">
         <Toaster
@@ -1275,6 +1262,15 @@ function App() {
             </div>
           </div>
         )}
+
+        <Projects 
+          isOpen={isProjectsModalOpen}
+          onClose={() => setIsProjectsModalOpen(false)}
+          projectsData={projectsData}
+          handleProjectClick={handleProjectClick}
+          getTechnologyStatus={getTechnologyStatus}
+          onRefresh={handleRefresh}
+        />
       </div>
     </ThemeProvider>
   );

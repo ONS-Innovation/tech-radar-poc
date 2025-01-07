@@ -43,11 +43,12 @@ app.get("/api/csv", async (req, res) => {
     const response = await fetch(signedUrl);
     const csvText = await response.text();
 
-    // Parse the CSV data
+    // Parse the CSV data and filter out empty or incomplete entries
     Papa.parse(csvText, {
       header: true,
       complete: (results) => {
-        res.json(results.data);
+        const filteredData = results.data.filter(entry => Object.keys(entry).length > 1);
+        res.json(filteredData);
       },
       error: (error) => {
         console.error("Error parsing CSV:", error);
