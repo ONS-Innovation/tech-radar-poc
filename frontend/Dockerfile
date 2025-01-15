@@ -8,32 +8,37 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 ARG NODE_ENV="production"
 # Make NODE_ENV available at runtime too
 ENV NODE_ENV=$NODE_ENV
+ENV NODE_OPTIONS="--max-old-space-size=2048"
 
 # Install serve globally if production (do this before switching to non-root user)
+# Install serve globally if production
 RUN if [ "$NODE_ENV" = "production" ]; then \
         npm install -g serve; \
     fi
 
+# Set up npm cache directory
+RUN mkdir -p /app/.npm
+
 # Copy package files first
 COPY package*.json ./
 
-# Set correct ownership and permissions
-RUN chown -R appuser:appgroup /app && \
-    mkdir -p /home/appuser/.npm && \
-    chown -R appuser:appgroup /home/appuser/.npm
+# Install dependencies with production flag for smaller footprint
+RUN npm ci --legacy-peer-deps --only=production && \
+    npm cache clean --force && \
+    chown -R appuser:appgroup /app
 
 # Switch to non-root user
 USER appuser
-
-# Install all dependencies (including devDependencies)
-RUN npm ci
 
 # Copy the rest of the application files
 COPY --chown=appuser:appgroup . .
 
 # Build for production or start dev server based on NODE_ENV
+# For production, we'll build with increased memory limit
 CMD if [ "$NODE_ENV" = "production" ]; then \
-        npm run build && serve -s build -l 3000; \
+        export NODE_OPTIONS="--max-old-space-size=2048" && \
+        npm run build && \
+        serve -s build -l 3000; \
     else \
         npm start; \
     fi
