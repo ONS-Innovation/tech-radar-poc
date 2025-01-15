@@ -1,0 +1,11 @@
+.projects-page {
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  margin-top: 70px;
+  background: hsl(var(--background));
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}

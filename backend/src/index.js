@@ -62,6 +62,93 @@ app.get("/api/csv", async (req, res) => {
 });
 
 /**
+ * Endpoint for fetching repository statistics from JSON data.
+ * It fetches the JSON data from an S3 bucket and returns the statistics.
+ */
+app.get("/api/json", async (req, res) => {
+  try {
+    const { datetime, archived } = req.query;
+    const command = new GetObjectCommand({
+      Bucket: "sdp-dev-tech-radar",
+      Key: "repositories.json",
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+
+    // Fetch the JSON data using the signed URL
+    const response = await fetch(signedUrl);
+    const jsonData = await response.json();
+
+    // First filter by date if provided
+    let filteredRepos = jsonData.repositories;
+    if (datetime) {
+      const targetDate = new Date(datetime);
+      const now = new Date();
+      filteredRepos = jsonData.repositories.filter(repo => {
+        const lastCommitDate = new Date(repo.last_commit);
+        return lastCommitDate >= targetDate && lastCommitDate <= now;
+      });
+    }
+
+    // Then filter by archived status if specified
+    if (archived === 'true') {
+      filteredRepos = filteredRepos.filter(repo => repo.is_archived);
+    } else if (archived === 'false') {
+      filteredRepos = filteredRepos.filter(repo => !repo.is_archived);
+    }
+    // If archived is not specified, use all repos (for total view)
+
+    // Calculate statistics
+    const stats = {
+      total_repos: filteredRepos.length,
+      total_private_repos: filteredRepos.filter(repo => repo.visibility === 'PRIVATE').length,
+      total_public_repos: filteredRepos.filter(repo => repo.visibility === 'PUBLIC').length,
+      total_internal_repos: filteredRepos.filter(repo => repo.visibility === 'INTERNAL').length,
+    };
+
+    // Calculate language statistics
+    const languageStats = {};
+    filteredRepos.forEach(repo => {
+      if (!repo.technologies?.languages) return;
+      
+      repo.technologies.languages.forEach(lang => {
+        if (!languageStats[lang.name]) {
+          languageStats[lang.name] = {
+            repo_count: 0,
+            total_percentage: 0,
+            total_lines: 0,
+          };
+        }
+        languageStats[lang.name].repo_count++;
+        languageStats[lang.name].total_percentage += lang.percentage;
+        languageStats[lang.name].total_lines += lang.size;
+      });
+    });
+
+    // Calculate averages
+    Object.keys(languageStats).forEach(lang => {
+      languageStats[lang] = {
+        repo_count: languageStats[lang].repo_count,
+        average_percentage: +(languageStats[lang].total_percentage / languageStats[lang].repo_count).toFixed(3),
+        average_lines: +(languageStats[lang].total_lines / languageStats[lang].repo_count).toFixed(3),
+      };
+    });
+
+    res.json({
+      stats,
+      language_statistics: languageStats,
+      metadata: {
+        last_updated: jsonData.metadata?.last_updated || new Date().toISOString(),
+        filter_date: datetime || null
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching JSON:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * Endpoint for checking server health.
  * It returns a 200 status and the message "healthy" if the server is running.
  */

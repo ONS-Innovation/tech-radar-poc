@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { IoSearch, IoClose, IoOptions, IoChevronDown, IoRefresh } from 'react-icons/io5';
 import '../../styles/Projects.css';
 
-const Projects = ({ isOpen, onClose, projectsData, handleProjectClick, getTechnologyStatus, onRefresh }) => {
+const Projects = ({ isOpen, projectsData, handleProjectClick, getTechnologyStatus, onRefresh }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('order-earliest');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -114,9 +114,7 @@ const Projects = ({ isOpen, onClose, projectsData, handleProjectClick, getTechno
   if (!isOpen || !projectsData) return null;
 
   return (
-    <div className="projects-modal-overlay" onClick={onClose}>
       <div className="projects-modal-content" onClick={e => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>×</button>
         <h2>Projects</h2>
         <span className="projects-modal-content-subtitle">
           Click on a project to view its details. Hover over the coloured bar to see the technology distribution.
@@ -332,7 +330,6 @@ const Projects = ({ isOpen, onClose, projectsData, handleProjectClick, getTechno
           })}
         </div>
       </div>
-    </div>
   );
 };
 
