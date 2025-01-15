@@ -1,6 +1,6 @@
 # Tech Radar
 
-Tech Radar is a tool that helps you track the infrastructure, languages, frameworks and CI/CD used in the ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
+Tech Radar is a tool that helps you track the Infrastructure, Languages, Frameworks and Supporting Tools used in the ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
 
 Use the following keyboard shortcuts to navigate the tech radar:
 
