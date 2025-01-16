@@ -5,6 +5,7 @@ import Header from '../components/Header/Header';
 import Projects from '../components/Projects/Projects';
 import ProjectModal from '../components/Projects/ProjectModal';
 import { fetchCSVFromS3 } from '../utilities/getCSVData';
+import toast from 'react-hot-toast';
 import '../styles/ProjectsPage.css';
 
 function ProjectsPage() {
@@ -77,6 +78,7 @@ function ProjectsPage() {
     try {
       const newData = await fetchCSVFromS3();
       setProjectsData(newData);
+      toast.success('Data refreshed successfully.');
     } catch (error) {
       console.error('Error refreshing data:', error);
     }

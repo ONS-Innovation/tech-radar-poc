@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import './MenuDropdown.css';
-import { IoMenu, IoStatsChart, IoPeople } from 'react-icons/io5'
+import { IoHome, IoMenu, IoStatsChart, IoPeople } from 'react-icons/io5'
 import { MdOutlineRadar } from "react-icons/md";
 ;
 
@@ -10,6 +10,7 @@ function MenuDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -22,18 +23,8 @@ function MenuDropdown() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleStatsClick = () => {
-    navigate('/statistics');
-    setIsOpen(false);
-  };
-
-  const handleProjectsClick = () => {
-    navigate('/projects');
-    setIsOpen(false);
-  };
-
-  const handleRadarClick = () => {
-    navigate('/radar');
+  const handleNavClick = (path) => {
+    navigate(path);
     setIsOpen(false);
   };
 
@@ -45,21 +36,26 @@ function MenuDropdown() {
 
       {isOpen && (
         <div className="dropdown-content">
-
-            <>
-              <button onClick={handleRadarClick}>
+            <div className="home-button-container">
+              <button onClick={() => handleNavClick('/')} className={location.pathname === '/' ? 'active' : ''}>
+                <IoHome size={16} />
+                Home
+              </button>
+            </div>
+            <div>
+              <button onClick={() => handleNavClick('/radar')} className={location.pathname === '/radar' ? 'active' : ''}>
                 <MdOutlineRadar size={16} />
                 Tech Radar
               </button>
-              <button onClick={handleStatsClick}>
+              <button onClick={() => handleNavClick('/statistics')} className={location.pathname === '/statistics' ? 'active' : ''}>
                 <IoStatsChart size={16} />
                 Statistics
               </button>
-              <button onClick={handleProjectsClick}>
+              <button onClick={() => handleNavClick('/projects')} className={location.pathname === '/projects' ? 'active' : ''}>
                 <IoPeople size={16} />
                 Projects
               </button>
-            </>
+            </div>
 
           <div className="theme-toggle-container">
             <ThemeToggle />

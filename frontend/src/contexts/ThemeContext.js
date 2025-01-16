@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-
+import { Toaster } from "react-hot-toast";
 /**
  * Creates a context for managing the theme state.
  */
@@ -37,6 +37,20 @@ export function ThemeProvider({ children }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      <Toaster 
+        position="bottom-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: 'hsl(var(--background))',
+            color: 'hsl(var(--foreground))',
+            border: '1px solid hsl(var(--border))',
+            borderRadius: 'var(--radius)',
+            boxShadow: '0 2px 0 hsl(var(--border))',
+          },
+        }}
+      />
       {children}
     </ThemeContext.Provider>
   );

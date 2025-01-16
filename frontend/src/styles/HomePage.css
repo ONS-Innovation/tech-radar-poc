@@ -48,7 +48,7 @@
 
 .nav-card {
   background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
+  border: 1px solid hsl(var(--muted));
   border-radius: var(--radius);
   padding: 16px;
   cursor: pointer;
@@ -58,11 +58,13 @@
   align-items: flex-start;
   text-align: left;
   gap: 8px;
+  box-shadow: 0 5px 0 hsl(var(--border));
 }
 
 .nav-card:hover {
-  box-shadow: 0 8px 24px hsl(var(--foreground) / 0.1);
-  border-color: hsl(var(--primary));
+  border-color: hsl(var(--border));
+  box-shadow: none;
+  transform: translateY(5px);
 }
 
 .nav-card svg {

@@ -46,15 +46,25 @@
   align-items: center;
   gap: 8px;
   transition: all 0.2s ease;
+  font-weight: 400;
 }
 
 .dropdown-content button:hover {
   background: hsl(var(--muted));
 }
 
+.dropdown-content button.active {
+  background: hsl(var(--muted));
+  font-weight: 600;
+}
+
 .theme-toggle-container {
-  border-top: 1px solid hsl(var(--border));
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+    border-top: 1px solid hsl(var(--border));
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 } 
+
+.home-button-container {
+  border-bottom: 1px solid hsl(var(--border));
+}

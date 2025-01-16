@@ -101,7 +101,7 @@ body {
 
 .radar-page {
   background-color: hsl(var(--background));
-  padding: 8px;
+  padding: 24px;
   box-sizing: border-box;
 }
 
@@ -453,7 +453,8 @@ circle, line, text {
 .info-box-placeholder {
   color: hsl(var(--muted-foreground));
   text-align: center;
-  font-style: italic;
+  margin: 0 !important;
+  font-size: 12px;
 }
 
 .info-box-ring {
@@ -579,36 +580,18 @@ foreignObject {
   margin-bottom: -2px
 }
 
-/* Add styles for the highlight circle */
 .blip-highlight {
   transition: all 0.2s ease;
   pointer-events: none;
 }
 
-/* Update the info box to show it's clickable */
 .blip-container {
   cursor: pointer;
 }
 
-/* Optional: Add hover effect for the blip */
 .blip-container:hover .blip {
   opacity: 1;
 }
-
-/* Update the info box placeholder text */
-.info-box-placeholder {
-  color: hsl(var(--muted-foreground));
-  text-align: center;
-  font-style: italic;
-  margin: 0 !important;
-}
-
-.info-box-placeholder::after {
-  content: " or click to lock the selection";
-  font-size: 0.9em;
-}
-
-/* Add these new styles at the top of your CSS file */
 
 
 

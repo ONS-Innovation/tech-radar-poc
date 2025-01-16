@@ -9,7 +9,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px;
+  padding: 0 24px;
+  width: 100%;
   box-sizing: border-box;
   border-bottom: 1px solid hsl(var(--border));
   z-index: 1000;
@@ -184,7 +185,6 @@
   }
 
   .header-right {
-    width: 100%;
     gap: 10px;
   }
 

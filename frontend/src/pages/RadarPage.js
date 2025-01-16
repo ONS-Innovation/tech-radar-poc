@@ -15,10 +15,10 @@ import {
 import { Toaster, toast } from "react-hot-toast";
 import { FaSortAmountDownAlt, FaSortAmountUpAlt } from "react-icons/fa";
 import { fetchCSVFromS3 } from "../utilities/getCSVData";
-import Projects from '../components/Projects/Projects';
+// import Projects from '../components/Projects/Projects';
 import ProjectModal from '../components/Projects/ProjectModal';
 
-function App() {
+function RadarPage() {
   const [data, setData] = useState(null);
   const [selectedBlip, setSelectedBlip] = useState(null);
   const [lockedBlip, setLockedBlip] = useState(null);
@@ -26,7 +26,7 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [isInfoBoxVisible, setIsInfoBoxVisible] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragPosition, setDragPosition] = useState({ x: 277, y: 80 });
+  const [dragPosition, setDragPosition] = useState({ x: 24, y: 80 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [expandedQuadrants, setExpandedQuadrants] = useState({
     1: true,
@@ -380,17 +380,7 @@ function App() {
         entry => entry.title.toLowerCase() === tech.toLowerCase()
       );
       if (entry) {
-        const quadrant = entry.quadrant;
-        const entryWithNumber = numberedEntries[quadrant]?.find(
-          (e) => e.id === entry.id
-        );
-        if (entryWithNumber) {
-          const projects = findProjectsUsingTechnology(entry.title);
-          setProjectsForTech(projects);
-          setLockedBlip(entryWithNumber);
-          setSelectedBlip(entryWithNumber);
-          setIsInfoBoxVisible(true);
-        }
+        handleBlipClick(entry, true);
       }
     }
   }, [location.state, data]);
@@ -448,6 +438,7 @@ function App() {
       );
 
       setIsProjectModalOpen(false);
+      console.log(isProjectsModalOpen)
       setIsProjectsModalOpen(false);
       
       handleBlipClick(entryWithNumber, true);
@@ -496,17 +487,6 @@ function App() {
         y: e.clientY - rect.top,
       });
       setDraggingQuadrant(quadrantId);
-    }
-  };
-
-  const handleRefresh = async () => {
-    try {
-      const newData = await fetchCSVFromS3();
-      setProjectsData(newData);
-      toast.success('Data refreshed successfully');
-    } catch (error) {
-      console.error('Error refreshing data:', error);
-      toast.error('Failed to refresh data');
     }
   };
 
@@ -695,7 +675,7 @@ function App() {
               </>
             ) : (
               <p className="info-box-placeholder">
-                Hover over a blip to see details
+                Hover over a blip to see details or click to lock the selection
               </p>
             )}
           </div>
@@ -1114,17 +1094,17 @@ function App() {
           />
         )}
 
-        <Projects 
+        {/* <Projects 
           isOpen={isProjectsModalOpen}
           onClose={() => setIsProjectsModalOpen(false)}
           projectsData={projectsData}
           handleProjectClick={handleProjectClick}
           getTechnologyStatus={getTechnologyStatus}
           onRefresh={handleRefresh}
-        />
+        /> */}
       </div>
     </ThemeProvider>
   );
 }
 
-export default App;
+export default RadarPage;

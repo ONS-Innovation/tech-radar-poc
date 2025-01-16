@@ -220,6 +220,8 @@
 .sort-options button.active {
   color: hsl(var(--foreground));
   border-color: hsl(var(--foreground) / .4);
+  box-shadow: none;
+  transform: translateY(2px);
 }
 
 .language-grid {
@@ -247,7 +249,7 @@
   padding: 16px;
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
-  border-bottom: 4px solid hsl(var(--border));
+  box-shadow: 0 4px 0 hsl(var(--border));
   transition: all 0.2s ease;
   max-height: 140px;
 }
@@ -256,37 +258,46 @@
   cursor: pointer;
 }
 
+.language-card.clickable:hover {
+  border-bottom: 1px solid hsl(var(--border));
+  box-shadow: none;
+  transform: translateY(5px);
+}
 
 .language-card.adopt {
-  border-bottom-color: var(--color-adopt);
+  box-shadow: 0 4px 0 var(--color-adopt);
 }
 
 .language-card.trial {
-  border-bottom-color: var(--color-trial);
+  box-shadow: 0 4px 0 var(--color-trial);
 }
 
 .language-card.assess {
-  border-bottom-color: var(--color-assess);
+  box-shadow: 0 4px 0 var(--color-assess);
 }
 
 .language-card.hold {
-  border-bottom-color: var(--color-hold);
+  box-shadow: 0 4px 0 var(--color-hold);
 }
 
 .language-card.adopt:hover {
   background-color: var(--color-bg-adopt);
+  border-color: var(--color-adopt);
 }
 
 .language-card.trial:hover {
   background-color: var(--color-bg-trial);
+  border-color: var(--color-trial);
 }
 
 .language-card.assess:hover {
   background-color: var(--color-bg-assess);
+  border-color: var(--color-assess);
 }
 
 .language-card.hold:hover {
   background-color: var(--color-bg-hold);
+  border-color: var(--color-hold);
 }
 
 .language-card h4 {
