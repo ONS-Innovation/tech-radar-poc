@@ -63,3 +63,5 @@ terraform.rc
 site/*
 
 .env
+
+.pytest_cache
