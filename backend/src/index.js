@@ -81,7 +81,8 @@ app.get("/api/json", async (req, res) => {
 
     // First filter by date if provided
     let filteredRepos = jsonData.repositories;
-    if (datetime) {
+    
+    if (datetime && !isNaN(Date.parse(datetime))) {
       const targetDate = new Date(datetime);
       const now = new Date();
       filteredRepos = jsonData.repositories.filter(repo => {
@@ -139,7 +140,7 @@ app.get("/api/json", async (req, res) => {
       language_statistics: languageStats,
       metadata: {
         last_updated: jsonData.metadata?.last_updated || new Date().toISOString(),
-        filter_date: datetime || null
+        filter_date: datetime && !isNaN(Date.parse(datetime)) ? datetime : null
       }
     });
   } catch (error) {
