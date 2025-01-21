@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown/MenuDropdown";
+import HelpModal from "./HelpModal";
 import "../../styles/Header.css";
 import Logo from "../../assets/logo.png";
 import { IoClose, IoSearch } from "react-icons/io5";
+import { FaQuestion } from "react-icons/fa";
 
 /**
  * Header component for the Tech Radar application.
@@ -32,6 +34,7 @@ function Header({
   hideSearch = false
 }) {
   const navigate = useNavigate();
+  const [showHelpModal, setShowHelpModal] = useState(false);
 
   /**
    * Clears the search term.
@@ -94,6 +97,14 @@ function Header({
           onOpenProjects={onOpenProjects} 
           onStatsTechClick={onStatsTechClick}
         />
+        <button
+          className="help-button"
+          onClick={() => setShowHelpModal(true)}
+          title="Help"
+        >
+          <FaQuestion size={14} />
+        </button>
+        <HelpModal show={showHelpModal} onClose={() => setShowHelpModal(false)} />
       </div>
     </header>
   );

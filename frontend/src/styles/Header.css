@@ -176,6 +176,26 @@
   background: hsl(var(--muted));
 }
 
+.help-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: hsl(var(--foreground));
+  background: transparent;
+  transition: all 0.2s ease;
+  border: 1px solid hsl(var(--border));
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.help-button:hover {
+  background: hsl(var(--muted));
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .radar-header {
