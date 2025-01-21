@@ -1,0 +1,174 @@
+.admin-page {
+  padding: 24px;
+  margin-top: 70px;
+  box-sizing: border-box;
+  max-height: calc(100vh - 70px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.admin-container h1 {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 24px;
+  font-weight: 600;
+  color: hsl(var(--card-foreground));
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
+  height: 100%;
+  max-width: 70vw;
+}
+
+/* Grid positioning for each box */
+.admin-box:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.admin-box:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.admin-box:nth-child(3) {
+  grid-column: 3;
+  grid-row: 1 / span 2; /* Takes up both rows */
+}
+
+.admin-box:nth-child(4) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.admin-box:nth-child(5) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.admin-box {
+  background: hsl(var(--card));
+  border-radius: var(--radius);
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid hsl(var(--border));
+  height: 100%; /* Ensure boxes fill their grid areas */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Color styling for each box */
+.admin-box:first-child {
+  background: var(--color-bg-adopt);
+  border-color: var(--color-adopt);
+}
+
+.admin-box:nth-child(2) {
+  background: var(--color-bg-trial);
+  border-color: var(--color-trial);
+}
+
+.admin-box:nth-child(4) {
+  background: var(--color-bg-assess);
+  border-color: var(--color-assess);
+}
+
+.admin-box:nth-child(5) {
+  background: var(--color-bg-hold);
+  border-color: var(--color-hold);
+}
+
+.admin-box h2 {
+  margin: 0;
+  padding: 8px;
+  box-sizing: border-box;
+  border-bottom: 1px solid hsl(var(--border));
+  color: hsl(var(--card-foreground));
+  font-size: 18px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.droppable-area {
+  min-height: 250px;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  padding: 10px;
+  border-radius: var(--radius);
+  transition: background-color 0.2s, border 0.2s;
+  height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.droppable-area.drag-over {
+  background-color: hsl(var(--card));
+  border: 2px dashed hsl(var(--primary));
+}
+
+.draggable-item {
+  background: hsl(var(--card));
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+  cursor: grab;
+  transition: all 0.2s ease;
+  text-align: left;
+  user-select: none;
+  box-shadow: none;
+}
+
+
+.draggable-item:hover {
+  background-color: hsl(var(--accent));
+  transform: translateY(-2px);
+  box-shadow: 0 2px 0px hsl(var(--border));
+
+}
+
+.draggable-item:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+}
+
+.save-button {
+  background-color: hsl(var(--constructive));
+  color: hsl(var(--constructive-foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 0px hsl(var(--border));
+}
+
+.save-button:hover {
+  box-shadow: none;
+  transform: translateY(2px);
+}
+
+.save-button:active {
+  background-color: hsl(var(--primary));
+}

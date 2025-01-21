@@ -4,7 +4,7 @@ import Radar from './pages/RadarPage';
 import Statistics from './pages/StatisticsPage';
 import Home from './pages/HomePage';
 import Projects from './pages/ProjectsPage';
-
+import AdminDashboard from './pages/AdminPage';
 const Main = () => {
   return (
     <Routes>
@@ -13,6 +13,7 @@ const Main = () => {
       <Route path="/statistics" element={<Statistics />} />
       <Route path="/projects" element={<Projects />} />
       <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
     </Routes>
   );
 }

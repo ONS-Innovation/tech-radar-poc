@@ -6,6 +6,7 @@
 
 const express = require("express");
 const cors = require("cors");
+const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const fetch = require("node-fetch");
 const Papa = require("papaparse");
@@ -172,6 +173,72 @@ app.get("/api/json", async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching JSON:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Endpoint for updating the tech radar JSON in S3.
+ * It receives the updated entries and saves them back to the S3 bucket.
+ */
+app.post("/api/tech-radar/update", async (req, res) => {
+  return res.json({ message: "Feature not available yet." });
+  try {
+    const { entries } = req.body;
+    if (!entries || !Array.isArray(entries)) {
+      return res.status(400).json({ error: "Invalid entries data" });
+    }
+
+    const bucketName = process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "sdp-dev-tech-radar";
+    
+    // First, get the existing JSON to preserve the structure
+    const getCommand = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: "onsRadarSkeleton.json",
+    });
+
+    const { Body } = await s3Client.send(getCommand);
+    const existingData = JSON.parse(await Body.transformToString());
+    
+    // Create a map of existing entries for easy lookup
+    const existingEntriesMap = new Map(existingData.entries.map(entry => [entry.id, entry]));
+    
+    // Update entries while preserving all properties
+    const updatedEntries = entries.map(newEntry => {
+      const existingEntry = existingEntriesMap.get(newEntry.id);
+      if (!existingEntry) return newEntry;
+
+      return {
+        ...existingEntry,
+        timeline: newEntry.timeline, // Only update the timeline
+      };
+    });
+
+    // Sort entries to maintain consistent order
+    updatedEntries.sort((a, b) => {
+      // First by quadrant
+      if (a.quadrant !== b.quadrant) {
+        return parseInt(a.quadrant) - parseInt(b.quadrant);
+      }
+      // Then by title
+      return a.title.localeCompare(b.title);
+    });
+
+    // Update only the entries array while preserving everything else
+    existingData.entries = updatedEntries;
+
+    // Save the updated JSON back to S3
+    const putCommand = new PutObjectCommand({
+      Bucket: bucketName,
+      Key: "onsRadarSkeleton.json",
+      Body: JSON.stringify(existingData, null, 2),
+      ContentType: "application/json"
+    });
+
+    await s3Client.send(putCommand);
+    res.json({ message: "Tech radar updated successfully" });
+  } catch (error) {
+    console.error("Error updating tech radar:", error);
     res.status(500).json({ error: error.message });
   }
 });
