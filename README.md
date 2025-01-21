@@ -1,5 +1,12 @@
 # Digital Landscape
 
+![Linting Status](https://github.com/ONS-innovation/keh-digital-landscape/actions/workflows/ci.yml/badge.svg) 
+![CodeQL Status](https://github.com/ONS-innovation/keh-digital-landscape/actions/workflows/github-code-scanning/codeql/badge.svg)
+![Dependabot Status](https://github.com/ONS-Innovation/keh-digital-landscape/actions/workflows/dependabot/dependabot-updates/badge.svg)
+
+[![LICENSE.](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/ONS-innovation/keh-digital-landscape/blob/main/LICENSE) 
+[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/ONS-innovation/keh-digital-landscape.svg)](https://github.com/ONS-innovation/keh-digital-landscape/pulls)
+
 This tool aims to provide a visual representation of the digital landscape at ONS. This consists of the following 3 main pages and one homepage:
 
 **Tech Radar:**
@@ -77,6 +84,10 @@ To run the backend only:
 ```bash
 make backend
 ```
+
+## Testing
+
+Tests are run with PyTest. To run the tests, refer to the [README.md](/testing/README.md) in the `/testing/` folder.
 
 ## How to deploy locally
 
