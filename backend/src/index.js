@@ -62,7 +62,6 @@ app.get("/api/csv", async (req, res) => {
   }
 });
 
-
 /**
  * Endpoint for fetching CSV data.
  * It fetches the CSV data from an S3 bucket, parses it, and returns the parsed data.
