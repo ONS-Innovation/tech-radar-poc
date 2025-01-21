@@ -3,19 +3,19 @@
     "quadrants": [
         {
             "id": "1",
-            "name": "Languages & Frameworks"
+            "name": "Languages"
         },
         {
             "id": "2",
-            "name": "Tools & CI/CD"
+            "name": "Frameworks"
         },
         {
             "id": "3",
-            "name": "Platforms"
+            "name": "Supporting Tools"
         },
         {
             "id": "4",
-            "name": "Design Pattern"
+            "name": "Infrastructure"
         }
     ],
     "rings": [

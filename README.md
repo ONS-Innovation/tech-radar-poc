@@ -41,6 +41,7 @@ nvm use 18.19.0
 ```bash
 export AWS_ACCESS_KEY_ID=<your_access_key>
 export AWS_SECRET_ACCESS_KEY=<your_secret_key>
+export COGNITO_USER_POOL_ID=<your_cognito_user_pool_id> (optional)
 ```
 ## Running locally
 

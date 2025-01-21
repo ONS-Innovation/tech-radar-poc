@@ -15,7 +15,7 @@ import {
 import { Toaster, toast } from "react-hot-toast";
 import { FaSortAmountDownAlt, FaSortAmountUpAlt } from "react-icons/fa";
 import { fetchCSVFromS3 } from "../utilities/getCSVData";
-// import Projects from '../components/Projects/Projects';
+import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
 import ProjectModal from '../components/Projects/ProjectModal';
 
 function RadarPage() {
@@ -53,8 +53,7 @@ function RadarPage() {
   const location = useLocation();
 
   useEffect(() => {
-    fetch("/tech_radar/onsRadarSkeleton.json")
-      .then((response) => response.json())
+    fetchTechRadarJSONFromS3()
       .then((data) => setData(data));
   }, []);
   useEffect(() => {
@@ -392,7 +391,9 @@ function RadarPage() {
     const sortedTimeline = [...entry.timeline].sort(
       (a, b) => new Date(b.date) - new Date(a.date)
     );
-    const currentRing = sortedTimeline[0].ringId;
+    const currentRing = sortedTimeline[0].ringId.toLowerCase();
+
+    if (currentRing === 'review') return acc;
 
     if (!acc[quadrant]) acc[quadrant] = {};
     if (!acc[quadrant][currentRing]) acc[quadrant][currentRing] = [];
@@ -408,7 +409,7 @@ function RadarPage() {
   let counter = 1;
   Object.keys(groupedEntries).forEach((quadrant) => {
     numberedEntries[quadrant] = [];
-    Object.keys(ringRadii).forEach((ring) => {
+    ['adopt', 'trial', 'assess', 'hold'].forEach((ring) => {
       if (groupedEntries[quadrant][ring]) {
         groupedEntries[quadrant][ring].forEach((entry) => {
           numberedEntries[quadrant].push({
@@ -882,7 +883,7 @@ function RadarPage() {
 
               {Object.entries(groupedEntries).map(([quadrant, rings]) =>
                 Object.entries(rings).map(([ring, entries]) =>
-                  entries.map((entry, index) => {
+                  ring !== 'review' && entries.map((entry, index) => {
                     const position = calculateBlipPosition(
                       quadrant,
                       ring,

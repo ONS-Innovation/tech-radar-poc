@@ -75,6 +75,14 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
         {
           name  = "PORT",
           value = tostring(var.backend_port)
+        },
+        {
+          name  = "BUCKET_NAME",
+          value = var.s3_bucket_name
+        },
+        {
+          name  = "COGNITO_USER_POOL_ID",
+          value = data.terraform_remote_state.ecs_auth.outputs.github_audit_user_pool_id
         }
       ],
       logConfiguration = {

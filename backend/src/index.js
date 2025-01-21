@@ -6,7 +6,6 @@
 
 const express = require("express");
 const cors = require("cors");
-const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const fetch = require("node-fetch");
 const Papa = require("papaparse");
@@ -32,8 +31,9 @@ const s3Client = new S3Client({
  */
 app.get("/api/csv", async (req, res) => {
   try {
+    const bucketName = process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "sdp-dev-tech-radar";
     const command = new GetObjectCommand({
-      Bucket: "sdp-dev-tech-radar",
+      Bucket: bucketName,
       Key: "onsTechDataAdoption.csv",
     });
 
@@ -61,6 +61,32 @@ app.get("/api/csv", async (req, res) => {
   }
 });
 
+
+/**
+ * Endpoint for fetching CSV data.
+ * It fetches the CSV data from an S3 bucket, parses it, and returns the parsed data.
+ */
+app.get("/api/tech-radar/json", async (req, res) => {
+  try {
+    const bucketName = process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "sdp-dev-tech-radar";
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: "onsRadarSkeleton.json",
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+
+    // Fetch the CSV data using the signed URL
+    const response = await fetch(signedUrl);
+    const jsonData = await response.json();
+
+    res.json(jsonData);
+  } catch (error) {
+    console.error("Error fetching JSON:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 /**
  * Endpoint for fetching repository statistics from JSON data.
  * It fetches the JSON data from an S3 bucket and returns the statistics.
@@ -68,8 +94,9 @@ app.get("/api/csv", async (req, res) => {
 app.get("/api/json", async (req, res) => {
   try {
     const { datetime, archived } = req.query;
+    const bucketName = process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "sdp-dev-tech-radar";
     const command = new GetObjectCommand({
-      Bucket: "sdp-dev-tech-radar",
+      Bucket: bucketName,
       Key: "repositories.json",
     });
 

@@ -5,6 +5,7 @@ import Header from '../components/Header/Header';
 import Projects from '../components/Projects/Projects';
 import ProjectModal from '../components/Projects/ProjectModal';
 import { fetchCSVFromS3 } from '../utilities/getCSVData';
+import { fetchTechRadarJSONFromS3 } from '../utilities/getTechRadarJson';
 import toast from 'react-hot-toast';
 import '../styles/ProjectsPage.css';
 
@@ -45,11 +46,7 @@ function ProjectsPage() {
 
     const fetchRadarData = async () => {
       try {
-        const response = await fetch('/tech_radar/onsRadarSkeleton.json');
-        if (!response.ok) {
-          throw new Error('Failed to fetch radar data');
-        }
-        const data = await response.json();
+        const data = await fetchTechRadarJSONFromS3();
         setRadarData(data);
       } catch (error) {
         console.error('Failed to load radar data:', error);

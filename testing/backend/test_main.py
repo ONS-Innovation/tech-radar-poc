@@ -28,6 +28,14 @@ def test_csv_endpoint():
         assert isinstance(first_item, dict)
         assert len(first_item.keys()) > 1  # Verify it's not empty
 
+def test_tech_radar_json_endpoint():
+    """Test the CSV data endpoint"""
+    response = requests.get(f"{BASE_URL}/api/tech-radar/json")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, dict)
+    assert len(data.keys()) > 1  # Verify it's not empty
+
 def test_json_endpoint_no_params():
     """Test the JSON endpoint without any parameters"""
     response = requests.get(f"{BASE_URL}/api/json")
@@ -90,6 +98,3 @@ def test_json_endpoint_invalid_date():
     # Verify we still get valid stats
     assert "stats" in data
     assert "language_statistics" in data
-
-if __name__ == "__main__":
-    pytest.main(["-v"]) 

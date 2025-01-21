@@ -34,6 +34,9 @@
     --color-bg-trial: #ffe6f9;
     --color-bg-assess: #e6f0ff;
     --color-bg-hold: #ffe6e8;
+
+    --constructive: 138 63% 55%;
+    --constructive-foreground: 0 0% 98%;
   }
 
   .dark {

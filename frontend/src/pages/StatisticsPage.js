@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Statistics from '../components/Statistics/Statistics';
 import Header from '../components/Header/Header';
 import { ThemeProvider } from '../contexts/ThemeContext';
+import { fetchTechRadarJSONFromS3 } from '../utilities/getTechRadarJson';
 
 function StatisticsPage() {
   const navigate = useNavigate();
@@ -33,16 +34,18 @@ function StatisticsPage() {
 
       const [statsResponse, radarResponse] = await Promise.all([
         fetch(url),
-        fetch('/tech_radar/onsRadarSkeleton.json')
+        fetchTechRadarJSONFromS3()
       ]);
 
-      if (!statsResponse.ok || !radarResponse.ok) {
+      console.log('radarResponse', radarResponse);
+
+      if (!statsResponse.ok || !radarResponse) {
         throw new Error('Failed to fetch data');
       }
 
       const [statsData, radarData] = await Promise.all([
         statsResponse.json(),
-        radarResponse.json()
+        radarResponse
       ]);
 
       if (!statsData.stats && !statsData.language_statistics) {
