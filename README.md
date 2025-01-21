@@ -1,17 +1,30 @@
-# Tech Radar
+# Digital Landscape
 
-Tech Radar is a tool that helps you track the Infrastructure, Languages, Frameworks and Supporting Tools used in the ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
+This tool aims to provide a visual representation of the digital landscape at ONS. This consists of the following 3 main pages and one homepage:
 
-Use the following keyboard shortcuts to navigate the tech radar:
+**Tech Radar:**
+- Tech Radar is a tool that helps you track the Infrastructure, Languages, Frameworks and Supporting Tools used in the ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
+- Use the following keyboard shortcuts to navigate the tech radar:
+    - `2` to move up the list of technologies
+    - `1`to move down the list of technologies
 
-- `2` to move up the list of technologies
-- `1`to move down the list of technologies
+**Statistics:**
+- This provides a collection of statistics about the language breakdown within the ONSDigital GitHub Organisation.
+- Multiple filters such as Archive/Active and date filter options are available.
+
+**Projects:**
+- This displays the project data collected from the Tech Audit Tool.
+- Multiple features such as alphabetically, most/least tech and tech radar ring ratio per project are available.
+
+**Homepage:**
+- This is the homepage of the tool.
+- It provides a brief overview of the tool and its purpose.
 
 ## Getting started
 
 Clone the repository:
 ```bash
-git clone https://github.com/ONS-innovation/keh-tech-radar.git
+git clone https://github.com/ONS-innovation/keh-digital-landscape.git
 ```
 
 Install both backend and frontend dependencies:
@@ -41,7 +54,6 @@ nvm use 18.19.0
 ```bash
 export AWS_ACCESS_KEY_ID=<your_access_key>
 export AWS_SECRET_ACCESS_KEY=<your_secret_key>
-export COGNITO_USER_POOL_ID=<your_cognito_user_pool_id> (optional)
 ```
 ## Running locally
 
@@ -139,7 +151,7 @@ Change directory to the service folder (if in authentication folder):
 cd ../service
 ```
 
-Set the environment variables. Check the terraform/service/env/dev/example_tfvars.txt file for the correct values.
+Set the environment variables. Check the `terraform/service/env/dev/example_tfvars.txt` file for the correct values.
 
 Run Terraform:
 
