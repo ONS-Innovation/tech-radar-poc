@@ -85,10 +85,6 @@ To run the backend only:
 make backend
 ```
 
-## Testing
-
-Tests are run with PyTest. To run the tests, refer to the [README.md](/testing/README.md) in the `/testing/` folder.
-
 ## How to deploy locally
 
 ```bash
@@ -104,6 +100,34 @@ This should build the project and then start the project locally on port 3000 an
 To stop the project:
 ```bash
 make docker-down
+```
+
+## Testing
+
+Tests are run with PyTest. To run the tests, refer to the [README.md](/testing/README.md) in the `/testing/` folder.
+
+## Linting 
+
+Linting is run with ESLint. To run the linting, run the following commands:
+
+Install the dev dependencies:
+```bash
+make install-dev
+```
+
+Run the linting:
+```bash
+make lint
+```
+
+Run the linting for the frontend:
+```bash
+make lint-frontend
+```
+
+Run the linting for the backend:
+```bash
+make lint-backend
 ```
 
 ## How to containerise and deploy to ECR on AWS
@@ -170,4 +194,11 @@ Run Terraform:
 terraform init -backend-config="env/dev/backend-dev" -reconfigure
 terraform plan -var-file=env/dev/dev.tfvars
 terraform apply -var-file=env/dev/dev.tfvars
+```
+
+### Makefile
+
+To see the available commands, run the following command:
+```bash
+make
 ```
