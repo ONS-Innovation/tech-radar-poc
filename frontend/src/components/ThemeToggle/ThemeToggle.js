@@ -1,6 +1,6 @@
 import React from "react";
 import { useTheme } from "../../contexts/ThemeContext";
-import "../../styles/ThemeToggle.css";
+import "../../styles/components/ThemeToggle.css";
 import {
   IoMoonOutline as MoonIcon,
   IoSunnyOutline as SunIcon,

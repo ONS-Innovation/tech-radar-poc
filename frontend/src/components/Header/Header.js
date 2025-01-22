@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown/MenuDropdown";
 import HelpModal from "./HelpModal";
-import "../../styles/Header.css";
+import "../../styles/components/Header.css";
 import Logo from "../../assets/logo.png";
 import { IoClose, IoSearch } from "react-icons/io5";
 import { FaQuestion } from "react-icons/fa";

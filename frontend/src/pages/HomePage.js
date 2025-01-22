@@ -6,6 +6,11 @@ import { IoStatsChart, IoPeople } from 'react-icons/io5';
 import { MdOutlineRadar } from 'react-icons/md';
 import '../styles/HomePage.css';
 
+/**
+ * HomePage component for displaying the home page.
+ * 
+ * @returns {JSX.Element} - The HomePage component.
+ */
 function HomePage() {
   const navigate = useNavigate();
 

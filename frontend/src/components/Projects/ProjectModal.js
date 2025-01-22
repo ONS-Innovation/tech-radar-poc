@@ -1,14 +1,21 @@
 import React from 'react';
-import '../../styles/ProjectModal.css';
+import "../../styles/components/ProjectModal.css";
 
+/**
+ * ProjectModal component for displaying project details in a modal.
+ * 
+ * @param {Object} props - The props passed to the ProjectModal component.
+ * @param {boolean} props.isOpen - Whether the modal is open.
+ * @param {Function} props.onClose - Function to call when the modal is closed.
+ * @param {Object} props.project - The project object containing project details.
+ * @param {Function} props.renderTechnologyList - Function to render technology list.
+ */
 const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
   if (!isOpen || !project) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content project-modal" onClick={(e) => e.stopPropagation()}>
-
-        {/* Project Title Section */}
         <div className="project-header">
             <div className="project-header-left">
                 <h2>{project.Project}</h2>
@@ -23,7 +30,6 @@ const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
         </div>
 
         <div className="project-details">
-          {/* Core Details */}
           {project.Project_Area && (
             <div className="detail-item">
               <h3>Project Area:</h3>
@@ -45,7 +51,6 @@ const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
             </div>
           )}
 
-          {/* Languages & Frameworks */}
           {project.Language_Main && (
             <div className="detail-item">
               <h3>Main Language:</h3>
@@ -67,7 +72,6 @@ const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
             </div>
           )}
 
-          {/* Testing */}
           {project.Testing_Frameworks && (
             <div className="detail-item">
               <h3>Testing Frameworks:</h3>
@@ -75,7 +79,6 @@ const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
             </div>
           )}
 
-          {/* Infrastructure */}
           {project.Hosted && (
             <div className="detail-item">
               <h3>Hosted On:</h3>
@@ -97,7 +100,6 @@ const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
             </div>
           )}
 
-          {/* Source Control */}
           {project.Source_Control && (
             <div className="detail-item">
               <h3>Source Control:</h3>
@@ -112,7 +114,6 @@ const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
             </div>
           )}
 
-          {/* Development Tools */}
           {project.Static_Analysis && (
             <div className="detail-item">
               <h3>Static Analysis:</h3>
@@ -127,7 +128,6 @@ const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
             </div>
           )}
 
-          {/* Data & Monitoring */}
           {project.Monitoring && (
             <div className="detail-item">
               <h3>Monitoring:</h3>
@@ -149,7 +149,6 @@ const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
             </div>
           )}
 
-          {/* Integrations */}
           {project.Integrations_ONS && (
             <div className="detail-item">
               <h3>ONS Integrations:</h3>
@@ -164,7 +163,6 @@ const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
             </div>
           )}
 
-          {/* Documentation */}
           {project.Documentation && (
             <div className="detail-item">
               <h3>Documentation:</h3>

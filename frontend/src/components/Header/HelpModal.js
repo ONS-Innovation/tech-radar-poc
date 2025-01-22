@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { IoClose } from 'react-icons/io5';
-import './HelpModal.css';
+import "../../styles/components/HelpModal.css";
 
+/**
+ * HelpModal component for displaying help information in a modal.
+ * 
+ * @param {Object} props - The props passed to the HelpModal component.
+ * @param {boolean} props.show - Whether the modal should be shown.
+ * @param {Function} props.onClose - Function to call when the modal is closed.
+ */
 function HelpModal({ show, onClose }) {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
@@ -29,6 +36,11 @@ function HelpModal({ show, onClose }) {
 
   if (!shouldRender) return null;
 
+  /**
+   * getModalContent function returns the content for the help modal based on the current pathname.
+   * 
+   * @returns {Object} - An object containing the title and content for the help modal.
+   */
   const getModalContent = () => {
     switch (location.pathname) {
       case '/radar':

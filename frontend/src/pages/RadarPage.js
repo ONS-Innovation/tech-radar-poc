@@ -18,6 +18,11 @@ import { fetchCSVFromS3 } from "../utilities/getCSVData";
 import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
 import ProjectModal from '../components/Projects/ProjectModal';
 
+/**
+ * RadarPage component for displaying the radar page.
+ * 
+ * @returns {JSX.Element} - The RadarPage component.
+ */
 function RadarPage() {
   const [data, setData] = useState(null);
   const [selectedBlip, setSelectedBlip] = useState(null);
@@ -52,10 +57,17 @@ function RadarPage() {
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
   const location = useLocation();
 
+  /**
+   * useEffect hook to fetch the tech radar data from S3.
+   */
   useEffect(() => {
     fetchTechRadarJSONFromS3()
       .then((data) => setData(data));
   }, []);
+
+  /**
+   * useEffect hook to fetch the projects data from S3.
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -88,6 +100,9 @@ function RadarPage() {
     fetchData();
   }, []);
 
+  /**
+   * useEffect hook to set the allBlips state with the blips array.
+   */
   useEffect(() => {
     if (!data) return;
 
@@ -101,6 +116,9 @@ function RadarPage() {
     setAllBlips(blipsArray);
   }, [data]);
 
+  /**
+   * useEffect hook to handle the keyboard navigation for the blips.
+   */
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!lockedBlip || !allBlips.length) return;
@@ -134,6 +152,9 @@ function RadarPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [lockedBlip, allBlips]);
 
+  /**
+   * quadrantAngles constant to store the angles for the quadrants.
+   */
   const quadrantAngles = {
     1: 45,
     2: 135,
@@ -141,6 +162,9 @@ function RadarPage() {
     4: 315,
   };
 
+  /**
+   * ringRadii constant to store the radii for the rings.
+   */
   const ringRadii = {
     adopt: [0, 150],
     trial: [150, 250],
@@ -148,6 +172,15 @@ function RadarPage() {
     hold: [325, 400],
   };
 
+  /**
+   * calculateBlipPosition function to calculate the position of the blip.
+   * 
+   * @param {number} quadrant - The quadrant of the blip.
+   * @param {string} ring - The ring of the blip.
+   * @param {number} index - The index of the blip.
+   * @param {number} total - The total number of blips.
+   * @returns {Object} - The position of the blip.
+   */
   const calculateBlipPosition = (quadrant, ring, index, total) => {
     const baseAngle = quadrantAngles[quadrant];
     const [innerRadius, outerRadius] = ringRadii[ring.toLowerCase()];
@@ -206,6 +239,11 @@ function RadarPage() {
     setSearchResults(results);
   };
 
+  /**
+   * handleSearchResultClick function to handle the search result click event.
+   * 
+   * @param {Object} entry - The entry object to handle the click for.
+   */
   const handleSearchResultClick = (entry) => {
     const quadrant = entry.quadrant;
     const entryWithNumber = numberedEntries[quadrant].find(
@@ -223,6 +261,11 @@ function RadarPage() {
     setSearchResults([]);
   };
 
+  /**
+   * handleMouseDown function to handle the mouse down event.
+   * 
+   * @param {Event} e - The event object.
+   */
   const handleMouseDown = (e) => {
     setIsDragging(true);
     const rect = e.currentTarget.getBoundingClientRect();
@@ -232,6 +275,9 @@ function RadarPage() {
     });
   };
 
+  /**
+   * useEffect hook to handle the mouse move event.
+   */
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (isDragging) {
@@ -252,6 +298,9 @@ function RadarPage() {
       }
     };
 
+    /**
+     * handleMouseUp function to handle the mouse up event.
+     */
     const handleMouseUp = () => {
       setIsDragging(false);
       setDraggingQuadrant(null);
@@ -268,6 +317,11 @@ function RadarPage() {
     };
   }, [isDragging, dragOffset, draggingQuadrant, quadrantDragOffset]);
 
+  /**
+   * toggleQuadrant function to toggle the quadrant.
+   * 
+   * @param {number} quadrantId - The quadrant ID to toggle.
+   */
   const toggleQuadrant = (quadrantId) => {
     setExpandedQuadrants((prev) => ({
       ...prev,
@@ -275,6 +329,12 @@ function RadarPage() {
     }));
   };
 
+  /**
+   * findProjectsUsingTechnology function to find the projects using the technology.
+   * 
+   * @param {string} tech - The technology to find the projects for.
+   * @returns {Array} - The projects using the technology.
+   */
   const findProjectsUsingTechnology = (tech) => {
     if (!projectsData) return [];
 
@@ -312,6 +372,12 @@ function RadarPage() {
     });
   };
 
+  /**
+   * handleBlipClick function to handle the blip click event.
+   * 
+   * @param {Object} entry - The entry object to handle the click for.
+   * @param {boolean} fromModal - Whether the click is from the modal.
+   */
   const handleBlipClick = (entry, fromModal = false) => {
     const projects = findProjectsUsingTechnology(entry.title);
     setProjectsForTech(projects);
@@ -334,6 +400,11 @@ function RadarPage() {
     }
   };
 
+  /**
+   * handleBlipHover function to handle the blip hover event.
+   * 
+   * @param {Object} entry - The entry object to handle the hover for.
+   */
   const handleBlipHover = (entry) => {
     setSelectedBlip(entry);
     if (entry !== null) {
@@ -343,11 +414,21 @@ function RadarPage() {
     }
   };
 
+  /**
+   * handleProjectClick function to handle the project click event.
+   * 
+   * @param {Object} project - The project object to handle the click for.
+   */
   const handleProjectClick = (project) => {
     setSelectedProject(project);
     setIsProjectModalOpen(true);
   };
 
+  /**
+   * handleStatsTechClick function to handle the stats tech click event.
+   * 
+   * @param {string} techName - The technology name to handle the click for.
+   */
   const handleStatsTechClick = (techName) => {
     if (!techName) {
       setIsInfoBoxVisible(false);
@@ -372,6 +453,9 @@ function RadarPage() {
     }
   };
 
+  /**
+   * useEffect hook to handle the selected tech from the projects page.
+   */
   useEffect(() => {
     if (location.state?.selectedTech) {
       const tech = location.state.selectedTech;
@@ -421,12 +505,23 @@ function RadarPage() {
     });
   });
 
+  /**
+   * isTechnologyInRadar function to check if the technology is in the radar.
+   * 
+   * @param {string} techName - The technology name to check.
+   * @returns {boolean} - Whether the technology is in the radar.
+   */
   const isTechnologyInRadar = (techName) => {
     return data.entries.some(
       (entry) => entry.title.toLowerCase() === techName.toLowerCase().trim()
     );
   };
 
+  /**
+   * handleTechClick function to handle the tech click event.
+   * 
+   * @param {string} tech - The technology to handle the click for.
+   */
   const handleTechClick = (tech) => {
     const radarEntry = data.entries.find(
       (entry) => entry.title.toLowerCase() === tech.toLowerCase().trim()
@@ -446,6 +541,12 @@ function RadarPage() {
     }
   };
 
+  /**
+   * getTechnologyStatus function to get the technology status.
+   * 
+   * @param {string} tech - The technology to get the status for.
+   * @returns {string|null} - The technology status or null if not found.
+   */
   const getTechnologyStatus = (tech) => {
     const entry = data.entries.find(
       (entry) => entry.title.toLowerCase() === tech.trim().toLowerCase()
@@ -453,6 +554,12 @@ function RadarPage() {
     return entry ? entry.timeline[0].ringId.toLowerCase() : null;
   };
 
+  /**
+   * renderTechnologyList function to render the technology list.
+   * 
+   * @param {string} technologies - The technologies to render.
+   * @returns {JSX.Element|null} - The rendered technology list or null if not found.
+   */
   const renderTechnologyList = (technologies) => {
     if (!technologies) return null;
 
@@ -479,6 +586,12 @@ function RadarPage() {
     });
   };
 
+  /**
+   * handleQuadrantMouseDown function to handle the quadrant mouse down event.
+   * 
+   * @param {Event} e - The event object.
+   * @param {string} quadrantId - The quadrant ID.
+   */
   const handleQuadrantMouseDown = (e, quadrantId) => {
     e.stopPropagation();
     if (e.target.closest(".drag-handle")) {

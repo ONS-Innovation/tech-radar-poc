@@ -1,8 +1,17 @@
-import React, { useState, useMemo } from 'react';
-import './Statistics.css';
+import React, { useState, useMemo, useCallback } from 'react';
+import "../../styles/components/Statistics.css";
 import { IoSearch } from 'react-icons/io5';
 import { subMonths, isValid, parseISO } from 'date-fns';
 
+/**
+ * Statistics component for displaying repository statistics.
+ * 
+ * @param {Object} props - The props passed to the Statistics component.
+ * @param {Object} props.data - The data object containing statistics.
+ * @param {Function} props.onTechClick - Function to handle technology click.
+ * @param {Function} props.onDateChange - Function to handle date change.
+ * @param {boolean} props.isLoading - Whether the data is loading.
+ */
 function Statistics({ data, onTechClick, onDateChange, isLoading }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'repo_count', direction: 'desc' });
@@ -20,6 +29,11 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     { value: 'custom', label: 'Custom Date' }
   ];
 
+  /**
+   * handleDateChange function handles the date change event.
+   * 
+   * @param {string} value - The selected date value.
+   */
   const handleDateChange = (value) => {
     setSelectedDate(value);
     if (value === 'all') {
@@ -32,6 +46,11 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     }
   };
 
+  /**
+   * handleCustomDateChange function handles the custom date change event.
+   * 
+   * @param {Event} e - The event object.
+   */
   const handleCustomDateChange = (e) => {
     const date = e.target.value;
     if (date && isValid(parseISO(date))) {
@@ -39,13 +58,25 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     }
   };
 
-  const getTechnologyStatus = (language) => {
-    const entry = data.radar_entries?.find(
+  /**
+   * getTechnologyStatus function gets the technology status for a given language.
+   * 
+   * @param {string} language - The language to get the status for.
+   * @returns {string|null} - The technology status or null if not found.
+   */
+  const getTechnologyStatus = useCallback((language) => {
+    if (!data || !data.radar_entries) return null;
+    const entry = data.radar_entries.find(
       entry => entry.title.toLowerCase() === language.toLowerCase()
     );
     return entry ? entry.timeline[0].ringId.toLowerCase() : null;
-  };
+  }, [data]);
 
+  /**
+   * handleLanguageClick function handles the language click event.
+   * 
+   * @param {string} language - The language to handle the click for.
+   */
   const handleLanguageClick = (language) => {
     const status = getTechnologyStatus(language);
     if (status) {
@@ -53,6 +84,11 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     }
   };
 
+  /**
+   * getCurrentStats function gets the current stats based on the repository view.
+   * 
+   * @returns {Object|null} - The current stats or null if not found.
+   */
   const getCurrentStats = () => {
     if (!data) return null;
     // NEEDS ERROR HANDLING SEB
@@ -65,7 +101,12 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     return data.stats_unarchived || null;
   };
 
-  const getCurrentLanguageStats = () => {
+  /**
+   * getCurrentLanguageStats function gets the current language stats based on the repository view.
+   * 
+   * @returns {Object|null} - The current language stats or null if not found.
+   */
+  const getCurrentLanguageStats = useCallback(() => {
     if (!data) return null;
 
     if (repoView === 'archived') {
@@ -74,8 +115,13 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
       return data.language_statistics || {};
     }
     return data.language_statistics_unarchived || {};
-  };
+  }, [data, repoView]);
 
+  /**
+   * sortedAndFilteredLanguages function sorts and filters the languages based on the search term and sort configuration.
+   * 
+   * @returns {Array} - The sorted and filtered languages.
+   */
   const sortedAndFilteredLanguages = useMemo(() => {
     const languageStats = getCurrentLanguageStats();
     if (!languageStats) return [];
@@ -110,6 +156,11 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     return filtered;
   }, [getCurrentLanguageStats, searchTerm, sortConfig, getTechnologyStatus, showTechRadarOnly]);
 
+  /**
+   * handleSort function handles the sort event.
+   * 
+   * @param {string} key - The key to sort by.
+   */
   const handleSort = (key) => {
     setSortConfig(prev => ({
       key,
@@ -117,6 +168,12 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     }));
   };
 
+  /**
+   * getRepoCountDisplay function gets the repository count display.
+   * 
+   * @param {number} repoCount - The repository count.
+   * @returns {string} - The repository count display.
+   */
   const getRepoCountDisplay = (repoCount) => {
     const stats = getCurrentStats();
     if (hoveredLanguage && stats?.total) {

@@ -5,16 +5,32 @@ import Header from '../components/Header/Header';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import { fetchTechRadarJSONFromS3 } from '../utilities/getTechRadarJson';
 
+/**
+ * StatisticsPage component for displaying the statistics page.
+ * 
+ * @returns {JSX.Element} - The StatisticsPage component.
+ */
 function StatisticsPage() {
   const navigate = useNavigate();
   const [statsData, setStatsData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
 
-  if (isProjectsModalOpen) {
-    console.log('isProjectsModalOpen', isProjectsModalOpen);
-  }
+  /**
+   * useEffect hook to handle the projects modal open state.
+   */
+  useEffect(() => {
+    if (isProjectsModalOpen) {
+      console.log('isProjectsModalOpen', isProjectsModalOpen);
+    }
+  }, [isProjectsModalOpen]);
 
+  /**
+   * fetchStatistics function to fetch the statistics data.
+   * 
+   * @param {string|null} date - The date to fetch the statistics for.
+   * @param {string} repoView - The repository view to fetch the statistics for.
+   */
   const fetchStatistics = async (date = null, repoView = 'unarchived') => {
     setIsLoading(true);
     try {
