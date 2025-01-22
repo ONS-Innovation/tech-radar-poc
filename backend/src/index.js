@@ -25,13 +25,17 @@ const s3Client = new S3Client({
   region: "eu-west-2",
 });
 
+const getBucketName = () => {
+  return process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "sdp-dev-tech-radar";
+}
+
 /**
  * Endpoint for fetching CSV data.
  * It fetches the CSV data from an S3 bucket, parses it, and returns the parsed data.
  */
 app.get("/api/csv", async (req, res) => {
   try {
-    const bucketName = process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "sdp-dev-tech-radar";
+    const bucketName = getBucketName();
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: "onsTechDataAdoption.csv",
@@ -67,7 +71,7 @@ app.get("/api/csv", async (req, res) => {
  */
 app.get("/api/tech-radar/json", async (req, res) => {
   try {
-    const bucketName = process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "sdp-dev-tech-radar";
+    const bucketName = getBucketName();
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: "onsRadarSkeleton.json",
@@ -93,7 +97,7 @@ app.get("/api/tech-radar/json", async (req, res) => {
 app.get("/api/json", async (req, res) => {
   try {
     const { datetime, archived } = req.query;
-    const bucketName = process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "sdp-dev-tech-radar";
+    const bucketName = getBucketName();
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: "repositories.json",
