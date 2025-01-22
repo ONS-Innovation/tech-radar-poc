@@ -10,7 +10,7 @@
 This tool aims to provide a visual representation of the digital landscape at ONS. This consists of the following 3 main pages and one homepage:
 
 **Tech Radar:**
-- Tech Radar is a tool that helps you track the Infrastructure, Languages, Frameworks and Supporting Tools used in the ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
+- Tech Radar is a tool that helps you track the Infrastructure, Languages, Frameworks and Supporting Tools used in ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
 - Use the following keyboard shortcuts to navigate the tech radar:
     - `2` to move up the list of technologies
     - `1`to move down the list of technologies
