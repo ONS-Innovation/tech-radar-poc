@@ -1,5 +1,6 @@
 import React from 'react';
 import "../../styles/components/ProjectModal.css";
+import { IoClose } from 'react-icons/io5';
 
 /**
  * ProjectModal component for displaying project details in a modal.
@@ -13,164 +14,92 @@ import "../../styles/components/ProjectModal.css";
 const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
   if (!isOpen || !project) return null;
 
+  // Fields that should use renderTechnologyList
+  const technologyListFields = [
+    'Language_Main',
+    'Language_Others',
+    'Language_Frameworks',
+    'Infrastructure',
+    'CICD',
+    'Cloud_Services',
+    'IAM_Services',
+    'Testing_Frameworks',
+    'Containers',
+    'Static_Analysis',
+    'Code_Formatter',
+    'Monitoring',
+    'Datastores',
+    'Data_Output_Formats',
+    'Integrations_ONS',
+    'Integrations_External',
+    'Database_Technologies'
+
+  ];
+
+  // Custom field labels mapping
+  const fieldLabels = {
+    Project_Area: 'Project Area',
+    DST_Area: 'DST Area',
+    Language_Main: 'Main Language',
+    Language_Others: 'Other Languages',
+    Language_Frameworks: 'Frameworks',
+    Testing_Frameworks: 'Testing Frameworks',
+    Hosted: 'Hosted On',
+    Architectures: 'Architecture',
+    Source_Control: 'Source Control',
+    Branching_Strategy: 'Branching Strategy',
+    Static_Analysis: 'Static Analysis',
+    Code_Formatter: 'Code Formatter',
+    Data_Output_Formats: 'Data Output Formats',
+    Integrations_ONS: 'ONS Integrations',
+    Integrations_External: 'External Integrations'
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content project-modal" onClick={(e) => e.stopPropagation()}>
         <div className="project-header">
-            <div className="project-header-left">
-                <h2>{project.Project}</h2>
-                {project.Project_Short && (
-                    <div className="project-short-name">({project.Project_Short})</div>
-                )}
-            </div>
-            <div className="project-header-right">
-                <button className="modal-close" onClick={onClose}>×</button>
-            </div>
-
+          <div className="project-header-left">
+            <h2>{project.Project}</h2>
+            {project.Project_Short && (
+              <div className="project-short-name">({project.Project_Short})</div>
+            )}
+          </div>
+          <div className="project-header-right">
+            <button className="modal-close" onClick={onClose}>
+              <IoClose />
+            </button>
+          </div>
         </div>
 
         <div className="project-details">
-          {project.Project_Area && (
-            <div className="detail-item">
-              <h3>Project Area:</h3>
-              <p>{project.Project_Area}</p>
-            </div>
-          )}
+          {Object.entries(project).map(([key, value]) => {
+            // Skip empty values, Project and Project_Short (already shown in header)
+            if (!value || key === 'Project' || key === 'Project_Short') return null;
 
-          {project.Team && (
-            <div className="detail-item">
-              <h3>Team:</h3>
-              <p>{project.Team}</p>
-            </div>
-          )}
+            // Special handling for Documentation
+            if (key === 'Documentation' || key === 'Repo') {
+              return (
+                <div key={key} className="detail-item">
+                  <h3>{key === 'Documentation' ? 'Documentation:' : 'Repo:'}</h3>
+                  <a href={value} target="_blank" rel="noopener noreferrer">
+                    {key === 'Documentation' ? 'View Documentation' : 'View Repo'}
+                  </a>
+                </div>
+              );
+            }
 
-          {project.DST_Area && (
-            <div className="detail-item">
-              <h3>DST Area:</h3>
-              <p>{project.DST_Area}</p>
-            </div>
-          )}
-
-          {project.Language_Main && (
-            <div className="detail-item">
-              <h3>Main Language:</h3>
-              <p>{renderTechnologyList(project.Language_Main)}</p>
-            </div>
-          )}
-
-          {project.Language_Others && (
-            <div className="detail-item">
-              <h3>Other Languages:</h3>
-              <p>{renderTechnologyList(project.Language_Others)}</p>
-            </div>
-          )}
-
-          {project.Language_Frameworks && (
-            <div className="detail-item">
-              <h3>Frameworks:</h3>
-              <p>{renderTechnologyList(project.Language_Frameworks)}</p>
-            </div>
-          )}
-
-          {project.Testing_Frameworks && (
-            <div className="detail-item">
-              <h3>Testing Frameworks:</h3>
-              <p>{renderTechnologyList(project.Testing_Frameworks)}</p>
-            </div>
-          )}
-
-          {project.Hosted && (
-            <div className="detail-item">
-              <h3>Hosted On:</h3>
-              <p>{project.Hosted}</p>
-            </div>
-          )}
-
-          {project.Containers && (
-            <div className="detail-item">
-              <h3>Containers:</h3>
-              <p>{renderTechnologyList(project.Containers)}</p>
-            </div>
-          )}
-
-          {project.Architectures && (
-            <div className="detail-item">
-              <h3>Architecture:</h3>
-              <p>{project.Architectures}</p>
-            </div>
-          )}
-
-          {project.Source_Control && (
-            <div className="detail-item">
-              <h3>Source Control:</h3>
-              <p>{project.Source_Control}</p>
-            </div>
-          )}
-
-          {project.Branching_Strategy && (
-            <div className="detail-item">
-              <h3>Branching Strategy:</h3>
-              <p>{project.Branching_Strategy}</p>
-            </div>
-          )}
-
-          {project.Static_Analysis && (
-            <div className="detail-item">
-              <h3>Static Analysis:</h3>
-              <p>{renderTechnologyList(project.Static_Analysis)}</p>
-            </div>
-          )}
-
-          {project.Code_Formatter && (
-            <div className="detail-item">
-              <h3>Code Formatter:</h3>
-              <p>{renderTechnologyList(project.Code_Formatter)}</p>
-            </div>
-          )}
-
-          {project.Monitoring && (
-            <div className="detail-item">
-              <h3>Monitoring:</h3>
-              <p>{renderTechnologyList(project.Monitoring)}</p>
-            </div>
-          )}
-
-          {project.Datastores && (
-            <div className="detail-item">
-              <h3>Datastores:</h3>
-              <p>{renderTechnologyList(project.Datastores)}</p>
-            </div>
-          )}
-
-          {project.Data_Output_Formats && (
-            <div className="detail-item">
-              <h3>Data Output Formats:</h3>
-              <p>{renderTechnologyList(project.Data_Output_Formats)}</p>
-            </div>
-          )}
-
-          {project.Integrations_ONS && (
-            <div className="detail-item">
-              <h3>ONS Integrations:</h3>
-              <p>{renderTechnologyList(project.Integrations_ONS)}</p>
-            </div>
-          )}
-
-          {project.Integrations_External && (
-            <div className="detail-item">
-              <h3>External Integrations:</h3>
-              <p>{renderTechnologyList(project.Integrations_External)}</p>
-            </div>
-          )}
-
-          {project.Documentation && (
-            <div className="detail-item">
-              <h3>Documentation:</h3>
-              <a href={project.Documentation} target="_blank" rel="noopener noreferrer">
-                View Documentation
-              </a>
-            </div>
-          )}
+            return (
+              <div key={key} className="detail-item">
+                <h3>{fieldLabels[key] || key.replace(/_/g, ' ')}:</h3>
+                <p>
+                  {technologyListFields.includes(key) 
+                    ? renderTechnologyList(value)
+                    : value.replace(/;/g, '; ')}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

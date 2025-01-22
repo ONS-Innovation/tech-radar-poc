@@ -9,17 +9,13 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(1px);
 }
 
 .modal-content {
   background: hsl(var(--card));
   border-radius: var(--radius);
   padding: 24px;
-  max-width: 800px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
   position: relative;
   border: 1px solid hsl(var(--border));
   box-shadow: 0 4px 10px 0 hsl(var(--foreground) / 0.1);
@@ -42,12 +38,23 @@
   color: hsl(var(--foreground));
   font-size: 24px;
   cursor: pointer;
+  margin-top: -2px;
+  border-radius: var(--radius);
+  transition: all .2s ease;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: hsl(var(--muted));
 }
 
 .project-header {
   margin-bottom: 24px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
@@ -88,16 +95,27 @@
 }
 
 .project-modal {
-  max-width: 800px;
-  background-color: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
+  width: 50vw;
+  max-width: 1200px;
+  /* max-height: 50vh; */
 }
 
 .detail-item {
   background-color: hsl(var(--muted));
-  padding: 15px;
+  padding: 16px;
   border-radius: 8px;
+  height: 100%;
+  box-sizing: border-box;
+  text-align: left;
 }
+
+/* .detail-item {
+  background-color: hsl(var(--muted));
+  padding: 16px;
+  border-radius: var(--radius);
+  height: fit-content;
+  text-align: left;
+} */
 
 .detail-item h3 {
   margin: 0 0 8px 0;
@@ -136,15 +154,11 @@
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
   margin-top: 20px;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
-.detail-item {
-  background-color: hsl(var(--muted));
-  padding: 16px;
-  border-radius: var(--radius);
-  height: fit-content;
-  text-align: left;
-}
+
 
 .detail-item h3 {
   margin: 0 0 8px 0;
@@ -163,12 +177,8 @@
   text-decoration: underline;
 }
 
-.project-modal {
-  width: 50vw;
-  max-width: 1200px;
-  max-height: 50vh;
-  overflow-y: auto;
-}
+
+
 
 @media (max-width: 1400px) {
   .project-modal {

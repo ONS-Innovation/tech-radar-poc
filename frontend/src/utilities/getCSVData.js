@@ -1,3 +1,8 @@
+/**
+ * fetchCSVFromS3 function to fetch the CSV data from the S3 bucket.
+ * 
+ * @returns {Promise<Object>} - The CSV data.
+ */
 export const fetchCSVFromS3 = async () => {
   try {
     let response;

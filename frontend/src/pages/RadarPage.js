@@ -16,11 +16,11 @@ import { Toaster, toast } from "react-hot-toast";
 import { FaSortAmountDownAlt, FaSortAmountUpAlt } from "react-icons/fa";
 import { fetchCSVFromS3 } from "../utilities/getCSVData";
 import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
-import ProjectModal from '../components/Projects/ProjectModal';
+import ProjectModal from "../components/Projects/ProjectModal";
 
 /**
  * RadarPage component for displaying the radar page.
- * 
+ *
  * @returns {JSX.Element} - The RadarPage component.
  */
 function RadarPage() {
@@ -61,8 +61,7 @@ function RadarPage() {
    * useEffect hook to fetch the tech radar data from S3.
    */
   useEffect(() => {
-    fetchTechRadarJSONFromS3()
-      .then((data) => setData(data));
+    fetchTechRadarJSONFromS3().then((data) => setData(data));
   }, []);
 
   /**
@@ -82,7 +81,7 @@ function RadarPage() {
           const csvText = await response.text();
           const rows = csvText.split("\n");
           const headers = rows[0].split(",");
-          const data = rows.slice(1).map(row => {
+          const data = rows.slice(1).map((row) => {
             const values = row.split(",");
             return headers.reduce((obj, header, i) => {
               obj[header] = values[i];
@@ -130,11 +129,11 @@ function RadarPage() {
 
       let nextBlip;
 
-      if ((e.key === "1")) {
+      if (e.key === "1") {
         if (currentIndex > 0) {
           nextBlip = allBlips[currentIndex - 1];
         }
-      } else if ((e.key === "2")) {
+      } else if (e.key === "2") {
         if (currentIndex < allBlips.length - 1) {
           nextBlip = allBlips[currentIndex + 1];
         }
@@ -174,7 +173,7 @@ function RadarPage() {
 
   /**
    * calculateBlipPosition function to calculate the position of the blip.
-   * 
+   *
    * @param {number} quadrant - The quadrant of the blip.
    * @param {string} ring - The ring of the blip.
    * @param {number} index - The index of the blip.
@@ -215,25 +214,35 @@ function RadarPage() {
     };
     return colors[ring];
   };
-
   const handleSearch = (term) => {
     setSearchTerm(term);
     if (!term.trim()) {
       setSearchResults([]);
       return;
     }
-
     const results = data.entries
-      .filter(
-        (entry) =>
-          entry.title.toLowerCase().includes(term.toLowerCase()) ||
-          entry.description.toLowerCase().includes(term.toLowerCase())
-      )
+      .filter((entry) => {
+        // Get timeline entries excluding 'review' ring
+        const validTimeline = entry.timeline.filter(
+          (t) => t.ringId.toLowerCase() !== "review"
+        );
+
+        // Sort by date descending to get latest entry
+        validTimeline.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // Only include if latest valid ring exists and title/description matches search
+        return (
+          validTimeline.length > 0 &&
+          (entry.title.toLowerCase().includes(term.toLowerCase()) ||
+            entry.description.toLowerCase().includes(term.toLowerCase()))
+        );
+      })
       .map((entry) => ({
         ...entry,
-        timeline: [...entry.timeline].sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
-        ),
+        // Filter out review entries and sort by date
+        timeline: entry.timeline
+          .filter((t) => t.ringId.toLowerCase() !== "review")
+          .sort((a, b) => new Date(b.date) - new Date(a.date)),
       }));
 
     setSearchResults(results);
@@ -241,7 +250,7 @@ function RadarPage() {
 
   /**
    * handleSearchResultClick function to handle the search result click event.
-   * 
+   *
    * @param {Object} entry - The entry object to handle the click for.
    */
   const handleSearchResultClick = (entry) => {
@@ -263,7 +272,7 @@ function RadarPage() {
 
   /**
    * handleMouseDown function to handle the mouse down event.
-   * 
+   *
    * @param {Event} e - The event object.
    */
   const handleMouseDown = (e) => {
@@ -319,7 +328,7 @@ function RadarPage() {
 
   /**
    * toggleQuadrant function to toggle the quadrant.
-   * 
+   *
    * @param {number} quadrantId - The quadrant ID to toggle.
    */
   const toggleQuadrant = (quadrantId) => {
@@ -331,7 +340,7 @@ function RadarPage() {
 
   /**
    * findProjectsUsingTechnology function to find the projects using the technology.
-   * 
+   *
    * @param {string} tech - The technology to find the projects for.
    * @returns {Array} - The projects using the technology.
    */
@@ -343,22 +352,10 @@ function RadarPage() {
         "Language_Main",
         "Language_Others",
         "Language_Frameworks",
-        "Languages_Adopt",
-        "Languages_Trial",
-        "Languages_Assess",
-        "Languages_Hold",
-        "Frameworks_Adopt",
-        "Frameworks_Trial",
-        "Frameworks_Assess",
-        "Frameworks_Hold",
-        "Infrastructure_Adopt",
-        "Infrastructure_Trial",
-        "Infrastructure_Assess",
-        "Infrastructure_Hold",
-        "CICD_Adopt",
-        "CICD_Trial",
-        "CICD_Assess",
-        "CICD_Hold",
+        "Languages",
+        "Frameworks",
+        "Infrastructure",
+        "CICD",
       ];
 
       return allTechColumns.some((column) => {
@@ -374,7 +371,7 @@ function RadarPage() {
 
   /**
    * handleBlipClick function to handle the blip click event.
-   * 
+   *
    * @param {Object} entry - The entry object to handle the click for.
    * @param {boolean} fromModal - Whether the click is from the modal.
    */
@@ -402,7 +399,7 @@ function RadarPage() {
 
   /**
    * handleBlipHover function to handle the blip hover event.
-   * 
+   *
    * @param {Object} entry - The entry object to handle the hover for.
    */
   const handleBlipHover = (entry) => {
@@ -416,7 +413,7 @@ function RadarPage() {
 
   /**
    * handleProjectClick function to handle the project click event.
-   * 
+   *
    * @param {Object} project - The project object to handle the click for.
    */
   const handleProjectClick = (project) => {
@@ -426,7 +423,7 @@ function RadarPage() {
 
   /**
    * handleStatsTechClick function to handle the stats tech click event.
-   * 
+   *
    * @param {string} techName - The technology name to handle the click for.
    */
   const handleStatsTechClick = (techName) => {
@@ -436,13 +433,13 @@ function RadarPage() {
     }
 
     const entry = data.entries.find(
-      entry => entry.title.toLowerCase() === techName.toLowerCase()
+      (entry) => entry.title.toLowerCase() === techName.toLowerCase()
     );
 
     if (entry) {
       const quadrant = entry.quadrant;
       const entryWithNumber = numberedEntries[quadrant].find(
-        e => e.id === entry.id
+        (e) => e.id === entry.id
       );
 
       const projects = findProjectsUsingTechnology(entry.title);
@@ -460,7 +457,7 @@ function RadarPage() {
     if (location.state?.selectedTech) {
       const tech = location.state.selectedTech;
       const entry = data?.entries.find(
-        entry => entry.title.toLowerCase() === tech.toLowerCase()
+        (entry) => entry.title.toLowerCase() === tech.toLowerCase()
       );
       if (entry) {
         handleBlipClick(entry, true);
@@ -468,23 +465,26 @@ function RadarPage() {
     }
   }, [location.state, data]);
 
-  if (!data) return <div className="loading-container">Loading...</div>;
+  if (!data) return (
+    <div className="loading-container">
+      <div className="loading-spinner"></div>
+      <p>Loading Radar...</p>
+    </div>
+  );
 
   const groupedEntries = data.entries.reduce((acc, entry) => {
     const quadrant = entry.quadrant;
-    const sortedTimeline = [...entry.timeline].sort(
-      (a, b) => new Date(b.date) - new Date(a.date)
-    );
-    const currentRing = sortedTimeline[0].ringId.toLowerCase();
+    const mostRecentRing = entry.timeline[entry.timeline.length - 1].ringId.toLowerCase()
 
-    if (currentRing === 'review') return acc;
+    // Skip if the most recent timeline entry has ringId of "review"
+    if (mostRecentRing === "review") return acc;
 
     if (!acc[quadrant]) acc[quadrant] = {};
-    if (!acc[quadrant][currentRing]) acc[quadrant][currentRing] = [];
+    if (!acc[quadrant][mostRecentRing]) acc[quadrant][mostRecentRing] = [];
 
-    acc[quadrant][currentRing].push({
+    acc[quadrant][mostRecentRing].push({
       ...entry,
-      timeline: sortedTimeline,
+      timeline: entry.timeline,
     });
     return acc;
   }, {});
@@ -493,7 +493,7 @@ function RadarPage() {
   let counter = 1;
   Object.keys(groupedEntries).forEach((quadrant) => {
     numberedEntries[quadrant] = [];
-    ['adopt', 'trial', 'assess', 'hold'].forEach((ring) => {
+    ["adopt", "trial", "assess", "hold"].forEach((ring) => {
       if (groupedEntries[quadrant][ring]) {
         groupedEntries[quadrant][ring].forEach((entry) => {
           numberedEntries[quadrant].push({
@@ -507,7 +507,7 @@ function RadarPage() {
 
   /**
    * isTechnologyInRadar function to check if the technology is in the radar.
-   * 
+   *
    * @param {string} techName - The technology name to check.
    * @returns {boolean} - Whether the technology is in the radar.
    */
@@ -519,7 +519,7 @@ function RadarPage() {
 
   /**
    * handleTechClick function to handle the tech click event.
-   * 
+   *
    * @param {string} tech - The technology to handle the click for.
    */
   const handleTechClick = (tech) => {
@@ -534,16 +534,16 @@ function RadarPage() {
       );
 
       setIsProjectModalOpen(false);
-      console.log(isProjectsModalOpen)
+      console.log(isProjectsModalOpen);
       setIsProjectsModalOpen(false);
-      
+
       handleBlipClick(entryWithNumber, true);
     }
   };
 
   /**
    * getTechnologyStatus function to get the technology status.
-   * 
+   *
    * @param {string} tech - The technology to get the status for.
    * @returns {string|null} - The technology status or null if not found.
    */
@@ -551,12 +551,12 @@ function RadarPage() {
     const entry = data.entries.find(
       (entry) => entry.title.toLowerCase() === tech.trim().toLowerCase()
     );
-    return entry ? entry.timeline[0].ringId.toLowerCase() : null;
+    return entry ? entry.timeline[entry.timeline.length - 1].ringId.toLowerCase() : null;
   };
 
   /**
    * renderTechnologyList function to render the technology list.
-   * 
+   *
    * @param {string} technologies - The technologies to render.
    * @returns {JSX.Element|null} - The rendered technology list or null if not found.
    */
@@ -588,7 +588,7 @@ function RadarPage() {
 
   /**
    * handleQuadrantMouseDown function to handle the quadrant mouse down event.
-   * 
+   *
    * @param {Event} e - The event object.
    * @param {string} quadrantId - The quadrant ID.
    */
@@ -675,9 +675,9 @@ function RadarPage() {
                   <span
                     className={`info-box-ring ${(
                       selectedBlip || lockedBlip
-                    ).timeline[0].ringId.toLowerCase()}`}
+                    ).timeline[selectedBlip.timeline.length - 1].ringId.toLowerCase()}`}
                   >
-                    {(selectedBlip || lockedBlip).timeline[0].ringId}
+                    {(selectedBlip || lockedBlip).timeline[selectedBlip.timeline.length - 1].ringId}
                   </span>
                 </div>
 
@@ -703,12 +703,11 @@ function RadarPage() {
 
                 <div className="timeline-container">
                   {[...(selectedBlip || lockedBlip).timeline]
-                    .sort((a, b) => {
-                      const comparison = new Date(b.date) - new Date(a.date);
-                      return timelineAscending ? -comparison : comparison;
-                    })
+                    .reverse()
+                    .slice()
+                    [timelineAscending ? 'reverse' : 'slice']()
                     .map((timelineItem, index, array) => (
-                      <div key={timelineItem.date} className="timeline-item">
+                      <div key={timelineItem.date+timelineItem.ringId} className="timeline-item">
                         <div
                           className={`timeline-node ${timelineItem.ringId.toLowerCase()}`}
                           onClick={() =>
@@ -830,9 +829,7 @@ function RadarPage() {
                   <h2>{data.quadrants.find((q) => q.id === "4").name}</h2>
                   <span className="info-icon">
                     <IoInformationCircle size={18} />
-                    <span className="tooltip">
-                      Click to view more details
-                    </span>
+                    <span className="tooltip">Click to view more details</span>
                   </span>
                 </div>
                 <span
@@ -859,9 +856,9 @@ function RadarPage() {
                     <span className="entry-number">{entry.number}.</span>
                     <span className="entry-title">{entry.title}</span>
                     <span
-                      className={`entry-ring ${entry.timeline[0].ringId.toLowerCase()}`}
+                      className={`entry-ring ${entry.timeline[entry.timeline.length - 1].ringId.toLowerCase()}`}
                     >
-                      {entry.timeline[0].ringId}
+                      {entry.timeline[entry.timeline.length - 1].ringId}
                     </span>
                   </li>
                 ))}
@@ -903,9 +900,7 @@ function RadarPage() {
                   <h2>{data.quadrants.find((q) => q.id === "1").name}</h2>
                   <span className="info-icon">
                     <IoInformationCircle size={18} />
-                    <span className="tooltip">
-                      Click to view more details
-                    </span>
+                    <span className="tooltip">Click to view more details</span>
                   </span>
                 </div>
                 <span
@@ -931,9 +926,9 @@ function RadarPage() {
                   <span className="entry-number">{entry.number}.</span>
                   <span className="entry-title">{entry.title}</span>
                   <span
-                    className={`entry-ring ${entry.timeline[0].ringId.toLowerCase()}`}
+                    className={`entry-ring ${entry.timeline[entry.timeline.length - 1].ringId.toLowerCase()}`}
                   >
-                    {entry.timeline[0].ringId}
+                    {entry.timeline[entry.timeline.length - 1].ringId}
                   </span>
                 </li>
               ))}
@@ -995,62 +990,64 @@ function RadarPage() {
               </text>
 
               {Object.entries(groupedEntries).map(([quadrant, rings]) =>
-                Object.entries(rings).map(([ring, entries]) =>
-                  ring !== 'review' && entries.map((entry, index) => {
-                    const position = calculateBlipPosition(
-                      quadrant,
-                      ring,
-                      index,
-                      entries.length
-                    );
-                    const number = numberedEntries[quadrant].find(
-                      (e) => e.id === entry.id
-                    ).number;
-                    const isSelected = lockedBlip?.id === entry.id;
+                Object.entries(rings).map(
+                  ([ring, entries]) =>
+                    ring !== "review" &&
+                    entries.map((entry, index) => {
+                      const position = calculateBlipPosition(
+                        quadrant,
+                        ring,
+                        index,
+                        entries.length
+                      );
+                      const number = numberedEntries[quadrant].find(
+                        (e) => e.id === entry.id
+                      ).number;
+                      const isSelected = lockedBlip?.id === entry.id;
 
-                    return (
-                      <g
-                        key={entry.id}
-                        transform={`translate(${position.x}, ${position.y})`}
-                        className="blip-container"
-                        onMouseEnter={() =>
-                          !lockedBlip &&
-                          handleBlipHover(
-                            numberedEntries[quadrant].find(
-                              (e) => e.id === entry.id
+                      return (
+                        <g
+                          key={entry.id}
+                          transform={`translate(${position.x}, ${position.y})`}
+                          className="blip-container"
+                          onMouseEnter={() =>
+                            !lockedBlip &&
+                            handleBlipHover(
+                              numberedEntries[quadrant].find(
+                                (e) => e.id === entry.id
+                              )
                             )
-                          )
-                        }
-                        onMouseLeave={() =>
-                          !lockedBlip && handleBlipHover(null)
-                        }
-                        onClick={() => {
-                          handleBlipClick(entry);
-                        }}
-                      >
-                        <circle
-                          r="15"
-                          className={`blip ${ring.toLowerCase()}`}
-                        />
-                        {isSelected && (
-                          <circle
-                            r="18"
-                            className="blip-highlight"
-                            stroke={getColorForRing(ring.toLowerCase())}
-                            strokeWidth="2"
-                            fill="none"
-                          />
-                        )}
-                        <text
-                          className="blip-number"
-                          textAnchor="middle"
-                          dy=".3em"
+                          }
+                          onMouseLeave={() =>
+                            !lockedBlip && handleBlipHover(null)
+                          }
+                          onClick={() => {
+                            handleBlipClick(entry);
+                          }}
                         >
-                          {number}
-                        </text>
-                      </g>
-                    );
-                  })
+                          <circle
+                            r="15"
+                            className={`blip ${ring.toLowerCase()}`}
+                          />
+                          {isSelected && (
+                            <circle
+                              r="18"
+                              className="blip-highlight"
+                              stroke={getColorForRing(ring.toLowerCase())}
+                              strokeWidth="2"
+                              fill="none"
+                            />
+                          )}
+                          <text
+                            className="blip-number"
+                            textAnchor="middle"
+                            dy=".3em"
+                          >
+                            {number}
+                          </text>
+                        </g>
+                      );
+                    })
                 )
               )}
             </svg>
@@ -1090,9 +1087,7 @@ function RadarPage() {
                   <h2>{data.quadrants.find((q) => q.id === "3").name}</h2>
                   <span className="info-icon">
                     <IoInformationCircle size={18} />
-                    <span className="tooltip">
-                      Click to view more details
-                    </span>
+                    <span className="tooltip">Click to view more details</span>
                   </span>
                 </div>
                 <span
@@ -1118,9 +1113,9 @@ function RadarPage() {
                   <span className="entry-number">{entry.number}.</span>
                   <span className="entry-title">{entry.title}</span>
                   <span
-                    className={`entry-ring ${entry.timeline[0].ringId.toLowerCase()}`}
+                    className={`entry-ring ${entry.timeline[entry.timeline.length - 1].ringId.toLowerCase()}`}
                   >
-                    {entry.timeline[0].ringId}
+                    {entry.timeline[entry.timeline.length - 1].ringId}
                   </span>
                 </li>
               ))}
@@ -1161,9 +1156,7 @@ function RadarPage() {
                   <h2>{data.quadrants.find((q) => q.id === "2").name}</h2>
                   <span className="info-icon">
                     <IoInformationCircle size={18} />
-                    <span className="tooltip">
-                      Click to view more details
-                    </span>
+                    <span className="tooltip">Click to view more details</span>
                   </span>
                 </div>
                 <span
@@ -1189,9 +1182,9 @@ function RadarPage() {
                   <span className="entry-number">{entry.number}.</span>
                   <span className="entry-title">{entry.title}</span>
                   <span
-                    className={`entry-ring ${entry.timeline[0].ringId.toLowerCase()}`}
+                    className={`entry-ring ${entry.timeline[entry.timeline.length - 1].ringId.toLowerCase()}`}
                   >
-                    {entry.timeline[0].ringId}
+                    {entry.timeline[entry.timeline.length - 1].ringId}
                   </span>
                 </li>
               ))}

@@ -46,6 +46,9 @@ const Projects = ({ isOpen, projectsData, handleProjectClick, getTechnologyStatu
       'Code_Formatter',
       'Monitoring',
       'Datastores',
+      'Cloud_Providers',
+      'CICD',
+      'Infrastructure',
     ];
 
     const technologies = techColumns.reduce((acc, column) => {
