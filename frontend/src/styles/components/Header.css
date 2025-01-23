@@ -68,20 +68,16 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  gap: 8px;
 }
 
 .search-input {
-  width: 280px;
   height: 100%;
   box-sizing: border-box;
-  padding: 10px 15px;
-  border-radius: var(--radius);
-  font-size: 14px;
   outline: none;
   border: none;
   transition: all 0.2s;
   background: hsl(var(--background));
-  color: hsl(var(--foreground));
   font-family: inherit;
 }
 
