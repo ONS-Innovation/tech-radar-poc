@@ -180,14 +180,14 @@
   justify-content: center;
   height: 36px;
   width: 36px;
+  padding: 8px;
+  box-sizing: border-box;
   border-radius: var(--radius);
   cursor: pointer;
   color: hsl(var(--foreground));
   background: transparent;
   transition: all 0.2s ease;
   border: 1px solid hsl(var(--border));
-  box-sizing: border-box;
-  padding: 0;
 }
 
 .help-button:hover {

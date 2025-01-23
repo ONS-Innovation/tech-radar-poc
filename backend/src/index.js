@@ -180,6 +180,47 @@ app.get("/api/json", async (req, res) => {
 });
 
 /**
+ * Endpoint for fetching repository information for specific repositories.
+ * It accepts repository names as query parameters and returns their data.
+ */
+app.get("/api/repository/project/json", async (req, res) => {
+  try {
+    const { repositories } = req.query;
+    if (!repositories) {
+      return res.status(400).json({ error: "No repositories specified" });
+    }
+
+    const repoNames = repositories.split(",").map(repo => repo.toLowerCase().trim());
+    const bucketName = getBucketName();
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: "repositories.json",
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+    const response = await fetch(signedUrl);
+    const jsonData = await response.json();
+
+    // Filter repositories based on provided names
+    const filteredRepos = jsonData.repositories.filter(repo => 
+      repoNames.includes(repo.name.toLowerCase())
+    );
+
+    res.json({
+      repositories: filteredRepos,
+      metadata: {
+        last_updated: jsonData.metadata?.last_updated || new Date().toISOString(),
+        requested_repos: repoNames,
+        found_repos: filteredRepos.map(repo => repo.name)
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching repository data:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * Endpoint for checking server health.
  * It returns a 200 status and the message "healthy" if the server is running.
  */

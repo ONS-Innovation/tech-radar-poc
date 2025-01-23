@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/components/ProjectModal.css";
 import { IoClose, IoSearch } from "react-icons/io5";
 import { FiLink2 } from "react-icons/fi";
-
+import { fetchRepositoryData } from "../../utilities/getRepositoryData";
+import SkeletonLanguageCard from '../Statistics/Skeletons/SkeletonLanguageCard';
 /**
  * ProjectModal component for displaying project details in a modal.
  *
@@ -11,11 +12,122 @@ import { FiLink2 } from "react-icons/fi";
  * @param {Function} props.onClose - Function to call when the modal is closed.
  * @param {Object} props.project - The project object containing project details.
  * @param {Function} props.renderTechnologyList - Function to render technology list.
+ * @param {Function} props.getTechnologyStatus - Function to get the technology status.
+ * @param {Function} props.onTechClick - Function to handle technology click.
  */
-const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
+const ProjectModal = ({ 
+  isOpen, 
+  onClose, 
+  project, 
+  renderTechnologyList,
+  getTechnologyStatus,
+  onTechClick 
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [repoData, setRepoData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchRepoInfo = async () => {
+      if (isOpen && project?.Repo) {
+        setIsLoading(true);
+        // Extract repo names from project.Repo
+        const projectRepos = project.Repo.split(";").map(repo => {
+          const match = repo.trim().match(/github\.com\/[^/]+\/([^/]+)/);
+          return match ? match[1] : null;
+        }).filter(Boolean);
+
+        if (projectRepos.length > 0) {
+          const data = await fetchRepositoryData(projectRepos);
+          if (data?.repositories) {
+            setRepoData(data.repositories);
+          }
+        }
+        setIsLoading(false);
+      } else {
+        setRepoData(null);
+      }
+    };
+
+    fetchRepoInfo();
+  }, [isOpen, project]);
 
   if (!isOpen || !project) return null;
+
+  const renderRepoInfo = () => {
+    if (!project.Repo) return null;
+    if (isLoading) return <SkeletonLanguageCard />;
+
+    if (!repoData || repoData.length === 0) {
+      return (
+        <div className="repo-info-loading">
+          No repository information available. The repositories might be private, not found or from another organisation.
+        </div>
+      );
+    }
+    console.log(repoData);
+
+    return (
+      <div className="repo-info">
+        <h3 className="group-title">GitHub {repoData.length > 1 ? 'Repositories' : 'Repository'}</h3>
+        <div className="repo-grid">
+          {repoData.map((repo, index) => (
+            <div key={index} className="repo-card">
+              <div className="repo-stats">
+                <div className="repo-stats-left">
+                  <a href={repo.url} target="_blank" rel="noopener noreferrer" className="repo-name">{repo.name} <FiLink2 /></a>
+                  <div className="repo-badges">
+                    <span className="repo-badge">
+                      {repo.visibility.toLowerCase()}
+                    </span>
+                    <span className="repo-badge">
+                      {repo.is_archived ? 'Archived' : 'Active'}
+                    </span>
+                  </div>
+                </div>
+                <p className={`repo-last-commit ${!repo.is_archived && new Date(repo.last_commit) < new Date(Date.now() - 180 * 24 * 60 * 60 * 1000) ? 'last-commit-threshold' : ''}`}>
+                  Last commit: {new Date(repo.last_commit).toLocaleDateString()}
+                </p>
+              </div>
+              {repo.technologies?.languages && (
+                <div className="repo-languages">
+                  <div className="language-bars">
+                    {repo.technologies.languages.map((lang, i) => (
+                      <div
+                        key={i}
+                        className="language-bar"
+                        style={{
+                          width: `${lang.percentage}%`,
+                          backgroundColor: `hsl(${(i * 137.5) % 360}, 70%, 50%)`
+                        }}
+                        title={`${lang.name}: ${lang.percentage.toFixed(1)}%`}
+                      />
+                    ))}
+                  </div>
+                 
+                </div>
+              )}
+               <div className="language-labels">
+                    {repo.technologies.languages.map((lang, i) => {
+                      const status = getTechnologyStatus ? getTechnologyStatus(lang.name) : null;
+                      return (
+                        <span 
+                          key={i} 
+                          className={`language-label ${status ? `clickable-tech ${status}` : ''}`}
+                          onClick={() => status && onTechClick && onTechClick(lang.name)}
+                          title={`${lang.name} (${lang.percentage.toFixed(1)}%)`}
+                        >
+                          {`${lang.name} (${lang.percentage.toFixed(1)}%)`}
+                        </span>
+                      );
+                    })}
+                  </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   // Group definitions
   const groups = {
@@ -128,58 +240,62 @@ const ProjectModal = ({ isOpen, onClose, project, renderTechnologyList }) => {
         <div className="project-header">
           <div className="project-header-left">
             <h2>{project.Project}</h2>
-            <div className="project-short-name-container">
-              {project.Project_Short && (
-                <div className="project-short-name">
-                  ({project.Project_Short})
-                </div>
-              )}
-              {project.Repo || project.Documentation ? (
-                <div className="project-links">
-                  {project.Repo &&
-                    project.Repo.split(";").map((repo, index) => (
+            {project.Project_Short && (
+              <div className="project-short-name-container">
+                {project.Project_Short && (
+                  <div className="project-short-name">
+                    ({project.Project_Short})
+                  </div>
+                )}
+                {project.Repo || project.Documentation ? (
+                  <div className="project-links">
+                    {/* {project.Repo &&
+                      project.Repo.split(";").map((repo, index) => (
+                        <a
+                          key={index}
+                          href={repo.trim()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="project-link"
+                          title={repo.trim()}
+                        >
+                          View Repo <FiLink2 />
+                        </a>
+                      ))} */}
+                    {project.Documentation && (
                       <a
-                        key={index}
-                        href={repo.trim()}
+                        href={project.Documentation}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="project-link"
-                        title={repo.trim()}
+                        title={project.Documentation}
                       >
-                        View Repo <FiLink2 />
+                        View Documentation <FiLink2 />
                       </a>
-                    ))}
-                  {project.Documentation && (
-                    <a
-                      href={project.Documentation}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="project-link"
-                      title={project.Documentation}
-                    >
-                      View Documentation <FiLink2 />
-                    </a>
-                  )}
-                </div>
-              ) : null}
-            </div>
+                    )}
+                  </div>
+                ) : null}
+              </div>
+            )}
           </div>
           <div className="project-header-right">
-          <div className="search-container-projects">
-          <IoSearch className="search-icon-projects" />
-          <input
-            type="text"
-            placeholder="Search project details..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input-projects"
-          />
-        </div>
+            <div className="search-container-projects">
+              <IoSearch className="search-icon-projects" />
+              <input
+                type="text"
+                placeholder="Search project details..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input-projects"
+              />
+            </div>
             <button className="modal-close" onClick={onClose}>
               <IoClose />
             </button>
           </div>
         </div>
+
+        {renderRepoInfo()}
 
         <div className="project-details">
           {renderGroup("Languages & Frameworks", groups.languages)}

@@ -58,7 +58,7 @@
 
 .help-modal-close {
   background: none;
-  border: none;
+  border: 1px solid hsl(var(--border));
   color: hsl(var(--foreground));
   cursor: pointer;
   padding: 4px;
@@ -138,6 +138,8 @@
   .help-modal-content {
     padding: 20px;
     width: 100%;
+    border: none;
+    border-top: 1px solid hsl(var(--border));
   }
 
   .help-modal-title {
