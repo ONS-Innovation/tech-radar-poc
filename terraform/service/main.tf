@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          "awslogs-group"         = "/ecs/ecs-service-${var.service_subdomain}-frontend",
+          "awslogs-group"         = aws_cloudwatch_log_group.frontend_logs.name,
           "awslogs-region"        = var.region,
           "awslogs-stream-prefix" = "ecs"
         }
@@ -89,7 +89,7 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
         logDriver = "awslogs",
         options = {
           "awslogs-create-group"  = "true",
-          "awslogs-group"         = "/ecs/ecs-service-${var.service_subdomain}-backend",
+          "awslogs-group"         = aws_cloudwatch_log_group.backend_logs.name,
           "awslogs-region"        = var.region,
           "awslogs-stream-prefix" = "ecs",
           "mode"                  = "non-blocking"
