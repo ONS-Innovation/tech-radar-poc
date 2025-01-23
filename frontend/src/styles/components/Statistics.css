@@ -74,11 +74,17 @@
   transition: all 0.3s ease;
   border: 1px solid hsl(var(--border));
   border-bottom: 4px solid hsl(var(--border));
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
 }
 
 .stat-card h3 {
   font-size: 12px;
-  margin: 0 0 8px 0;
+  margin: 0 ;
   color: hsl(var(--muted-foreground));
 }
 
@@ -448,40 +454,35 @@
   background: hsl(var(--muted));
 }
 
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: hsl(var(--background));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  backdrop-filter: blur(4px);
-  height: 100%;
-}
 
 .loading-spinner {
   width: 40px;
   height: 40px;
   border: 3px solid hsl(var(--muted));
-  border-top-color: hsl(var(--primary));
+  border-top: 3px solid hsl(var(--foreground));
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.5s linear infinite;
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.loading-overlay p {
-  color: hsl(var(--foreground));
-  font-size: 14px;
+.no-data-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background: hsl(var(--muted));
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+  margin: 24px 0;
+}
+
+.no-data-message p {
+  color: hsl(var(--muted-foreground));
+  font-size: 16px;
   margin: 0;
 }
 

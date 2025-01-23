@@ -12,7 +12,6 @@ import {
   IoArrowDownOutline,
   IoRemoveOutline,
 } from "react-icons/io5";
-import { Toaster, toast } from "react-hot-toast";
 import { FaSortAmountDownAlt, FaSortAmountUpAlt } from "react-icons/fa";
 import { fetchCSVFromS3 } from "../utilities/getCSVData";
 import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
@@ -61,7 +60,7 @@ function RadarPage() {
    * useEffect hook to fetch the tech radar data from S3.
    */
   useEffect(() => {
-    fetchTechRadarJSONFromS3().then((data) => setData(data));
+      fetchTechRadarJSONFromS3().then((data) => setData(data));
   }, []);
 
   /**
@@ -69,31 +68,8 @@ function RadarPage() {
    */
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await fetchCSVFromS3();
-        setProjectsData(data);
-      } catch (error) {
-        try {
-          const response = await fetch("/tech_radar/onsTechData.csv");
-          if (!response.ok) {
-            throw new Error("Failed to fetch local CSV");
-          }
-          const csvText = await response.text();
-          const rows = csvText.split("\n");
-          const headers = rows[0].split(",");
-          const data = rows.slice(1).map((row) => {
-            const values = row.split(",");
-            return headers.reduce((obj, header, i) => {
-              obj[header] = values[i];
-              return obj;
-            }, {});
-          });
-          toast.error("Error loading data from S3, using local CSV.");
-          setProjectsData(data);
-        } catch (fallbackError) {
-          toast.error("Failed to load project data");
-        }
-      }
+      const data = await fetchCSVFromS3();
+      setProjectsData(data);
     };
 
     fetchData();
@@ -466,10 +442,12 @@ function RadarPage() {
   }, [location.state, data]);
 
   if (!data) return (
-    <div className="loading-container">
-      <div className="loading-spinner"></div>
-      <p>Loading Radar...</p>
-    </div>
+        <ThemeProvider>
+        <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading Radar...</p>
+        </div>
+    </ThemeProvider>
   );
 
   const groupedEntries = data.entries.reduce((acc, entry) => {
@@ -615,30 +593,6 @@ function RadarPage() {
         onStatsTechClick={handleStatsTechClick}
       />
       <div className="radar-page">
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: "hsl(var(--card))",
-              color: "hsl(var(--foreground))",
-              border: "1px solid hsl(var(--border))",
-            },
-            success: {
-              iconTheme: {
-                primary: "var(--color-adopt)",
-                secondary: "white",
-              },
-            },
-            error: {
-              iconTheme: {
-                primary: "var(--color-hold)",
-                secondary: "white",
-              },
-            },
-          }}
-        />
-
         {isInfoBoxVisible && (
           <div
             className="info-box"

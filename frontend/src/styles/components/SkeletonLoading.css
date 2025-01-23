@@ -1,0 +1,64 @@
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.skeleton {
+  animation: pulse 1.5s ease-in-out infinite;
+  background: hsl(var(--muted));
+  border-color: hsl(var(--border));
+}
+
+.skeleton-title {
+  height: 14px;
+  width: 70%;
+  background: hsl(var(--border));
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}
+
+.skeleton-value {
+  height: 24px;
+  width: 40%;
+  background: hsl(var(--border));
+  border-radius: var(--radius);
+}
+
+.skeleton-language-title {
+  height: 20px;
+  width: 60%;
+  background: hsl(var(--border));
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+
+.skeleton-language-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-stat {
+  height: 16px;
+  background: hsl(var(--border));
+  border-radius: var(--radius);
+}
+
+.skeleton-stat:nth-child(1) {
+  width: 70%;
+}
+
+.skeleton-stat:nth-child(2) {
+  width: 60%;
+}
+
+.skeleton-stat:nth-child(3) {
+  width: 80%;
+} 
