@@ -175,6 +175,7 @@
   padding: 8px 36px;
   border-radius: var(--radius);
   color: hsl(var(--foreground));
+  background: hsl(var(--background));
   font-size: 12px;
   outline: none;
   border: none;
