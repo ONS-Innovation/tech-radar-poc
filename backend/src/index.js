@@ -50,6 +50,7 @@ app.get("/api/csv", async (req, res) => {
     Papa.parse(csvText, {
       header: true,
       complete: (results) => {
+        // Filter out empty row
         const filteredData = results.data.filter(entry => Object.keys(entry).length > 1);
         res.json(filteredData);
       },
@@ -65,7 +66,7 @@ app.get("/api/csv", async (req, res) => {
 });
 
 /**
- * Endpoint for fetching tech radar JSON data from S3.
+ * Endpoint for fetching tech radar JSON data from S3. The tech data that goes on the radar and states where it belongs on the radar.
  * @route GET /api/tech-radar/json
  * @returns {Object} The tech radar configuration data
  * @throws {Error} 500 - If JSON fetching fails
@@ -80,6 +81,7 @@ app.get("/api/tech-radar/json", async (req, res) => {
     const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
 
     // Fetch the CSV data using the signed URL
+    // Just return the json, no need for formatting
     const response = await fetch(signedUrl);
     const jsonData = await response.json();
 
