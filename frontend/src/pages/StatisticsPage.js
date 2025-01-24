@@ -4,6 +4,8 @@ import Statistics from '../components/Statistics/Statistics';
 import Header from '../components/Header/Header';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import { fetchTechRadarJSONFromS3 } from '../utilities/getTechRadarJson';
+import { fetchCSVFromS3 } from '../utilities/getCSVData';
+import { fetchRepositoryData } from '../utilities/getRepositoryData';
 
 /**
  * StatisticsPage component for displaying the statistics page.
@@ -15,15 +17,23 @@ function StatisticsPage() {
   const [statsData, setStatsData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
+  const [projectsData, setProjectsData] = useState(null);
+  const [selectedRepositories, setSelectedRepositories] = useState([]);
+  const [currentDate, setCurrentDate] = useState(null);
+  const [currentRepoView, setCurrentRepoView] = useState('unarchived');
 
-  /**
-   * useEffect hook to handle the projects modal open state.
-   */
   useEffect(() => {
-    if (isProjectsModalOpen) {
-      console.log('isProjectsModalOpen', isProjectsModalOpen);
-    }
-  }, [isProjectsModalOpen]);
+    const fetchProjects = async () => {
+      try {
+        const data = await fetchCSVFromS3();
+        setProjectsData(data);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   /**
    * fetchStatistics function to fetch the statistics data.
@@ -38,22 +48,46 @@ function StatisticsPage() {
         ? 'http://localhost:5001/api/json'
         : '/api/json';
 
-      // Construct URL with parameters
-      const params = new URLSearchParams();
-      if (date && date !== 'all') params.append('datetime', date);
-      if (repoView === 'archived') params.append('archived', 'true');
-      else if (repoView === 'unarchived') params.append('archived', 'false');
-      
-      const url = params.toString() 
-        ? `${baseUrl}?${params.toString()}`
-        : baseUrl;
+      let statsResponse, radarResponse;
+      radarResponse = await fetchTechRadarJSONFromS3();
 
-      const [statsResponse, radarResponse] = await Promise.all([
-        fetch(url),
-        fetchTechRadarJSONFromS3()
-      ]);
+      if (selectedRepositories.length > 0) {
+        // Extract repository names from the URLs
+        const repoNames = selectedRepositories.map(repoUrl => {
+          const match = repoUrl.match(/github\.com\/[^/]+\/([^/]+)/);
+          return match ? match[1] : null;
+        }).filter(Boolean);
 
-      console.log('radarResponse', radarResponse);
+        // Fetch repository-specific data with all active filters
+        const archived = repoView === 'archived' ? 'true' : 
+                        repoView === 'unarchived' ? 'false' : null;
+        const repoResponse = await fetchRepositoryData(repoNames, date, archived);
+        
+        if (!repoResponse?.repositories) {
+          throw new Error('Failed to fetch repository data');
+        }
+
+        statsResponse = {
+          ok: true,
+          json: () => Promise.resolve({
+            stats: repoResponse.stats,
+            language_statistics: repoResponse.language_statistics,
+            metadata: repoResponse.metadata
+          })
+        };
+      } else {
+        // Construct URL with parameters for general statistics
+        const params = new URLSearchParams();
+        if (date && date !== 'all') params.append('datetime', date);
+        if (repoView === 'archived') params.append('archived', 'true');
+        else if (repoView === 'unarchived') params.append('archived', 'false');
+        
+        const url = params.toString() 
+          ? `${baseUrl}?${params.toString()}`
+          : baseUrl;
+
+        statsResponse = await fetch(url);
+      }
 
       if (!statsResponse.ok || !radarResponse) {
         throw new Error('Failed to fetch data');
@@ -137,17 +171,29 @@ function StatisticsPage() {
     }
   };
 
+  // Update useEffect to use current filters
   useEffect(() => {
-    fetchStatistics(null, 'unarchived');
-  }, []);
+    fetchStatistics(currentDate, currentRepoView);
+  }, [selectedRepositories, currentDate, currentRepoView]);
 
   const handleDateChange = (date, repoView = 'unarchived') => {
-    const dateToUse = date === 'all' ? null : date;
-    fetchStatistics(dateToUse, repoView);
+    setCurrentDate(date === 'all' ? null : date);
+    setCurrentRepoView(repoView);
   };
 
   const handleTechClick = (tech) => {
     navigate('/radar', { state: { selectedTech: tech } });
+  };
+
+  const handleProjectsChange = (repositories) => {
+    // Flatten the array of repository URLs by splitting each URL by semicolon
+    const allRepoUrls = repositories.flatMap(repoUrl => 
+      repoUrl.split(';').map(url => {
+        const cleanUrl = url.trim().split('#')[0]; // Remove #readme and any other hash parts
+        return cleanUrl;
+      })
+    );
+    setSelectedRepositories(allRepoUrls);
   };
 
   return (
@@ -166,6 +212,8 @@ function StatisticsPage() {
           onTechClick={handleTechClick}
           onDateChange={handleDateChange}
           isLoading={isLoading}
+          projectsData={projectsData}
+          onProjectsChange={handleProjectsChange}
         />
       </div>
     </ThemeProvider>

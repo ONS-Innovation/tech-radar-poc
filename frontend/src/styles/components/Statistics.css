@@ -500,6 +500,11 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
+}
+
+.project-select {
+  min-width: 300px;
 }
 
 .archive-toggle {

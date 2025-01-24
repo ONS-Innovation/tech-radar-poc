@@ -189,8 +189,11 @@ app.get("/api/json", async (req, res) => {
  * Endpoint for fetching specific repository information.
  * @route GET /api/repository/project/json
  * @param {string} repositories - Comma-separated list of repository names to fetch
+ * @param {string} [datetime] - Optional ISO date string to filter repositories by last commit date
+ * @param {string} [archived] - Optional 'true'/'false' to filter archived repositories
  * @returns {Object} Repository data
  * @returns {Object[]} response.repositories - Array of repository objects with their details
+ * @returns {Object} response.stats - Repository statistics
  * @returns {Object} response.language_statistics - Language statistics for the requested repositories
  * @returns {Object} response.metadata - Last updated timestamp and repository request details
  * @throws {Error} 400 - If no repositories are specified
@@ -198,7 +201,7 @@ app.get("/api/json", async (req, res) => {
  */
 app.get("/api/repository/project/json", async (req, res) => {
   try {
-    const { repositories } = req.query;
+    const { repositories, datetime, archived } = req.query;
     if (!repositories) {
       return res.status(400).json({ error: "No repositories specified" });
     }
@@ -214,9 +217,34 @@ app.get("/api/repository/project/json", async (req, res) => {
     const jsonData = await response.json();
 
     // Filter repositories based on provided names
-    const filteredRepos = jsonData.repositories.filter(repo => 
+    let filteredRepos = jsonData.repositories.filter(repo => 
       repoNames.includes(repo.name.toLowerCase())
     );
+
+    // Apply date filter if provided
+    if (datetime && !isNaN(Date.parse(datetime))) {
+      const targetDate = new Date(datetime);
+      const now = new Date();
+      filteredRepos = filteredRepos.filter(repo => {
+        const lastCommitDate = new Date(repo.last_commit);
+        return lastCommitDate >= targetDate && lastCommitDate <= now;
+      });
+    }
+
+    // Apply archived filter if specified
+    if (archived === 'true') {
+      filteredRepos = filteredRepos.filter(repo => repo.is_archived);
+    } else if (archived === 'false') {
+      filteredRepos = filteredRepos.filter(repo => !repo.is_archived);
+    }
+
+    // Calculate statistics from filtered repository data
+    const stats = {
+      total_repos: filteredRepos.length,
+      total_private_repos: filteredRepos.filter(r => r.visibility === 'PRIVATE').length,
+      total_public_repos: filteredRepos.filter(r => r.visibility === 'PUBLIC').length,
+      total_internal_repos: filteredRepos.filter(r => r.visibility === 'INTERNAL').length,
+    };
 
     // Calculate language statistics
     const languageStats = {};
@@ -248,11 +276,14 @@ app.get("/api/repository/project/json", async (req, res) => {
 
     res.json({
       repositories: filteredRepos,
+      stats,
       language_statistics: languageStats,
       metadata: {
         last_updated: jsonData.metadata?.last_updated || new Date().toISOString(),
         requested_repos: repoNames,
-        found_repos: filteredRepos.map(repo => repo.name)
+        found_repos: filteredRepos.map(repo => repo.name),
+        filter_date: datetime && !isNaN(Date.parse(datetime)) ? datetime : null,
+        filter_archived: archived
       }
     });
   } catch (error) {
