@@ -1,7 +1,7 @@
 // backend/src/index.js
 /**
  * @file This is the main file for the backend server.
- * It sets up an Express server, handles CORS, and provides endpoints for fetching CSV data and checking server health.
+ * It sets up an Express server, handles CORS, and provides endpoints for fetching CSV/JSON data and checking server health.
  */
 const express = require("express");
 const cors = require("cors");
@@ -12,6 +12,7 @@ const Papa = require("papaparse");
 
 const app = express();
 const port = process.env.PORT || 5001;
+const bucketName = process.env.BUCKET_NAME || "sdp-dev-tech-radar";
 
 app.use(cors({
   origin: '*', 
@@ -25,17 +26,15 @@ const s3Client = new S3Client({
   region: "eu-west-2",
 });
 
-const getBucketName = () => {
-  return process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "sdp-dev-tech-radar";
-}
-
 /**
- * Endpoint for fetching CSV data.
- * It fetches the CSV data from an S3 bucket, parses it, and returns the parsed data.
+ * Endpoint for fetching CSV data from S3.
+ * @route GET /api/csv
+ * @returns {Object[]} Array of objects containing parsed CSV data
+ * @returns {Object} response.data - Each row from the CSV as an object with column headers as keys
+ * @throws {Error} 500 - If CSV fetching or parsing fails
  */
 app.get("/api/csv", async (req, res) => {
   try {
-    const bucketName = getBucketName();
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: "onsTechDataAdoption.csv",
@@ -66,12 +65,13 @@ app.get("/api/csv", async (req, res) => {
 });
 
 /**
- * Endpoint for fetching CSV data.
- * It fetches the CSV data from an S3 bucket, parses it, and returns the parsed data.
+ * Endpoint for fetching tech radar JSON data from S3.
+ * @route GET /api/tech-radar/json
+ * @returns {Object} The tech radar configuration data
+ * @throws {Error} 500 - If JSON fetching fails
  */
 app.get("/api/tech-radar/json", async (req, res) => {
   try {
-    const bucketName = getBucketName();
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: "onsRadarSkeleton.json",
@@ -91,13 +91,19 @@ app.get("/api/tech-radar/json", async (req, res) => {
 });
 
 /**
- * Endpoint for fetching repository statistics from JSON data.
- * It fetches the JSON data from an S3 bucket and returns the statistics.
+ * Endpoint for fetching repository statistics.
+ * @route GET /api/json
+ * @param {string} [datetime] - Optional ISO date string to filter repositories by last commit date
+ * @param {string} [archived] - Optional 'true'/'false' to filter archived repositories
+ * @returns {Object} Repository statistics
+ * @returns {Object} response.stats - General repository statistics (total, private, public, internal counts)
+ * @returns {Object} response.language_statistics - Language usage statistics across repositories
+ * @returns {Object} response.metadata - Last updated timestamp and filter information
+ * @throws {Error} 500 - If JSON fetching fails
  */
 app.get("/api/json", async (req, res) => {
   try {
     const { datetime, archived } = req.query;
-    const bucketName = getBucketName();
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: "repositories.json",
@@ -147,12 +153,12 @@ app.get("/api/json", async (req, res) => {
           languageStats[lang.name] = {
             repo_count: 0,
             total_percentage: 0,
-            total_lines: 0,
+            total_size: 0,
           };
         }
         languageStats[lang.name].repo_count++;
         languageStats[lang.name].total_percentage += lang.percentage;
-        languageStats[lang.name].total_lines += lang.size;
+        languageStats[lang.name].total_size += lang.size;
       });
     });
 
@@ -161,7 +167,7 @@ app.get("/api/json", async (req, res) => {
       languageStats[lang] = {
         repo_count: languageStats[lang].repo_count,
         average_percentage: +(languageStats[lang].total_percentage / languageStats[lang].repo_count).toFixed(3),
-        average_lines: +(languageStats[lang].total_lines / languageStats[lang].repo_count).toFixed(3),
+        total_size: languageStats[lang].total_size
       };
     });
 
@@ -180,11 +186,91 @@ app.get("/api/json", async (req, res) => {
 });
 
 /**
- * Endpoint for checking server health.
- * It returns a 200 status and the message "healthy" if the server is running.
+ * Endpoint for fetching specific repository information.
+ * @route GET /api/repository/project/json
+ * @param {string} repositories - Comma-separated list of repository names to fetch
+ * @returns {Object} Repository data
+ * @returns {Object[]} response.repositories - Array of repository objects with their details
+ * @returns {Object} response.language_statistics - Language statistics for the requested repositories
+ * @returns {Object} response.metadata - Last updated timestamp and repository request details
+ * @throws {Error} 400 - If no repositories are specified
+ * @throws {Error} 500 - If repository data fetching fails
  */
-app.options('/api/health', cors());
+app.get("/api/repository/project/json", async (req, res) => {
+  try {
+    const { repositories } = req.query;
+    if (!repositories) {
+      return res.status(400).json({ error: "No repositories specified" });
+    }
 
+    const repoNames = repositories.split(",").map(repo => repo.toLowerCase().trim());
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: "repositories.json",
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+    const response = await fetch(signedUrl);
+    const jsonData = await response.json();
+
+    // Filter repositories based on provided names
+    const filteredRepos = jsonData.repositories.filter(repo => 
+      repoNames.includes(repo.name.toLowerCase())
+    );
+
+    // Calculate language statistics
+    const languageStats = {};
+    filteredRepos.forEach(repo => {
+      if (!repo.technologies?.languages) return;
+      
+      repo.technologies.languages.forEach(lang => {
+        if (!languageStats[lang.name]) {
+          languageStats[lang.name] = {
+            repo_count: 0,
+            total_percentage: 0,
+            total_size: 0,
+          };
+        }
+        languageStats[lang.name].repo_count++;
+        languageStats[lang.name].total_percentage += lang.percentage;
+        languageStats[lang.name].total_size += lang.size;
+      });
+    });
+
+    // Calculate averages
+    Object.keys(languageStats).forEach(lang => {
+      languageStats[lang] = {
+        repo_count: languageStats[lang].repo_count,
+        average_percentage: +(languageStats[lang].total_percentage / languageStats[lang].repo_count).toFixed(3),
+        total_size: languageStats[lang].total_size
+      };
+    });
+
+    res.json({
+      repositories: filteredRepos,
+      language_statistics: languageStats,
+      metadata: {
+        last_updated: jsonData.metadata?.last_updated || new Date().toISOString(),
+        requested_repos: repoNames,
+        found_repos: filteredRepos.map(repo => repo.name)
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching repository data:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Health check endpoint to verify server status.
+ * @route GET /api/health
+ * @returns {Object} Health status information
+ * @returns {string} response.status - Server status ('healthy')
+ * @returns {string} response.timestamp - Current server timestamp
+ * @returns {number} response.uptime - Server uptime in seconds
+ * @returns {Object} response.memory - Memory usage statistics
+ * @returns {number} response.pid - Process ID
+ */
 app.get("/api/health", (req, res) => {
   console.log("Health check endpoint called at:", new Date().toISOString());
   
