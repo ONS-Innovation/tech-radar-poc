@@ -53,8 +53,6 @@ function StatisticsPage() {
         fetchTechRadarJSONFromS3()
       ]);
 
-      console.log('radarResponse', radarResponse);
-
       if (!statsResponse.ok || !radarResponse) {
         throw new Error('Failed to fetch data');
       }
