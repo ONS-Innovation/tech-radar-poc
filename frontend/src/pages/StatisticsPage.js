@@ -6,7 +6,7 @@ import { ThemeProvider } from '../contexts/ThemeContext';
 import { fetchTechRadarJSONFromS3 } from '../utilities/getTechRadarJson';
 import { fetchCSVFromS3 } from '../utilities/getCSVData';
 import { fetchRepositoryData } from '../utilities/getRepositoryData';
-
+import { toast } from 'react-hot-toast';
 /**
  * StatisticsPage component for displaying the statistics page.
  * 
@@ -28,7 +28,7 @@ function StatisticsPage() {
         const data = await fetchCSVFromS3();
         setProjectsData(data);
       } catch (error) {
-        console.error('Error fetching projects:', error);
+        toast.error('Error fetching projects.')
       }
     };
 
@@ -139,7 +139,6 @@ function StatisticsPage() {
 
       setStatsData(mappedStats);
     } catch (error) {
-      console.error('Error fetching statistics:', error);
       setStatsData({
         stats_unarchived: {
           total: 0,

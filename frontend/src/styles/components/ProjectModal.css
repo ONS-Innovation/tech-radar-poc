@@ -457,9 +457,8 @@
 
 
 .repo-info-loading {
-  padding: 8px;
   font-size: 12px;
-  text-align: center;
+  text-align: left;
   color: hsl(var(--muted-foreground));
   border-radius: 8px;
 }

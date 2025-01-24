@@ -35,7 +35,8 @@ const ProjectModal = ({
         // Extract repo names from project.Repo
         const projectRepos = project.Repo.split(";")
           .map((repo) => {
-            const match = repo.trim().match(/github\.com\/[^/]+\/([^/]+)/);
+            const repoUrl = repo.split("#")[0];
+            const match = repoUrl.trim().match(/github\.com\/[^/]+\/([^/]+)/);
             return match ? match[1] : null;
           })
           .filter(Boolean);
@@ -59,7 +60,6 @@ const ProjectModal = ({
 
   const renderRepoInfo = () => {
     if (!project.Repo) return null;
-    console.log(repoData);
 
     return (
       <div className="repo-info">
@@ -138,8 +138,7 @@ const ProjectModal = ({
           </div>
         ) : (
           <div className="repo-info-loading">
-            No repository information available. The repositories might be
-            private, not found or from another organisation.
+            No repository information available. The repositories may not have been found yet or from another organisation.
           </div>
         )}
       </div>

@@ -15,10 +15,10 @@ export const fetchRepositoryData = async (repositories, date = null, archived = 
     }
 
     const params = new URLSearchParams();
+
     params.append('repositories', repositories.join(','));
     if (date) params.append('datetime', date);
     if (archived !== null) params.append('archived', archived);
-
     const baseUrl = process.env.NODE_ENV === "development" 
       ? 'http://localhost:5001/api/repository/project/json'
       : '/api/repository/project/json';
@@ -32,7 +32,6 @@ export const fetchRepositoryData = async (repositories, date = null, archived = 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error loading repository data:", error);
     toast.error("Error loading repository data.");
     return null;
   }
