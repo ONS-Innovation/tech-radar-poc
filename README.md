@@ -17,7 +17,9 @@ This tool aims to provide a visual representation of the digital landscape at ON
 
 **Statistics:**
 - This provides a collection of statistics about the language breakdown within the ONSDigital GitHub Organisation.
-- Multiple filters such as Archive/Active and date filter options are available.
+- Multiple filters such as Archive/Active, date filter and project filteroptions are available.
+- Sort options such as Alphabetically, Most/Least Repositories, usage, size.
+- Toggle options to display Tech Radar languages only and switch between Average Size and Total Size.
 
 **Projects:**
 - This displays the project data collected from the Tech Audit Tool.
