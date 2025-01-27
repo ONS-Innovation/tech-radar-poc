@@ -9,6 +9,7 @@ const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const fetch = require("node-fetch");
 const Papa = require("papaparse");
+const logger = require('./config/logger');
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -55,12 +56,12 @@ app.get("/api/csv", async (req, res) => {
         res.json(filteredData);
       },
       error: (error) => {
-        console.error("Error parsing CSV:", error);
+        logger.error("Error parsing CSV:", { error });
         res.status(500).json({ error: "Failed to parse CSV data" });
       },
     });
   } catch (error) {
-    console.error("Error fetching CSV:", error);
+    logger.error("Error fetching CSV:", { error: error.message });
     res.status(500).json({ error: error.message });
   }
 });
@@ -305,7 +306,7 @@ app.get("/api/repository/project/json", async (req, res) => {
  * @returns {number} response.pid - Process ID
  */
 app.get("/api/health", (req, res) => {
-  console.log("Health check endpoint called at:", new Date().toISOString());
+  logger.info("Health check endpoint called", { timestamp: new Date().toISOString() });
   
   // Add more specific headers
   res.set({
@@ -323,18 +324,18 @@ app.get("/api/health", (req, res) => {
     pid: process.pid
   };
 
-  console.log("Health check:", healthResponse.timestamp);
+  logger.debug("Health check details", healthResponse);
   
   res.status(200).json(healthResponse);
 });
 
 // Add error handling
 process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
+  logger.error('Uncaught Exception:', { error });
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  logger.error('Unhandled Rejection:', { promise, reason });
 });
 
 /**
@@ -342,5 +343,5 @@ process.on('unhandledRejection', (reason, promise) => {
  * It logs a message to the console when the server is running.
  */
 app.listen(port, () => {
-  console.log(`Backend server running on port ${port}`);
+  logger.info(`Backend server running on port ${port}`);
 });

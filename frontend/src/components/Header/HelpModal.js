@@ -71,7 +71,7 @@ function HelpModal({ show, onClose }) {
                     <li><strong>Adopt:</strong> aim to widely adopt and mature</li>
                     <li><strong>Trial:</strong> aim to try out and evaluate</li>
                     <li><strong>Assess:</strong> aim to assess for potential adoption</li>
-                    <li><strong>Hold:</strong> aim to hold back from adoption</li>
+                    <li><strong>Hold:</strong> not recommended for new deployment without approval</li>
                   </ul>
                 </li>
               </ul>

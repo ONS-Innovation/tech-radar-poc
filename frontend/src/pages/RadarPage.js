@@ -1156,15 +1156,6 @@ function RadarPage() {
             onTechClick={handleTechClick}
           />
         )}
-
-        {/* <Projects 
-          isOpen={isProjectsModalOpen}
-          onClose={() => setIsProjectsModalOpen(false)}
-          projectsData={projectsData}
-          handleProjectClick={handleProjectClick}
-          getTechnologyStatus={getTechnologyStatus}
-          onRefresh={handleRefresh}
-        /> */}
       </div>
     </ThemeProvider>
   );

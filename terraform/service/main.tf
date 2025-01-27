@@ -83,6 +83,10 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
         {
           name  = "COGNITO_USER_POOL_ID",
           value = data.terraform_remote_state.ecs_auth.outputs.github_audit_user_pool_id
+        },
+        {
+          name  = "CLOUDWATCH_GROUP_NAME",
+          value = "/ecs/ecs-service-${var.service_subdomain}-backend"
         }
       ],
       logConfiguration = {
