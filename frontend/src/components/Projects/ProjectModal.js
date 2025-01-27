@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../styles/components/ProjectModal.css";
 import { IoClose, IoSearch } from "react-icons/io5";
-import { FiLink2 } from "react-icons/fi";
+import { FiLink2 } from 'react-icons/fi';
 
 /**
  * ProjectModal component for displaying project details in a modal.
