@@ -264,19 +264,6 @@ const ProjectModal = ({
                 )}
                 {project.Repo || project.Documentation ? (
                   <div className="project-links">
-                    {/* {project.Repo &&
-                      project.Repo.split(";").map((repo, index) => (
-                        <a
-                          key={index}
-                          href={repo.trim()}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="project-link"
-                          title={repo.trim()}
-                        >
-                          View Repo <FiLink2 />
-                        </a>
-                      ))} */}
                     {project.Documentation && (
                       <a
                         href={project.Documentation}
