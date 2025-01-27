@@ -8,10 +8,20 @@ const MultiSelect = ({ options, value, onChange, placeholder = 'Select...', isDi
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 
-    const sanitizedOptions = options.filter(option => 
-      option.value.includes('https://github.com/ONSdigital')
-    );
-    options = sanitizedOptions;
+  const sanitizedOptions = options.filter(option => {
+    try {
+      // Remove any non-printable characters and normalize the URL
+      const cleanUrl = option.value.replace(/[^\x20-\x7E]/g, '');
+      const url = new URL(cleanUrl);
+      
+      // Strict validation: must be github.com host and start with /ONSdigital/
+      return url.hostname === 'github.com' && url.pathname.startsWith('/ONSdigital/');
+    } catch (e) {
+      return false;
+    }
+  });
+  options = sanitizedOptions;
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {

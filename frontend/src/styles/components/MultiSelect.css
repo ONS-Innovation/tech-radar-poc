@@ -21,7 +21,7 @@
   
   /* Hide scrollbar for Chrome, Safari and Opera */
   .multi-select-control::-webkit-scrollbar {
-    height: 1px;
+    width: 1px;
   }
   
   .multi-select-control::-webkit-scrollbar-track {
