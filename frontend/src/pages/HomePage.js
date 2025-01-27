@@ -26,7 +26,7 @@ function HomePage() {
       <div className="home-page">
         <div className="home-content">
           <div className="home-content-header">
-            <h1>Welcome to the ONS Digital Landscape</h1>
+            <h1>The <strong>Digital Landscape</strong> of ONS</h1>
             <p>Explore and analyse technology trends across the organisation</p>
           </div>
           
