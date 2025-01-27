@@ -1152,6 +1152,8 @@ function RadarPage() {
             onClose={() => setIsProjectModalOpen(false)}
             project={selectedProject}
             renderTechnologyList={renderTechnologyList}
+            getTechnologyStatus={getTechnologyStatus}
+            onTechClick={handleTechClick}
           />
         )}
       </div>

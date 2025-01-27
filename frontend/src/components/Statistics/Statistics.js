@@ -4,6 +4,7 @@ import { IoSearch } from 'react-icons/io5';
 import { subMonths, isValid, parseISO } from 'date-fns';
 import SkeletonStatCard from './Skeletons/SkeletonStatCard';
 import SkeletonLanguageCard from './Skeletons/SkeletonLanguageCard';
+import MultiSelect from '../MultiSelect/MultiSelect';
 
 /**
  * Statistics component for displaying repository statistics.
@@ -13,14 +14,25 @@ import SkeletonLanguageCard from './Skeletons/SkeletonLanguageCard';
  * @param {Function} props.onTechClick - Function to handle technology click.
  * @param {Function} props.onDateChange - Function to handle date change.
  * @param {boolean} props.isLoading - Whether the data is loading.
+ * @param {Array} props.projectsData - Array of projects data from CSV.
+ * @param {Function} props.onProjectsChange - Function to handle projects selection change.
  */
-function Statistics({ data, onTechClick, onDateChange, isLoading }) {
+function Statistics({ 
+  data, 
+  onTechClick, 
+  onDateChange, 
+  isLoading,
+  projectsData,
+  onProjectsChange 
+}) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'repo_count', direction: 'desc' });
   const [selectedDate, setSelectedDate] = useState('all');
   const [hoveredLanguage, setHoveredLanguage] = useState(null);
   const [showTechRadarOnly, setShowTechRadarOnly] = useState(false);
   const [repoView, setRepoView] = useState('unarchived'); // 'unarchived', 'archived', 'total'
+  const [selectedProjects, setSelectedProjects] = useState([]);
+  const [showTotalSize, setShowTotalSize] = useState(false);
 
   const dateOptions = [
     { value: 'all', label: 'All Time' },
@@ -171,6 +183,19 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
   };
 
   /**
+   * handleShowTotalSize function handles the show total size event.
+   * 
+   * @param {boolean} value - The value to set the show total size to.
+   */
+  const handleShowTotalSize = (value) => {
+    setShowTotalSize(value);
+    // If we're currently sorting by size, trigger a resort
+    if (sortConfig.key === 'average_size') {
+      handleSort('average_size');
+    }
+  };
+
+  /**
    * getRepoCountDisplay function gets the repository count display.
    * 
    * @param {number} repoCount - The repository count.
@@ -183,6 +208,22 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
       return `${repoCount} / ${stats.total} (${percentage}%)`;
     }
     return repoCount;
+  };
+
+  // Filter projects to only those with repositories
+  const projectOptions = useMemo(() => {
+    if (!projectsData) return [];
+    return projectsData
+      .filter(project => project.Repo)
+      .map(project => ({
+        value: project.Repo,
+        label: project.Project || project.Project_Short
+      }));
+  }, [projectsData]);
+
+  const handleProjectsChange = (selected) => {
+    setSelectedProjects(selected || []);
+    onProjectsChange(selected?.map(option => option.value) || []);
   };
 
   const metadata = data?.metadata || {};
@@ -240,6 +281,14 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
               <option value="archived">Archived Repos</option>
               <option value="total">All Repos</option>
             </select>
+            <MultiSelect
+              value={selectedProjects}
+              onChange={handleProjectsChange}
+              options={projectOptions}
+              placeholder="Filter by projects..."
+              isDisabled={isLoading}
+              className="project-select"
+            />
           </div>
         </div>
         <div className="metadata">
@@ -332,14 +381,21 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
                 Usage {sortConfig.key === 'average_percentage' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
               </button>
               <button 
-                className={sortConfig.key === 'average_lines' ? 'active' : ''}
-                onClick={() => handleSort('average_lines')}
+                className={sortConfig.key === 'total_size' ? 'active' : ''}
+                onClick={() => handleSort('total_size')}
                 disabled={isLoading}
               >
-                Lines {sortConfig.key === 'average_lines' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                Size {sortConfig.key === 'total_size' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
               </button>
               <button 
-                className={` ${showTechRadarOnly ? 'active' : ''}`}
+                className={`${showTotalSize ? 'active' : ''}`}
+                onClick={() => handleShowTotalSize(!showTotalSize)}
+                disabled={isLoading}
+              >
+                {showTotalSize ? 'Total Size' : 'Avg Size'}
+              </button>
+              <button 
+                className={`${showTechRadarOnly ? 'active' : ''}`}
                 onClick={() => setShowTechRadarOnly(!showTechRadarOnly)}
                 disabled={isLoading}
               >
@@ -379,7 +435,13 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
                           <strong>{stats.average_percentage.toFixed(1)}%</strong> avg usage
                         </p>
                         <p>
-                          <strong>{Math.round(stats.average_lines).toLocaleString()}</strong> avg lines
+                          <strong>{(() => {
+                            const bytes = showTotalSize ? stats.total_size : (stats.total_size / stats.repo_count);
+                            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+                            if (bytes === 0) return '0 B';
+                            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+                            return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
+                          })()}</strong> {showTotalSize ? 'total' : 'avg'} size
                         </p>
                       </div>
                     </div>
