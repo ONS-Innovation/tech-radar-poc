@@ -25,7 +25,7 @@ const logger = winston.createLogger({
 // Add CloudWatch transport if AWS credentials are available
 if (process.env.AWS_REGION) {
   logger.add(new WinstonCloudWatch({
-    logGroupName: process.env.CLOUDWATCH_GROUP_NAME || '/tech-radar/backend',
+    logGroupName: process.env.CLOUDWATCH_GROUP_NAME || '/digital-landscape/backend',
     logStreamName: `${process.env.NODE_ENV || 'development'}-${new Date().toISOString().split('T')[0]}`,
     awsRegion: process.env.AWS_REGION,
     messageFormatter: ({ level, message, ...meta }) => {
