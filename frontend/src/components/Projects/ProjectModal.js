@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../styles/components/ProjectModal.css";
 import "../../styles/LangColours.css";
 import { IoClose, IoSearch } from "react-icons/io5";
-import { fetchRepositoryData } from "../../utilities/getRepositoryData";
-import SkeletonLanguageCard from "../Statistics/Skeletons/SkeletonLanguageCard";
+import { FiLink2 } from 'react-icons/fi';
 /**
  * ProjectModal component for displaying project details in a modal.
  *
