@@ -48,7 +48,6 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  /* border: 1px solid hsl(var(--border)); */
   border-radius: var(--radius);
   padding: 16px;
   box-sizing: border-box;
