@@ -4,6 +4,7 @@ body {
 
 .App {
   text-align: center;
+  height: calc(100vh - 70px);
 }
 
 .loading-container {
@@ -12,6 +13,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+}
+
+.loading-overlay p {
+  color: hsl(var(--foreground));
+  font-size: 14px;
+  margin: 0;
 }
 
 .App-logo {
@@ -101,7 +109,7 @@ body {
 
 .radar-page {
   background-color: hsl(var(--background));
-  padding: 8px;
+  padding: 24px;
   box-sizing: border-box;
 }
 
@@ -175,7 +183,8 @@ body {
 .quadrant-list h2 {
   margin: 0;
   color: hsl(var(--foreground));
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .quadrant-list ul {
@@ -245,6 +254,7 @@ body {
   flex: 1;
   margin: 0 10px 0 0;
   font-size: 14px;
+  text-align: left;
 }
 
 .entry-ring {
@@ -428,7 +438,7 @@ circle, line, text {
   flex-direction: column;
   justify-content: center;
   gap: 8px;
-
+  text-align: left;
   user-select: none; /* Prevent text selection while dragging */
 }
 .info-box:active::before {
@@ -451,7 +461,8 @@ circle, line, text {
 .info-box-placeholder {
   color: hsl(var(--muted-foreground));
   text-align: center;
-  font-style: italic;
+  margin: 0 !important;
+  font-size: 12px;
 }
 
 .info-box-ring {
@@ -577,36 +588,18 @@ foreignObject {
   margin-bottom: -2px
 }
 
-/* Add styles for the highlight circle */
 .blip-highlight {
   transition: all 0.2s ease;
   pointer-events: none;
 }
 
-/* Update the info box to show it's clickable */
 .blip-container {
   cursor: pointer;
 }
 
-/* Optional: Add hover effect for the blip */
 .blip-container:hover .blip {
   opacity: 1;
 }
-
-/* Update the info box placeholder text */
-.info-box-placeholder {
-  color: hsl(var(--muted-foreground));
-  text-align: center;
-  font-style: italic;
-  margin: 0 !important;
-}
-
-.info-box-placeholder::after {
-  content: " or click to lock the selection";
-  font-size: 0.9em;
-}
-
-/* Add these new styles at the top of your CSS file */
 
 
 
@@ -626,24 +619,6 @@ foreignObject {
   z-index: 1001;
 }
 
-.modal-content {
-  background: hsl(var(--card));
-  border-radius: var(--radius);
-  border: 1px solid hsl(var(--border));
-  padding: 30px;
-  width: 500px;
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-
-}
-
-.modal-content h2 {
-  margin: 0;
-}
-
 .modal-info-tags {
   display: flex;
   justify-content: flex-start;
@@ -651,16 +626,6 @@ foreignObject {
   gap: 8px;
 }
 
-.modal-close {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: hsl(var(--muted-foreground));
-}
 
 .modal-info {
   margin-top: 20px;
@@ -871,60 +836,6 @@ foreignObject {
 
 
 
-.project-item {
-  cursor: pointer;
-  padding: 8px;
-  margin: 4px 0;
-  border-radius: 4px;
-  background-color: hsl(var(--muted));
-  transition: background-color 0.2s ease;
-}
-
-.project-item:hover {
-  background-color: hsl(var(--muted) / 0.8);
-}
-
-.project-modal {
-  max-width: 800px;
-  background-color: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-}
-
-.project-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.detail-item {
-  background-color: hsl(var(--muted));
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.detail-item h3 {
-  margin: 0 0 8px 0;
-  font-size: 1em;
-  color: hsl(var(--foreground));
-}
-
-.detail-item p {
-  margin: 0;
-  font-size: 1.1em;
-  line-height: 1.6;
-}
-
-.detail-item a {
-  color: #0069e5;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.detail-item a:hover {
-  text-decoration: underline;
-}
-
 .info-box-projects {
   margin-top: 4px;
   border-top: 1px solid hsl(var(--border));
@@ -1007,13 +918,14 @@ foreignObject {
 .info-icon {
   color: hsl(var(--muted-foreground));
   margin-left: 8px;
-  font-size: 16px;
+  font-size: 14px;
   position: relative;
   display: inline-flex;
   align-items: center;
   margin-top: 2px;
   opacity: 0.6;
   transition: opacity 0.2s ease;
+  cursor: pointer;
 }
 
 .info-icon:hover {
@@ -1022,6 +934,11 @@ foreignObject {
 
 .info-icon:hover .tooltip {
   opacity: 1;
+}
+
+.info-icon svg {
+  height: 14px;
+  width: 14px;
 }
 
 /* Update tooltip position slightly */
@@ -1111,65 +1028,6 @@ foreignObject {
   flex: 1;
 }
 
-.project-title-section {
-  margin-bottom: 20px;
-}
-
-.project-title-section h2 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.project-short-name {
-  color: hsl(var(--muted-foreground));
-  font-size: 16px;
-  margin-top: 4px;
-}
-
-.project-details {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-  margin-top: 20px;
-}
-
-.detail-item {
-  background-color: hsl(var(--muted));
-  padding: 16px;
-  border-radius: var(--radius);
-  height: fit-content;
-}
-
-.detail-item h3 {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  color: hsl(var(--muted-foreground));
-}
-
-.detail-item p {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.5;
-  color: hsl(var(--foreground));
-}
-
-.detail-item a:hover {
-  text-decoration: underline;
-}
-
-.project-modal {
-  width: 50vw;
-  max-width: 1200px;
-  max-height: 50vh;
-  overflow-y: auto;
-}
-
-@media (max-width: 1400px) {
-  .project-modal {
-    width: 90vw;
-    max-height: 90vh;
-  }
-}
 
 .timeline-container {
   display: flex;
@@ -1263,6 +1121,11 @@ foreignObject {
 .timeline-node.hold {
   background: var(--color-bg-hold);
   color: var(--color-hold);
+}
+
+.timeline-node.review {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
 }
 
 .timeline-header {

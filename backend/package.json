@@ -8,7 +8,9 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "node-fetch": "^2.6.9",
-    "papaparse": "^5.4.1"
+    "papaparse": "^5.4.1",
+    "winston": "^3.17.0",
+    "winston-cloudwatch": "^6.3.0"
   },
   "scripts": {
     "start": "node src/index.js",
@@ -21,9 +23,9 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "nodemon": "^3.0.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
+    "nodemon": "^3.0.0",
     "prettier": "^3.2.5"
   }
 }

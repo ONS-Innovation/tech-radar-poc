@@ -1,0 +1,124 @@
+.home-page {
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  margin-top: 70px;
+  background: hsl(var(--background));
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.home-content {
+  /* width: 50vw; */
+  text-align: left;
+  padding: 32px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.home-content-header {
+  width: 100%;
+  text-align: center;
+  background-color: hsl(var(--card) / .8);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.home-content-header strong {
+  color: hsl(var(--muted-foreground));
+}
+
+.home-content h1 {
+  font-size: 48px;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+
+.home-content-header > p {
+  font-size: 20px;
+  color: hsl(var(--muted-foreground));
+  margin: 0;
+  margin-top: 8px;
+}
+
+.navigation-cards {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  border-radius: var(--radius);
+  padding: 16px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.nav-card {
+  background: hsl(var(--card) / .8);
+  border: 1px solid hsl(var(--muted));
+  border-radius: 1rem;
+  padding: 16px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  text-align: left;
+  gap: 4px;
+}
+
+.nav-card:hover {
+  border-color: hsl(var(--border));
+  background-color: hsl(var(--muted) / .95);
+  box-shadow: 0 0 0 1px hsl(var(--foreground) / .05), 0 10px 10px hsl(var(--foreground) / .05), 0 12px 24px hsl(var(--foreground) / .05);
+}
+
+.nav-card svg {
+  color: hsl(var(--primary));
+  width: 28px;
+  height: 28px;
+  margin-bottom: 2px;
+  transition: all 0.3s ease;
+}
+
+.nav-card h2 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  margin: 0;
+}
+
+.nav-card p {
+  color: hsl(var(--muted-foreground));
+  margin: 0;
+  line-height: 1.5rem;
+  font-size: 1rem;
+}
+
+.nav-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .home-content h1 {
+    font-size: 36px;
+  }
+
+  .home-content > p {
+    font-size: 18px;
+  }
+
+  .navigation-cards {
+    grid-template-columns: 1fr;
+  }
+} 

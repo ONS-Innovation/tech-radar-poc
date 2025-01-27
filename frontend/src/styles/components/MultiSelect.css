@@ -1,0 +1,129 @@
+.multi-select {
+    position: relative;
+    font-size: 12px;
+    width: 300px;
+  }
+  
+  .multi-select-control {
+    background: hsl(var(--muted));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    height: 27px;
+    padding: 2px 8px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .multi-select-control::-webkit-scrollbar {
+    width: 1px;
+  }
+  
+  .multi-select-control::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .multi-select-control::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 2px;
+  }
+  
+  .multi-select-control::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+  
+  /* Firefox scrollbar */
+  .multi-select-control {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+  
+  .multi-select-values {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    flex: 1;
+    min-width: min-content;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  
+  .multi-select-value {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+    border-radius: var(--radius);
+    padding: 2px 6px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .multi-select-value button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .multi-select-value button:hover {
+    color: hsl(var(--destructive));
+  }
+  
+  .multi-select-input {
+    background: none;
+    border: none;
+    outline: none;
+    padding: 2px;
+    color: hsl(var(--foreground));
+    font-size: 12px;
+    flex: 1;
+    min-width: 50px;
+  }
+  
+  .multi-select-input::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+  
+  .multi-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: 0 2px 4px hsl(var(--foreground) / 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+  }
+  
+  .multi-select-option {
+    padding: 6px 12px;
+    cursor: pointer;
+    text-align: left;
+  }
+  
+  .multi-select-option:hover {
+    background: hsl(var(--muted));
+  }
+  
+  .multi-select-option.selected {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+  
+  .multi-select-placeholder {
+    color: hsl(var(--muted-foreground));
+    padding: 2px;
+  }

@@ -9,7 +9,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'no-console': 'warn',
+    'no-console': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'no-duplicate-imports': 'error',
     'no-multiple-empty-lines': ['error', { max: 1 }],

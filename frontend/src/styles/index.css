@@ -34,6 +34,9 @@
     --color-bg-trial: #ffe6f9;
     --color-bg-assess: #e6f0ff;
     --color-bg-hold: #ffe6e8;
+
+    --constructive: 138 63% 55%;
+    --constructive-foreground: 0 0% 98%;
   }
 
   .dark {
@@ -53,7 +56,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
+    --border: 240 3.7% 25.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
     --chart-1: 220 70% 50%;
@@ -76,7 +79,6 @@
 html, body {
   margin: 0;
   padding: 0;
-  min-height: 100vh;
 }
 
 html {

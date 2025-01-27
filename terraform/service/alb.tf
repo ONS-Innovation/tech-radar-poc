@@ -45,7 +45,7 @@ resource "aws_lb_target_group" "backend_tg" {
 }
 
 resource "aws_lb_target_group" "frontend_new_tg" {
-  name        = "${var.service_subdomain}-frontend-fargate-tg"
+  name        = "${var.service_subdomain}-front-farg-tg"
   port        = var.frontend_port
   protocol    = "HTTP"
   target_type = "ip"
@@ -63,7 +63,7 @@ resource "aws_lb_target_group" "frontend_new_tg" {
 
 # Backend target group
 resource "aws_lb_target_group" "backend_new_tg" {
-  name        = "${var.service_subdomain}-backend-fargate-tg"
+  name        = "${var.service_subdomain}-back-farg-tg"
   port        = var.backend_port
   protocol    = "HTTP"
   target_type = "ip"

@@ -1,31 +1,19 @@
-.projects-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: hsl(var(--background) / 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
+
 
 .projects-modal-content {
   background: hsl(var(--card));
-  border-radius: var(--radius);
-  padding: 16px 16px 16px 16px;
   box-sizing: border-box;
-  width: 90%;
-  max-width: 1200px;
-
+  width: 100%;
+  text-align: left;
 
   position: relative;
-  border: 1px solid hsl(var(--border));
   scrollbar-width: 1px;
   scrollbar-color: hsl(var(--border)) hsl(var(--card));
 }
 
+.projects-modal-content h2 {
+  text-align: left;
+}
 .projects-modal-content::-webkit-scrollbar {
   width: 1px;
 }
@@ -47,7 +35,7 @@
 
 .projects-modal-content h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: 24px;
   color: hsl(var(--foreground));
 }
 
@@ -61,11 +49,11 @@ font-size: 14px;
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  height: 50vh;
+  height: 70vh;
   gap: 6px;
   padding: 16px 0;
   margin-top: 0;
-  width: calc(100% - 28px);
+  width: 100%
 }
 
 .project-item {
@@ -99,6 +87,7 @@ font-size: 14px;
   text-decoration: underline;
   text-decoration-style: dotted;
   text-underline-offset: 4px;
+  font-size: 14px;
 }
 
 .project-name-short {
@@ -121,9 +110,9 @@ font-size: 14px;
 
 .distribution-segment {
   height: 100%;
-  transition: width 0.3s ease;
+  transition: all 0.3s ease;
   position: relative;
-  opacity: 0.9;
+  opacity: 0.5;
 }
 
 .distribution-segment:first-child{
@@ -133,6 +122,10 @@ font-size: 14px;
 .distribution-segment:last-child {
   border-top-right-radius: var(--radius);
   border-bottom-right-radius: var(--radius);
+}
+
+.distribution-segment:hover {
+  opacity: 1;
 }
 
 .distribution-segment:hover .segment-tooltip {
@@ -202,14 +195,14 @@ font-size: 14px;
 }
 
 .distribution-segment.unknown {
-  background-color: hsl(var(--muted-foreground));
+  background-color: hsl(var(--muted-foreground) / .75);
 }
 
 .projects-search-container {
   margin-top: 16px;
   display: flex;
   gap: 16px;
-  width: calc(100% - 28px);
+  width: 100%;
   padding-bottom: 16px;
   border-bottom: 1px solid hsl(var(--border));
 
@@ -292,7 +285,7 @@ font-size: 14px;
 }
 
 .projects-filter-button {
-  height: 40px;
+  height: 38px;
   width: 100%;
   padding: 0 12px;
   display: flex;
@@ -306,10 +299,13 @@ font-size: 14px;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 0 hsl(var(--border));
 }
 
 .projects-filter-button:hover {
   background: hsl(var(--muted));
+  box-shadow: none;
+  transform: translateY(2px);
 }
 
 .projects-filter-dropdown {

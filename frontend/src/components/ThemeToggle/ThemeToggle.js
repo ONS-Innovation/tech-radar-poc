@@ -1,6 +1,6 @@
 import React from "react";
 import { useTheme } from "../../contexts/ThemeContext";
-import "../../styles/ThemeToggle.css";
+import "../../styles/components/ThemeToggle.css";
 import {
   IoMoonOutline as MoonIcon,
   IoSunnyOutline as SunIcon,
@@ -21,7 +21,9 @@ function ThemeToggle() {
       className="theme-toggle"
       aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
     >
+      
       {theme === "light" ? <SunIcon /> : <MoonIcon />}
+      Toggle Theme
     </button>
   );
 }

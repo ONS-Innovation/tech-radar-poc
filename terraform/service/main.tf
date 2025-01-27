@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          "awslogs-group"         = "/ecs/ecs-service-${var.service_subdomain}-frontend",
+          "awslogs-group"         = aws_cloudwatch_log_group.frontend_logs.name,
           "awslogs-region"        = var.region,
           "awslogs-stream-prefix" = "ecs"
         }
@@ -75,13 +75,25 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
         {
           name  = "PORT",
           value = tostring(var.backend_port)
+        },
+        {
+          name  = "BUCKET_NAME",
+          value = var.s3_bucket_name
+        },
+        {
+          name  = "COGNITO_USER_POOL_ID",
+          value = data.terraform_remote_state.ecs_auth.outputs.github_audit_user_pool_id
+        },
+        {
+          name  = "CLOUDWATCH_GROUP_NAME",
+          value = "/ecs/ecs-service-${var.service_subdomain}-backend"
         }
       ],
       logConfiguration = {
         logDriver = "awslogs",
         options = {
           "awslogs-create-group"  = "true",
-          "awslogs-group"         = "/ecs/ecs-service-${var.service_subdomain}-backend",
+          "awslogs-group"         = aws_cloudwatch_log_group.backend_logs.name,
           "awslogs-region"        = var.region,
           "awslogs-stream-prefix" = "ecs",
           "mode"                  = "non-blocking"

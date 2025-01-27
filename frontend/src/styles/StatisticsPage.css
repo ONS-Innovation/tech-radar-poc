@@ -1,0 +1,10 @@
+.statistics-page {
+  width: 100%;
+  height: calc(100vh - 60px);
+  margin-top: 60px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: hsl(var(--background));
+  overflow-y: auto;
+}

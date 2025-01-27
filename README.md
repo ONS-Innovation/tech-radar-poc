@@ -1,17 +1,38 @@
-# Tech Radar
+# Digital Landscape
 
-Tech Radar is a tool that helps you track the infrastructure, languages, frameworks and CI/CD used in the ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
+![Linting Status](https://github.com/ONS-innovation/keh-digital-landscape/actions/workflows/ci.yml/badge.svg) 
+![CodeQL Status](https://github.com/ONS-innovation/keh-digital-landscape/actions/workflows/github-code-scanning/codeql/badge.svg)
+![Dependabot Status](https://github.com/ONS-Innovation/keh-digital-landscape/actions/workflows/dependabot/dependabot-updates/badge.svg)
+[![LICENSE.](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/ONS-innovation/keh-digital-landscape/blob/main/LICENSE) 
+[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/ONS-innovation/keh-digital-landscape.svg)](https://github.com/ONS-innovation/keh-digital-landscape/pulls)
 
-Use the following keyboard shortcuts to navigate the tech radar:
+This tool aims to provide a visual representation of the digital landscape at ONS. This consists of the following 3 main pages and one homepage:
 
-- `2` to move up the list of technologies
-- `1`to move down the list of technologies
+**Tech Radar:**
+- Tech Radar is a tool that helps you track the Infrastructure, Languages, Frameworks and Supporting Tools used in ONS repositories and then categorises them into Adopt, Trial, Assess or Hold.
+- Use the following keyboard shortcuts to navigate the tech radar:
+    - `2` to move up the list of technologies
+    - `1`to move down the list of technologies
+
+**Statistics:**
+- This provides a collection of statistics about the language breakdown within the ONSDigital GitHub Organisation.
+- Multiple filters such as Archive/Active, date filter and project filteroptions are available.
+- Sort options such as Alphabetically, Most/Least Repositories, usage, size.
+- Toggle options to display Tech Radar languages only and switch between Average Size and Total Size.
+
+**Projects:**
+- This displays the project data collected from the Tech Audit Tool.
+- Multiple features such as alphabetically, most/least tech and tech radar ring ratio per project are available.
+
+**Homepage:**
+- This is the homepage of the tool.
+- It provides a brief overview of the tool and its purpose.
 
 ## Getting started
 
 Clone the repository:
 ```bash
-git clone https://github.com/ONS-innovation/keh-tech-radar.git
+git clone https://github.com/ONS-innovation/keh-digital-landscape.git
 ```
 
 Install both backend and frontend dependencies:
@@ -82,6 +103,34 @@ To stop the project:
 make docker-down
 ```
 
+## Testing
+
+Tests are run with PyTest. To run the tests, refer to the [README.md](/testing/README.md) in the `/testing/` folder.
+
+## Linting 
+
+Linting is run with ESLint. To run the linting, run the following commands:
+
+Install the dev dependencies:
+```bash
+make install-dev
+```
+
+Run the linting:
+```bash
+make lint
+```
+
+Run the linting for the frontend:
+```bash
+make lint-frontend
+```
+
+Run the linting for the backend:
+```bash
+make lint-backend
+```
+
 ## How to containerise and deploy to ECR on AWS
 
 Build the frontend container:
@@ -138,7 +187,7 @@ Change directory to the service folder (if in authentication folder):
 cd ../service
 ```
 
-Set the environment variables. Check the terraform/service/env/dev/example_tfvars.txt file for the correct values.
+Set the environment variables. Check the `terraform/service/env/dev/example_tfvars.txt` file for the correct values.
 
 Run Terraform:
 
@@ -146,4 +195,11 @@ Run Terraform:
 terraform init -backend-config="env/dev/backend-dev" -reconfigure
 terraform plan -var-file=env/dev/dev.tfvars
 terraform apply -var-file=env/dev/dev.tfvars
+```
+
+### Makefile
+
+To see the available commands, run the following command:
+```bash
+make
 ```
