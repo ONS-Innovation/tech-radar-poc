@@ -203,7 +203,7 @@ function StatisticsPage() {
         searchResults={[]}
         onSearchResultClick={() => {}}
         hideSearch={true}
-        onOpenProjects={() => setIsProjectsModalOpen(true)}
+        onOpenProjects={() => setIsProjectsModalOpen(!isProjectsModalOpen)}
       />
       <div className="statistics-page">
         <Statistics 
