@@ -4,6 +4,7 @@ body {
 
 .App {
   text-align: center;
+  height: calc(100vh - 70px);
 }
 
 .loading-container {
@@ -12,6 +13,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+}
+
+.loading-overlay p {
+  color: hsl(var(--foreground));
+  font-size: 14px;
+  margin: 0;
 }
 
 .App-logo {
@@ -611,24 +619,6 @@ foreignObject {
   z-index: 1001;
 }
 
-.modal-content {
-  background: hsl(var(--card));
-  border-radius: var(--radius);
-  border: 1px solid hsl(var(--border));
-  padding: 30px;
-  width: 500px;
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-
-}
-
-.modal-content h2 {
-  margin: 0;
-}
-
 .modal-info-tags {
   display: flex;
   justify-content: flex-start;
@@ -1131,6 +1121,11 @@ foreignObject {
 .timeline-node.hold {
   background: var(--color-bg-hold);
   color: var(--color-hold);
+}
+
+.timeline-node.review {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
 }
 
 .timeline-header {

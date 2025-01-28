@@ -9,6 +9,11 @@ import { fetchTechRadarJSONFromS3 } from '../utilities/getTechRadarJson';
 import toast from 'react-hot-toast';
 import '../styles/ProjectsPage.css';
 
+/**
+ * ProjectsPage component for displaying the projects page.
+ * 
+ * @returns {JSX.Element} - The ProjectsPage component.
+ */
 function ProjectsPage() {
   const [projectsData, setProjectsData] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -57,6 +62,12 @@ function ProjectsPage() {
     fetchRadarData();
   }, []);
 
+  /**
+   * getTechnologyStatus function gets the technology status for a given technology.
+   * 
+   * @param {string} tech - The technology to get the status for.
+   * @returns {string|null} - The technology status or null if not found.
+   */
   const getTechnologyStatus = (tech) => {
     if (!radarData || !tech) return null;
 
@@ -66,11 +77,19 @@ function ProjectsPage() {
     return entry ? entry.timeline[0].ringId.toLowerCase() : null;
   };
 
+  /**
+   * handleProjectClick function handles the project click event.
+   * 
+   * @param {Object} project - The project object to handle the click for.
+   */
   const handleProjectClick = (project) => {
     setSelectedProject(project);
     setIsProjectModalOpen(true);
   };
 
+  /**
+   * handleRefresh function handles the refresh event.
+   */
   const handleRefresh = async () => {
     try {
       const newData = await fetchCSVFromS3();
@@ -81,6 +100,11 @@ function ProjectsPage() {
     }
   };
 
+  /**
+   * handleTechClick function handles the technology click event.
+   * 
+   * @param {string} tech - The technology to handle the click for.
+   */
   const handleTechClick = (tech) => {
     if (!tech) return;
 
@@ -93,7 +117,13 @@ function ProjectsPage() {
     }
   };
 
-  const renderTechnologyList = (technologies) => {
+  /**
+   * renderTechnologyList function renders the technology list.
+   * 
+   * @param {string} technologies - The technologies to render.
+   * @returns {JSX.Element|null} - The rendered technology list or null if not found.
+   */
+const renderTechnologyList = (technologies) => {
     if (!technologies) return null;
 
     return technologies.split(';').map((tech, index) => {
@@ -136,6 +166,8 @@ function ProjectsPage() {
             onClose={() => setIsProjectModalOpen(false)}
             project={selectedProject}
             renderTechnologyList={renderTechnologyList}
+            getTechnologyStatus={getTechnologyStatus}
+            onTechClick={handleTechClick}
           />
         )}
       </div>

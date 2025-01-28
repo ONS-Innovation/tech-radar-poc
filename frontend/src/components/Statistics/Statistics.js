@@ -1,15 +1,38 @@
-import React, { useState, useMemo } from 'react';
-import './Statistics.css';
+import React, { useState, useMemo, useCallback } from 'react';
+import "../../styles/components/Statistics.css";
 import { IoSearch } from 'react-icons/io5';
 import { subMonths, isValid, parseISO } from 'date-fns';
+import SkeletonStatCard from './Skeletons/SkeletonStatCard';
+import SkeletonLanguageCard from './Skeletons/SkeletonLanguageCard';
+import MultiSelect from '../MultiSelect/MultiSelect';
 
-function Statistics({ data, onTechClick, onDateChange, isLoading }) {
+/**
+ * Statistics component for displaying repository statistics.
+ * 
+ * @param {Object} props - The props passed to the Statistics component.
+ * @param {Object} props.data - The data object containing statistics.
+ * @param {Function} props.onTechClick - Function to handle technology click.
+ * @param {Function} props.onDateChange - Function to handle date change.
+ * @param {boolean} props.isLoading - Whether the data is loading.
+ * @param {Array} props.projectsData - Array of projects data from CSV.
+ * @param {Function} props.onProjectsChange - Function to handle projects selection change.
+ */
+function Statistics({ 
+  data, 
+  onTechClick, 
+  onDateChange, 
+  isLoading,
+  projectsData,
+  onProjectsChange 
+}) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'repo_count', direction: 'desc' });
   const [selectedDate, setSelectedDate] = useState('all');
   const [hoveredLanguage, setHoveredLanguage] = useState(null);
   const [showTechRadarOnly, setShowTechRadarOnly] = useState(false);
   const [repoView, setRepoView] = useState('unarchived'); // 'unarchived', 'archived', 'total'
+  const [selectedProjects, setSelectedProjects] = useState([]);
+  const [showTotalSize, setShowTotalSize] = useState(false);
 
   const dateOptions = [
     { value: 'all', label: 'All Time' },
@@ -20,6 +43,11 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     { value: 'custom', label: 'Custom Date' }
   ];
 
+  /**
+   * handleDateChange function handles the date change event.
+   * 
+   * @param {string} value - The selected date value.
+   */
   const handleDateChange = (value) => {
     setSelectedDate(value);
     if (value === 'all') {
@@ -32,6 +60,11 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     }
   };
 
+  /**
+   * handleCustomDateChange function handles the custom date change event.
+   * 
+   * @param {Event} e - The event object.
+   */
   const handleCustomDateChange = (e) => {
     const date = e.target.value;
     if (date && isValid(parseISO(date))) {
@@ -39,13 +72,25 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     }
   };
 
-  const getTechnologyStatus = (language) => {
-    const entry = data.radar_entries?.find(
+  /**
+   * getTechnologyStatus function gets the technology status for a given language.
+   * 
+   * @param {string} language - The language to get the status for.
+   * @returns {string|null} - The technology status or null if not found.
+   */
+  const getTechnologyStatus = useCallback((language) => {
+    if (!data || !data.radar_entries) return null;
+    const entry = data.radar_entries.find(
       entry => entry.title.toLowerCase() === language.toLowerCase()
     );
     return entry ? entry.timeline[0].ringId.toLowerCase() : null;
-  };
+  }, [data]);
 
+  /**
+   * handleLanguageClick function handles the language click event.
+   * 
+   * @param {string} language - The language to handle the click for.
+   */
   const handleLanguageClick = (language) => {
     const status = getTechnologyStatus(language);
     if (status) {
@@ -53,6 +98,11 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     }
   };
 
+  /**
+   * getCurrentStats function gets the current stats based on the repository view.
+   * 
+   * @returns {Object|null} - The current stats or null if not found.
+   */
   const getCurrentStats = () => {
     if (!data) return null;
     // NEEDS ERROR HANDLING SEB
@@ -65,7 +115,12 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     return data.stats_unarchived || null;
   };
 
-  const getCurrentLanguageStats = () => {
+  /**
+   * getCurrentLanguageStats function gets the current language stats based on the repository view.
+   * 
+   * @returns {Object|null} - The current language stats or null if not found.
+   */
+  const getCurrentLanguageStats = useCallback(() => {
     if (!data) return null;
 
     if (repoView === 'archived') {
@@ -74,8 +129,13 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
       return data.language_statistics || {};
     }
     return data.language_statistics_unarchived || {};
-  };
+  }, [data, repoView]);
 
+  /**
+   * sortedAndFilteredLanguages function sorts and filters the languages based on the search term and sort configuration.
+   * 
+   * @returns {Array} - The sorted and filtered languages.
+   */
   const sortedAndFilteredLanguages = useMemo(() => {
     const languageStats = getCurrentLanguageStats();
     if (!languageStats) return [];
@@ -110,6 +170,11 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     return filtered;
   }, [getCurrentLanguageStats, searchTerm, sortConfig, getTechnologyStatus, showTechRadarOnly]);
 
+  /**
+   * handleSort function handles the sort event.
+   * 
+   * @param {string} key - The key to sort by.
+   */
   const handleSort = (key) => {
     setSortConfig(prev => ({
       key,
@@ -117,6 +182,25 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
     }));
   };
 
+  /**
+   * handleShowTotalSize function handles the show total size event.
+   * 
+   * @param {boolean} value - The value to set the show total size to.
+   */
+  const handleShowTotalSize = (value) => {
+    setShowTotalSize(value);
+    // If we're currently sorting by size, trigger a resort
+    if (sortConfig.key === 'average_size') {
+      handleSort('average_size');
+    }
+  };
+
+  /**
+   * getRepoCountDisplay function gets the repository count display.
+   * 
+   * @param {number} repoCount - The repository count.
+   * @returns {string} - The repository count display.
+   */
   const getRepoCountDisplay = (repoCount) => {
     const stats = getCurrentStats();
     if (hoveredLanguage && stats?.total) {
@@ -124,6 +208,22 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
       return `${repoCount} / ${stats.total} (${percentage}%)`;
     }
     return repoCount;
+  };
+
+  // Filter projects to only those with repositories
+  const projectOptions = useMemo(() => {
+    if (!projectsData) return [];
+    return projectsData
+      .filter(project => project.Repo)
+      .map(project => ({
+        value: project.Repo,
+        label: project.Project || project.Project_Short
+      }));
+  }, [projectsData]);
+
+  const handleProjectsChange = (selected) => {
+    setSelectedProjects(selected || []);
+    onProjectsChange(selected?.map(option => option.value) || []);
   };
 
   const metadata = data?.metadata || {};
@@ -181,6 +281,14 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
               <option value="archived">Archived Repos</option>
               <option value="total">All Repos</option>
             </select>
+            <MultiSelect
+              value={selectedProjects}
+              onChange={handleProjectsChange}
+              options={projectOptions}
+              placeholder="Filter by projects..."
+              isDisabled={isLoading}
+              className="project-select"
+            />
           </div>
         </div>
         <div className="metadata">
@@ -192,37 +300,43 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
         </div>
       </div>
       
-      {isLoading ? (
-        <div className="loading-overlay">
-          <div className="loading-spinner"></div>
-          <p>Loading statistics...</p>
-        </div>
-      ) : !stats ? (
-        <div className="loading-overlay">
+      {!stats && !isLoading ? (
+        <div className="no-data-message">
           <p>No statistics available</p>
         </div>
       ) : (
         <>
           <div className="stats-grid">
-            <div className="stat-card">
-              <h3>Total Repositories</h3>
-              <p>{hoveredLanguage && languageStats ? 
-                  getRepoCountDisplay(languageStats[hoveredLanguage]?.repo_count) :
-                  stats.total || 0}
-              </p>
-            </div>
-            <div className="stat-card">
-              <h3>Public Repos</h3>
-              <p>{stats.public || 0}</p>
-            </div>
-            <div className="stat-card">
-              <h3>Private Repos</h3>
-              <p>{stats.private || 0}</p>
-            </div>
-            <div className="stat-card">
-              <h3>Internal Repos</h3>
-              <p>{stats.internal || 0}</p>
-            </div>
+            {isLoading ? (
+              <>
+                <SkeletonStatCard />
+                <SkeletonStatCard />
+                <SkeletonStatCard />
+                <SkeletonStatCard />
+              </>
+            ) : (
+              <>
+                <div className="stat-card">
+                  <h3>Total Repositories</h3>
+                  <p>{hoveredLanguage && languageStats ? 
+                      getRepoCountDisplay(languageStats[hoveredLanguage]?.repo_count) :
+                      stats.total || 0}
+                  </p>
+                </div>
+                <div className="stat-card">
+                  <h3>Public Repos</h3>
+                  <p>{stats.public || 0}</p>
+                </div>
+                <div className="stat-card">
+                  <h3>Private Repos</h3>
+                  <p>{stats.private || 0}</p>
+                </div>
+                <div className="stat-card">
+                  <h3>Internal Repos</h3>
+                  <p>{stats.internal || 0}</p>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="language-section">
@@ -231,7 +345,6 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
                 <h3>Language Statistics</h3>
               </div>
               <div className="language-header-right">
-              
                 <div className="search-box">
                   <IoSearch size={16} />
                   <input
@@ -239,6 +352,7 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
                     placeholder="Search languages..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -247,38 +361,62 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
             <div className="sort-options">
               <button 
                 className={sortConfig.key === 'language' ? 'active' : ''}
-                  onClick={() => handleSort('language')}
-                >
-                  Name {sortConfig.key === 'language' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                </button>
-                <button 
-                  className={sortConfig.key === 'repo_count' ? 'active' : ''}
-                  onClick={() => handleSort('repo_count')}
-                >
-                  Repos {sortConfig.key === 'repo_count' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                </button>
-                <button 
-                  className={sortConfig.key === 'average_percentage' ? 'active' : ''}
-                  onClick={() => handleSort('average_percentage')}
-                >
-                  Usage {sortConfig.key === 'average_percentage' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                </button>
-                <button 
-                  className={sortConfig.key === 'average_lines' ? 'active' : ''}
-                  onClick={() => handleSort('average_lines')}
-                >
-                  Lines {sortConfig.key === 'average_lines' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                </button>
-                <button 
-                  className={` ${showTechRadarOnly ? 'active' : ''}`}
-                  onClick={() => setShowTechRadarOnly(!showTechRadarOnly)}
-                >
-                  Tech Radar Only
-                </button>
-              </div>
+                onClick={() => handleSort('language')}
+                disabled={isLoading}
+              >
+                Name {sortConfig.key === 'language' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              </button>
+              <button 
+                className={sortConfig.key === 'repo_count' ? 'active' : ''}
+                onClick={() => handleSort('repo_count')}
+                disabled={isLoading}
+              >
+                Repos {sortConfig.key === 'repo_count' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              </button>
+              <button 
+                className={sortConfig.key === 'average_percentage' ? 'active' : ''}
+                onClick={() => handleSort('average_percentage')}
+                disabled={isLoading}
+              >
+                Usage {sortConfig.key === 'average_percentage' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              </button>
+              <button 
+                className={sortConfig.key === 'total_size' ? 'active' : ''}
+                onClick={() => handleSort('total_size')}
+                disabled={isLoading}
+              >
+                Size {sortConfig.key === 'total_size' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              </button>
+              <button 
+                className={`${showTotalSize ? 'active' : ''}`}
+                onClick={() => handleShowTotalSize(!showTotalSize)}
+                disabled={isLoading}
+              >
+                {showTotalSize ? 'Total Size' : 'Avg Size'}
+              </button>
+              <button 
+                className={`${showTechRadarOnly ? 'active' : ''}`}
+                onClick={() => setShowTechRadarOnly(!showTechRadarOnly)}
+                disabled={isLoading}
+              >
+                Tech Radar Only
+              </button>
+            </div>
 
-              <div className="language-grid">
-                {sortedAndFilteredLanguages.map(([language, stats]) => {
+            <div className="language-grid">
+              {isLoading ? (
+                <>
+                  <SkeletonLanguageCard />
+                  <SkeletonLanguageCard />
+                  <SkeletonLanguageCard />
+                  <SkeletonLanguageCard />
+                  <SkeletonLanguageCard />
+                  <SkeletonLanguageCard />
+                  <SkeletonLanguageCard />
+                  <SkeletonLanguageCard />
+                </>
+              ) : (
+                sortedAndFilteredLanguages.map(([language, stats]) => {
                   const status = getTechnologyStatus(language);
                   return (
                     <div 
@@ -297,18 +435,25 @@ function Statistics({ data, onTechClick, onDateChange, isLoading }) {
                           <strong>{stats.average_percentage.toFixed(1)}%</strong> avg usage
                         </p>
                         <p>
-                          <strong>{Math.round(stats.average_lines).toLocaleString()}</strong> avg lines
+                          <strong>{(() => {
+                            const bytes = showTotalSize ? stats.total_size : (stats.total_size / stats.repo_count);
+                            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+                            if (bytes === 0) return '0 B';
+                            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+                            return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
+                          })()}</strong> {showTotalSize ? 'total' : 'avg'} size
                         </p>
                       </div>
                     </div>
                   );
-                })}
-              </div>
+                })
+              )}
             </div>
-          </>
-        )}
-      </div>
-    );
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
 
-export default Statistics; 
+export default Statistics;

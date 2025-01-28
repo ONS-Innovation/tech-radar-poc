@@ -6,6 +6,11 @@ import { IoStatsChart, IoPeople } from 'react-icons/io5';
 import { MdOutlineRadar } from 'react-icons/md';
 import '../styles/HomePage.css';
 
+/**
+ * HomePage component for displaying the home page.
+ * 
+ * @returns {JSX.Element} - The HomePage component.
+ */
 function HomePage() {
   const navigate = useNavigate();
 
@@ -21,7 +26,7 @@ function HomePage() {
       <div className="home-page">
         <div className="home-content">
           <div className="home-content-header">
-            <h1>Welcome to the ONS Digital Landscape</h1>
+            <h1>The Digital Landscape of ONS</h1>
             <p>Explore and analyse technology trends across the organisation</p>
           </div>
           

@@ -110,9 +110,9 @@ font-size: 14px;
 
 .distribution-segment {
   height: 100%;
-  transition: width 0.3s ease;
+  transition: all 0.3s ease;
   position: relative;
-  opacity: 0.9;
+  opacity: 0.5;
 }
 
 .distribution-segment:first-child{
@@ -122,6 +122,10 @@ font-size: 14px;
 .distribution-segment:last-child {
   border-top-right-radius: var(--radius);
   border-bottom-right-radius: var(--radius);
+}
+
+.distribution-segment:hover {
+  opacity: 1;
 }
 
 .distribution-segment:hover .segment-tooltip {
@@ -191,7 +195,7 @@ font-size: 14px;
 }
 
 .distribution-segment.unknown {
-  background-color: hsl(var(--muted-foreground));
+  background-color: hsl(var(--muted-foreground) / .75);
 }
 
 .projects-search-container {

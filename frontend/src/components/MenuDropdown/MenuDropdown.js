@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
-import './MenuDropdown.css';
+import "../../styles/components/MenuDropdown.css";
 import { IoHome, IoMenu, IoStatsChart, IoPeople } from 'react-icons/io5'
 import { MdOutlineRadar } from "react-icons/md";
-;
 
+/**
+ * MenuDropdown component for displaying a dropdown menu with navigation links.
+ * 
+ * @param {Object} props - The props passed to the MenuDropdown component.
+ * @param {boolean} props.show - Whether the dropdown menu should be shown.
+ * @param {Function} props.onClose - Function to call when the dropdown menu is closed.
+ */
 function MenuDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -23,6 +29,11 @@ function MenuDropdown() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  /**
+   * handleNavClick function navigates to the specified path and closes the dropdown menu.
+   * 
+   * @param {string} path - The path to navigate to.
+   */
   const handleNavClick = (path) => {
     navigate(path);
     setIsOpen(false);

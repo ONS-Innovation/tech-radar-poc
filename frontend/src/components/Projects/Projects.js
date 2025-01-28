@@ -1,7 +1,17 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { IoSearch, IoClose, IoOptions, IoChevronDown, IoRefresh } from 'react-icons/io5';
-import '../../styles/Projects.css';
+import "../../styles/components/Projects.css";
 
+/**
+ * Projects component for displaying a list of projects.
+ * 
+ * @param {Object} props - The props passed to the Projects component.
+ * @param {boolean} props.isOpen - Whether the projects list is open.
+ * @param {Array} props.projectsData - The array of projects data.
+ * @param {Function} props.handleProjectClick - Function to handle project click.
+ * @param {Function} props.getTechnologyStatus - Function to get technology status.
+ * @param {Function} props.onRefresh - Function to refresh the projects data.
+ */
 const Projects = ({ isOpen, projectsData, handleProjectClick, getTechnologyStatus, onRefresh }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('order-earliest');
@@ -20,6 +30,12 @@ const Projects = ({ isOpen, projectsData, handleProjectClick, getTechnologyStatu
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isFilterOpen]);
 
+  /**
+   * calculateTechnologyDistribution function calculates the technology distribution for a given project.
+   * 
+   * @param {Object} project - The project object containing project details.
+   * @returns {Object} - An object containing the technology distribution.
+   */
   const calculateTechnologyDistribution = useCallback((project) => {
     const techColumns = [
       'Language_Main',
@@ -30,6 +46,9 @@ const Projects = ({ isOpen, projectsData, handleProjectClick, getTechnologyStatu
       'Code_Formatter',
       'Monitoring',
       'Datastores',
+      'Cloud_Providers',
+      'CICD',
+      'Infrastructure',
     ];
 
     const technologies = techColumns.reduce((acc, column) => {

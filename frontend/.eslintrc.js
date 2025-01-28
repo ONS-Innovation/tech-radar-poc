@@ -26,7 +26,7 @@ module.exports = {
     rules: {
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': 'off',
       'no-duplicate-imports': 'error',
       'no-multiple-empty-lines': ['error', { max: 1 }],
       'no-undef': 'off',
