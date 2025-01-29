@@ -8,7 +8,6 @@ const cors = require("cors");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const fetch = require("node-fetch");
-const Papa = require("papaparse");
 const logger = require('./config/logger');
 
 const app = express();
