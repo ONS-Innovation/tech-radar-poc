@@ -21,3 +21,4 @@ clean:
 	find . -type f -name "*.pyc" -delete 
 	rm -rf .pytest_cache
 	rm -rf .ruff_cache
+	rm -rf venv
