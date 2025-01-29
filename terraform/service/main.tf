@@ -87,6 +87,10 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
         {
           name  = "CLOUDWATCH_GROUP_NAME",
           value = "/ecs/ecs-service-${var.service_subdomain}-backend"
+        },
+        {
+          name  = "TAT_BUCKET_NAME",
+          value = var.other_s3_bucket_name
         }
       ],
       logConfiguration = {
