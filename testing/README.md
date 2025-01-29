@@ -51,3 +51,17 @@ The tests cover three main endpoints:
 - `/api/health` - Basic health check endpoint
 - `/api/csv` - CSV data endpoint
 - `/api/json` - Repository statistics endpoint with filtering capabilities 
+- `/api/repository/project/json` - Repository project JSON endpoint with filtering capabilities 
+
+## Making changes to the tests
+
+To make changes to the tests, edit the `backend/test_main.py` file.
+
+To run the tests after making changes, run:
+```bash
+make test
+```
+
+Once created, please run `make lint` to check for any linting errors.
+
+Then run `make clean` to clean up the cache files.
