@@ -4,6 +4,8 @@
   box-sizing: border-box;
   max-height: calc(100vh - 70px);
   display: flex;
+  flex-direction: column;
+
   align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
@@ -15,7 +17,6 @@
   align-items: flex-start;
   justify-content: center;
   gap: 8px;
-  padding: 8px;
 }
 
 .admin-container h1 {
@@ -31,9 +32,10 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 20px;
+  gap: 8px;
   height: 100%;
-  max-width: 70vw;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Grid positioning for each box */
@@ -49,7 +51,7 @@
 
 .admin-box:nth-child(3) {
   grid-column: 3;
-  grid-row: 1 / span 2; /* Takes up both rows */
+  grid-row: 1;
 }
 
 .admin-box:nth-child(4) {
@@ -62,19 +64,24 @@
   grid-row: 2;
 }
 
+.admin-box:nth-child(6) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
 .admin-box {
   background: hsl(var(--card));
   border-radius: var(--radius);
   padding: 8px;
   box-sizing: border-box;
   border: 1px solid hsl(var(--border));
-  height: 100%; /* Ensure boxes fill their grid areas */
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  min-width: 0;
 }
 
-/* Color styling for each box */
 .admin-box:first-child {
   background: var(--color-bg-adopt);
   border-color: var(--color-adopt);
@@ -99,11 +106,34 @@
   margin: 0;
   padding: 8px;
   box-sizing: border-box;
-  border-bottom: 1px solid hsl(var(--border));
   color: hsl(var(--card-foreground));
   font-size: 18px;
   font-weight: 600;
   text-align: left;
+}
+
+.droppable-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  background: hsl(var(--card));
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+}
+
+.droppable-group-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: hsl(var(--card-foreground));
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.droppable-group-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 }
 
 .droppable-area {
@@ -111,24 +141,25 @@
   background: hsl(var(--muted));
   border: 1px solid hsl(var(--border));
   padding: 10px;
+  box-sizing: border-box;
   border-radius: var(--radius);
   transition: background-color 0.2s, border 0.2s;
   height: 300px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   gap: 8px;
 }
 
 .droppable-area.drag-over {
   background-color: hsl(var(--card));
-  border: 2px dashed hsl(var(--primary));
+  border: 1px dashed hsl(var(--primary));
 }
 
 .draggable-item {
+  font-size: 12px;
   background: hsl(var(--card));
-  padding: 10px;
+  padding: 6px 12px;
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
   cursor: grab;
@@ -136,14 +167,13 @@
   text-align: left;
   user-select: none;
   box-shadow: none;
+  box-sizing: border-box;
+  height: max-content;
 }
 
 
 .draggable-item:hover {
   background-color: hsl(var(--accent));
-  transform: translateY(-2px);
-  box-shadow: 0 2px 0px hsl(var(--border));
-
 }
 
 .draggable-item:active {
@@ -152,8 +182,8 @@
 }
 
 .save-button {
-  background-color: hsl(var(--constructive));
-  color: hsl(var(--constructive-foreground));
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   font-size: 1rem;
@@ -161,14 +191,149 @@
   transition: all 0.2s ease;
   padding: 8px 16px;
   box-sizing: border-box;
-  box-shadow: 0 2px 0px hsl(var(--border));
+  width: 100%;
+  margin-top: 8px;
 }
 
 .save-button:hover {
-  box-shadow: none;
-  transform: translateY(2px);
+  background-color: hsl(var(--primary) / .75);
 }
 
 .save-button:active {
   background-color: hsl(var(--primary));
+  transform: scale(0.98);
+}
+
+.timeline-display {
+  /* width: 400px; */
+  overflow-x: auto;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  padding-bottom: 0px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+justify-content: center;
+  gap: 8px;
+  min-height: 125px;
+}
+
+.timeline-info {
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+  text-align: left;
+}
+
+.timeline-display h3 {
+  margin: 0;
+  width: fit-content;
+  color: hsl(var(--card-foreground));
+  font-size: 18px;
+}
+
+.timeline-display p {
+  margin: 0;
+  font-size: 12px;
+  box-sizing: border-box;
+  width: fit-content;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  padding: 2px 8px;
+
+}
+
+.timeline-display-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-sort-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--radius);
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.timeline-sort-button:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.timeline-entries {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4px;
+  overflow-y: auto;
+  padding-bottom: 8px;
+}
+
+.timeline-entry {
+  display: flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+
+
+.timeline-entry span {
+  font-size: 12px;
+  padding: 0 8px;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timeline-ring {
+  font-weight: 600;
+  text-transform: capitalize;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+}
+
+.timeline-empty {
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+  padding-bottom: 8px;
+  font-size: 14px;
+}
+
+.droppable-area .skeleton {
+  height: 60px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  overflow: hidden;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.timeline-display .skeleton {
+  width: 100%;
+  height: 100px;
+  margin: 0;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.save-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

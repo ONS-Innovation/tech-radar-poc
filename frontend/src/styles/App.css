@@ -762,10 +762,13 @@ foreignObject {
   --color-trial: #cb00b4;
   --color-assess: #0069e5;
   --color-hold: #de001a;
+  --color-review: hsl(var(--muted-foreground));
   --color-bg-adopt: #e6ffe6;
   --color-bg-trial: #ffe6f9;
   --color-bg-assess: #e6f0ff;
   --color-bg-hold: #ffe6e8;
+  --color-bg-review: hsl(var(--muted));
+
 }
 
 /* Ring status badges */
@@ -818,6 +821,14 @@ foreignObject {
 .info-box-ring.hold {
   background: var(--color-bg-hold);
   color: var(--color-hold);
+}
+
+.review,
+.entry-ring.review,
+.search-result-ring.review,
+.info-box-ring.review {
+  background: var(--color-bg-review);
+  color: var(--color-review);
 }
 
 /* Ring styles */

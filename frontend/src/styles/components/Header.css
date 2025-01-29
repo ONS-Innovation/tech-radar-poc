@@ -80,6 +80,7 @@
   border-radius: var(--radius);
   transition: all 0.2s;
   background: hsl(var(--background));
+  color: hsl(var(--foreground));
   font-family: inherit;
 }
 
