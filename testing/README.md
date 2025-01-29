@@ -51,3 +51,4 @@ The tests cover three main endpoints:
 - `/api/health` - Basic health check endpoint
 - `/api/csv` - CSV data endpoint
 - `/api/json` - Repository statistics endpoint with filtering capabilities 
+- `/api/repository/project/json` - Repository project JSON endpoint with filtering capabilities 
