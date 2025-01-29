@@ -16,6 +16,27 @@ resource "aws_iam_role" "ecs_task_role" {
   })
 }
 
+# Attach CloudWatch Logs policy to the task role
+resource "aws_iam_role_policy" "task_logs_policy" {
+  name = "${var.domain}-${var.service_subdomain}-logs-policy"
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams"
+        ]
+        Resource = "arn:aws:logs:eu-west-2:${var.aws_account_id}:log-group:/ecs/ecs-service-tech-radar-*:*"
+      }
+    ]
+  })
+}
+
 # Custom policy for S3 read-only access to specific bucket
 resource "aws_iam_role_policy" "s3_read_only" {
   name = "${var.domain}-${var.service_subdomain}-s3-read-only"
