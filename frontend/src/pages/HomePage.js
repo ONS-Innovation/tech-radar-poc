@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import Header from '../components/Header/Header';
 import { IoStatsChart, IoPeople } from 'react-icons/io5';
+import { FaEdit } from "react-icons/fa";
 import { MdOutlineRadar } from 'react-icons/md';
 import '../styles/HomePage.css';
 
@@ -53,6 +54,14 @@ function HomePage() {
                 <h2>Projects</h2>
               </div>
               <p>View all projects and their technology stacks across the organisation.</p>
+            </div>
+
+            <div className="nav-card" onClick={() => navigate('/review/dashboard')}>
+              <div className="nav-card-header">
+                <FaEdit />
+                <h2>Review</h2>
+              </div>
+              <p>Authorised users can update the data on the Tech Radar.</p>
             </div>
           </div>
         </div>
