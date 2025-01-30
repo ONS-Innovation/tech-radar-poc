@@ -30,10 +30,14 @@
     --color-trial: #cb00b4;
     --color-assess: #0069e5;
     --color-hold: #de001a;
+    --color-review: #666666;
+    --color-ignore: #999999;
     --color-bg-adopt: #e6ffe6;
     --color-bg-trial: #ffe6f9;
     --color-bg-assess: #e6f0ff;
     --color-bg-hold: #ffe6e8;
+    --color-bg-review: #f5f5f5;
+    --color-bg-ignore: #eeeeee;
 
     --constructive: 138 63% 55%;
     --constructive-foreground: 0 0% 98%;
@@ -68,10 +72,13 @@
     --color-trial: #ff8aed;
     --color-assess: #66a3ff;
     --color-hold: #ff6b6b;
+    --color-review: #888888;
     --color-bg-adopt: rgba(0, 138, 0, 0.2);
     --color-bg-trial: rgba(203, 0, 180, 0.2);
     --color-bg-assess: rgba(0, 105, 229, 0.2);
     --color-bg-hold: rgba(222, 0, 26, 0.2);
+    --color-bg-review: rgba(102, 102, 102, 0.2);
+    --color-bg-ignore: rgba(153, 153, 153, 0.2);
   }
 }
 
