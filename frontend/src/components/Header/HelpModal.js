@@ -128,6 +128,25 @@ function HelpModal({ show, onClose }) {
             </div>
             )
         };
+        case '/review/dashboard':
+        return {
+            title: 'Review Dashboard',
+            content: (
+            <div className="help-modal-body">
+                <h5>Guide</h5>
+                <span>This page should only be used by reviewers. Here is how to use it: </span>
+                <ul className="help-modal-list">
+                <li>View respective rings as boxes, with the technology categorised by quadrants.</li>
+                <li>Click on a technology and the timeline box will fill at the top of the page.</li>
+                <li>Within the timeline box, you can click the edit button which allows you to change the technology name and the category.</li>
+                <li>Click the tick button bring up a modal to show your changes and confirm. These changes are irreversible.</li>
+                <li>You can drag a technology from one box to another. This will update the timeline and ring of the technology.</li>
+                <li>To confirm your changes, press the &quot;Save Changes&quot; at the bottom of the page.</li>
+                <li>You can add a technology by entering the new technology in the &quot;Add Technology&quot; box, then selecting the category and pressing &quot;Add Technology&quot;.</li>
+                </ul>
+            </div>
+            )
+        };
       default:
         return {
           title: 'Help',
