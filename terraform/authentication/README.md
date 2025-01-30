@@ -41,3 +41,5 @@ The IaC creates the following resources:
 ## Additional setup
 
 This terraform only create the Cognito resources, the **provisioning (and deprovisioning) of users is handled manually in the AWS console**, see the top level README for details.
+
+I had to change the .terraform/modules/ecs_reviewer/main.tf changing the name to -reviewer.

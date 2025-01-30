@@ -82,7 +82,7 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
         },
         {
           name  = "COGNITO_USER_POOL_ID",
-          value = data.terraform_remote_state.ecs_auth.outputs.github_audit_user_pool_id
+          value = data.terraform_remote_state.ecs_auth.outputs.cognito_user_pool_id
         },
         {
           name  = "CLOUDWATCH_GROUP_NAME",
@@ -143,8 +143,11 @@ resource "aws_ecs_service" "application" {
 
   # Add dependencies to ensure target groups are created first
   depends_on = [
-    aws_lb_listener_rule.frontend_rule,
-    aws_lb_listener_rule.backend_rule
+    aws_lb_listener_rule.deny_review_paths,
+    aws_lb_listener_rule.tech_radar_reviewer_frontend_rule,
+    aws_lb_listener_rule.tech_radar_reviewer_backend_rule,
+    aws_lb_listener_rule.digital_landscape_cognito_api_rule,
+    aws_lb_listener_rule.digital_landscape_cognito_frontend_rule
   ]
 
   load_balancer {
