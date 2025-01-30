@@ -70,7 +70,7 @@ const Projects = ({ isOpen, projectsData, handleProjectClick, getTechnologyStatu
 
     technologies.forEach(tech => {
       const status = getTechnologyStatus(tech);
-      if (status) {
+      if (status && status !== 'review') {
         distribution[status]++;
       } else {
         distribution.unknown++;

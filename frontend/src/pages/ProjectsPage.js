@@ -70,11 +70,11 @@ function ProjectsPage() {
    */
   const getTechnologyStatus = (tech) => {
     if (!radarData || !tech) return null;
-
+    
     const entry = radarData.entries.find(
       entry => entry.title.toLowerCase() === tech.trim().toLowerCase()
     );
-    return entry ? entry.timeline[0].ringId.toLowerCase() : null;
+    return entry ? entry.timeline[entry.timeline.length - 1].ringId.toLowerCase() : null;
   };
 
   /**
@@ -133,15 +133,15 @@ const renderTechnologyList = (technologies) => {
       return (
         <span key={index}>
           {index > 0 && '; '}
-          {status ? (
-            <span
-              className={`clickable-tech ${status}`}
-              onClick={() => handleTechClick(trimmedTech)}
-            >
-              {trimmedTech}
-            </span>
+          {status && status !== 'review' ? (
+        <span
+          className={`clickable-tech ${status}`}
+          onClick={() => handleTechClick(trimmedTech)}
+        >
+          {trimmedTech}
+        </span>
           ) : (
-            trimmedTech
+        trimmedTech
           )}
         </span>
       );
