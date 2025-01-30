@@ -831,6 +831,14 @@ foreignObject {
   color: var(--color-review);
 }
 
+.ignore,
+.entry-ring.ignore,
+.search-result-ring.ignore,
+.info-box-ring.ignore {
+  background: var(--color-bg-ignore);
+  color: var(--color-review);
+}
+
 /* Ring styles */
 .ring {
   fill: none;
@@ -1137,6 +1145,11 @@ foreignObject {
 .timeline-node.review {
   background: hsl(var(--muted));
   color: hsl(var(--muted-foreground));
+}
+
+.timeline-node.ignore{
+  background: var(--color-bg-ignore);
+  color: hsl(var(--muted-foreground))
 }
 
 .timeline-header {
