@@ -198,27 +198,21 @@ function RadarPage() {
     }
     const results = data.entries
       .filter((entry) => {
-        // Get timeline entries excluding 'review' ring
-        const validTimeline = entry.timeline.filter(
-          (t) => t.ringId.toLowerCase() !== "review"
-        );
+        // Get the most recent timeline entry
+        const mostRecentRing = entry.timeline[0].ringId.toLowerCase();
 
-        // Sort by date descending to get latest entry
-        validTimeline.sort((a, b) => new Date(b.date) - new Date(a.date));
+        // Exclude entries where most recent ring is review or ignore
+        if (mostRecentRing === "review" || mostRecentRing === "ignore") return false;
 
-        // Only include if latest valid ring exists and title/description matches search
+        // Check if title or description matches search term
         return (
-          validTimeline.length > 0 &&
-          (entry.title.toLowerCase().includes(term.toLowerCase()) ||
-            entry.description.toLowerCase().includes(term.toLowerCase()))
+          entry.title.toLowerCase().includes(term.toLowerCase()) ||
+          entry.description.toLowerCase().includes(term.toLowerCase())
         );
       })
       .map((entry) => ({
         ...entry,
-        // Filter out review entries and sort by date
         timeline: entry.timeline
-          .filter((t) => t.ringId.toLowerCase() !== "review")
-          .sort((a, b) => new Date(b.date) - new Date(a.date)),
       }));
 
     setSearchResults(results);
@@ -454,8 +448,8 @@ function RadarPage() {
     const quadrant = entry.quadrant;
     const mostRecentRing = entry.timeline[entry.timeline.length - 1].ringId.toLowerCase()
 
-    // Skip if the most recent timeline entry has ringId of "review"
-    if (mostRecentRing === "review") return acc;
+    // Skip if the most recent timeline entry has ringId of "review" or "ignore"
+    if (mostRecentRing === "review" || mostRecentRing === "ignore") return acc;
 
     if (!acc[quadrant]) acc[quadrant] = {};
     if (!acc[quadrant][mostRecentRing]) acc[quadrant][mostRecentRing] = [];
@@ -661,7 +655,7 @@ function RadarPage() {
                     .slice()
                     [timelineAscending ? 'reverse' : 'slice']()
                     .map((timelineItem, index, array) => (
-                      <div key={timelineItem.date+timelineItem.ringId} className="timeline-item">
+                      <div key={timelineItem.date+timelineItem.ringId+index} className="timeline-item">
                         <div
                           className={`timeline-node ${timelineItem.ringId.toLowerCase()}`}
                           onClick={() =>
@@ -946,7 +940,7 @@ function RadarPage() {
               {Object.entries(groupedEntries).map(([quadrant, rings]) =>
                 Object.entries(rings).map(
                   ([ring, entries]) =>
-                    ring !== "review" &&
+                    ring !== "review" && ring !== "ignore" &&
                     entries.map((entry, index) => {
                       const position = calculateBlipPosition(
                         quadrant,
