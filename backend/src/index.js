@@ -192,8 +192,7 @@ app.get("/api/json", async (req, res) => {
  * Endpoint for updating the tech radar JSON in S3.
  * It receives the updated entries and saves them back to the S3 bucket.
  */
-app.post("/api/tech-radar/update", async (req, res) => {
-  return res.json({ message: "Feature not available yet." });
+app.post("/review/api/tech-radar/update", async (req, res) => {
   try {
     const { entries } = req.body;
     if (!entries || !Array.isArray(entries)) {
