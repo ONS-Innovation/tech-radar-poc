@@ -240,11 +240,8 @@
   }
 }
 
-/* Responsive styles */
 @media (max-width: 768px) {
   .radar-header {
-    height: auto;
-    padding: 15px;
     gap: 15px;
   }
 
@@ -271,10 +268,6 @@
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-  .radar-header {
-    padding: 0 20px;
-  }
-
   .search-input {
     width: 250px;
   }
