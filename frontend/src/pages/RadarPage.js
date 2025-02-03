@@ -199,7 +199,7 @@ function RadarPage() {
     const results = data.entries
       .filter((entry) => {
         // Get the most recent timeline entry
-        const mostRecentRing = entry.timeline[0].ringId.toLowerCase();
+        const mostRecentRing = entry.timeline[entry.timeline.length - 1].ringId.toLowerCase();
 
         // Exclude entries where most recent ring is review or ignore
         if (mostRecentRing === "review" || mostRecentRing === "ignore") return false;
