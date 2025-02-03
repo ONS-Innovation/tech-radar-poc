@@ -22,7 +22,7 @@
   width: 100%;
   border-bottom: 1px solid hsl(var(--border));
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
 }
@@ -94,7 +94,7 @@
 @media (max-width:1250px) {
   .admin-details {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
   }
 
