@@ -321,7 +321,7 @@ const ReviewPage = () => {
       setEditedTitle("");
       setEditedCategory("");
     }
-    
+
     setSelectedItem(selectedItem?.id === item.id ? null : item);
   };
 
@@ -670,47 +670,46 @@ const ReviewPage = () => {
             </div>
             <div className="admin-filter-search-flex">
               <div className="admin-filter-section-container">
-              <div className="admin-filter-section">
-                <h4>Search for technology</h4>
-                <input
-                  type="text"
-                  className="admin-search-box"
-                  placeholder="Python, Java etc."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <div className="admin-filter-section">
-                <h4>Filter by Category</h4>
-                <MultiSelect
-                  options={categoryOptions}
-                  value={selectedCategories}
-                  onChange={setSelectedCategories}
-                  placeholder="Select categories..."
-                />
-              </div>
+                <div className="admin-filter-section">
+                  <h4>Search for technology</h4>
+                  <input
+                    type="text"
+                    className="admin-search-box"
+                    placeholder="Python, Java etc."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <div className="admin-filter-section">
+                  <h4>Filter by Category</h4>
+                  <MultiSelect
+                    options={categoryOptions}
+                    value={selectedCategories}
+                    onChange={setSelectedCategories}
+                    placeholder="Select categories..."
+                  />
+                </div>
               </div>
               <div className="admin-actions">
                 <div>
                   <h4> Reviewer Actions</h4>
                 </div>
                 <div className="buttons">
-<button
-                  className="admin-button"
-                  onClick={() => setShowAddTechnologyModal(true)}
-                  disabled={isLoading}
-                >
-                  Add Technology
-                </button>
-                <button
-                  className="admin-button"
-                  onClick={handleSaveClick}
-                  disabled={isLoading}
-                >
-                  Save Changes
-                </button>
+                  <button
+                    className="admin-button"
+                    onClick={() => setShowAddTechnologyModal(true)}
+                    disabled={isLoading}
+                  >
+                    Add Technology
+                  </button>
+                  <button
+                    className="admin-button"
+                    onClick={handleSaveClick}
+                    disabled={isLoading}
+                  >
+                    Save Changes
+                  </button>
                 </div>
-                
               </div>
             </div>
           </div>
@@ -724,7 +723,7 @@ const ReviewPage = () => {
             )}
           </div>
         </div>
-        
+
         <div className="admin-grid-container">
           <div className="admin-grid">
             {renderBox("Adopt", entries.adopt, "adopt")}
@@ -732,6 +731,7 @@ const ReviewPage = () => {
             {renderBox("Assess", entries.assess, "assess")}
             {renderBox("Hold", entries.hold, "hold")}
           </div>
+          <div className="admin-divider">  </div>
           <div className="admin-grid">
             {renderBox("Review", entries.review, "review")}
             {renderBox("Ignore", entries.ignore, "ignore")}
