@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 70px;
+  height: 60px;
   background: hsl(var(--background));
   color: hsl(var(--foreground));
   display: flex;
@@ -39,12 +39,13 @@
 
 .header-left h1 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
   color: hsl(var(--foreground));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-right: 16px;
 }
 
 .header-right {
@@ -55,7 +56,7 @@
 
 .search-container {
   position: relative;
-  width: 300px;
+  width: 225px;
   height: 36px;
   box-sizing: border-box;
   border: 1px solid hsl(var(--border));
@@ -195,6 +196,50 @@
   background: hsl(var(--muted));
 }
 
+.desktop-nav {
+  display: none;
+  margin-top: 2px;
+}
+
+@media (min-width: 1024px) {
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .desktop-nav button {
+    background: none;
+    border: none;
+    color: hsl(var(--foreground));
+    font-size: 14px;
+    font-weight: 400;
+    padding: 0;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+  }
+
+  .desktop-nav button:hover{
+    color: hsl(var(--foreground) / .75);
+  }
+
+  .desktop-nav button.active {
+    font-weight: 500;
+  }
+
+  .mobile-menu {
+    display: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .mobile-menu {
+    display: flex;
+    gap: 8px;
+  }
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .radar-header {
@@ -204,7 +249,7 @@
   }
 
   .header-right {
-    gap: 10px;
+    gap: 8px;
   }
 
   .search-container {

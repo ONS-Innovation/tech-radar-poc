@@ -4,7 +4,7 @@ body {
 
 .App {
   text-align: center;
-  height: calc(100vh - 70px);
+  height: calc(100vh - var(--header-height));
 }
 
 .loading-container {
@@ -142,7 +142,7 @@ body {
   transition: none;
   display: flex;
   flex-direction: column;
-  max-height: calc(50vh - 70px);
+  max-height: calc(50vh - var(--header-height));
   width: 350px;
   border: 1px solid hsl(var(--border));
 }
@@ -198,7 +198,7 @@ body {
 
 @media (max-width: 1400px) {
   .quadrant-list ul {
-    max-height: calc(50vh - 70px);
+    max-height: calc(50vh - var(--header-height));
   }
 }
 
@@ -674,7 +674,7 @@ foreignObject {
 
 .radar-page {
   padding-top: 80px; 
-  height: calc(100vh - 70px);
+  height: calc(100vh - var(--header-height));
 }
 
 

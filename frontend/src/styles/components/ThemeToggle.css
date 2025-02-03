@@ -1,18 +1,22 @@
 .theme-toggle {
-  width: 100%;
-  padding: 12px 16px;
-  text-align: left;
+  width: 34px;
+  height: 34px;
+  padding: 8px;
   background: none;
-  border: none;
+  border: 1px solid transparent;
   color: hsl(var(--foreground));
+  border-radius: var(--radius);
   cursor: pointer;
   display: flex;
-  border-radius: 0 0 var(--radius) var(--radius);
   align-items: center;
-  gap: 8px;
+  justify-content: center;
   transition: all 0.2s ease;
 }
 
 .theme-toggle:hover {
   background: hsl(var(--accent));
 } 
+
+.theme-toggle svg{
+  margin-left: 1px;
+}

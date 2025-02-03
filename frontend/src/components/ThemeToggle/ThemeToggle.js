@@ -23,7 +23,6 @@ function ThemeToggle() {
     >
       
       {theme === "light" ? <SunIcon /> : <MoonIcon />}
-      Toggle Theme
     </button>
   );
 }

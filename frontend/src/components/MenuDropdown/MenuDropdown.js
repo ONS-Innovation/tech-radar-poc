@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import "../../styles/components/MenuDropdown.css";
-import { IoHome, IoMenu, IoStatsChart, IoPeople } from 'react-icons/io5'
+import { IoHome, IoMenu, IoStatsChart, IoPeople, IoHelp } from 'react-icons/io5'
 import { MdOutlineRadar } from "react-icons/md";
 
 /**
@@ -12,7 +11,7 @@ import { MdOutlineRadar } from "react-icons/md";
  * @param {boolean} props.show - Whether the dropdown menu should be shown.
  * @param {Function} props.onClose - Function to call when the dropdown menu is closed.
  */
-function MenuDropdown() {
+function MenuDropdown({ setShowHelpModal }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -39,10 +38,15 @@ function MenuDropdown() {
     setIsOpen(false);
   };
 
+  const handleHelpClick = () => {
+    setShowHelpModal(true);
+    setIsOpen(false);
+  };
+
   return (
     <div className="menu-dropdown" ref={dropdownRef}>
       <button className="menu-button" onClick={() => setIsOpen(!isOpen)}>
-        <IoMenu size={20} />
+        <IoMenu size={16} />
       </button>
 
       {isOpen && (
@@ -67,10 +71,12 @@ function MenuDropdown() {
                 Projects
               </button>
             </div>
-
-          <div className="theme-toggle-container">
-            <ThemeToggle />
-          </div>
+            <div className="help-button-container">
+              <button onClick={handleHelpClick}>
+                <IoHelp size={16} />
+                Help
+              </button>
+            </div>
         </div>
       )}
     </div>

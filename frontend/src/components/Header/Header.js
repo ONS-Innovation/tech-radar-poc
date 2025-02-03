@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown/MenuDropdown";
 import HelpModal from "./HelpModal";
 import "../../styles/components/Header.css";
 import Logo from "../../assets/logo.png";
-import { IoClose, IoSearch } from "react-icons/io5";
-import { FaQuestion } from "react-icons/fa";
+import { IoClose, IoSearch, IoHelp } from "react-icons/io5";
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 
 /**
  * Header component for the Tech Radar application.
@@ -34,6 +34,7 @@ function Header({
   hideSearch = false
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showHelpModal, setShowHelpModal] = useState(false);
 
   /**
@@ -43,6 +44,10 @@ function Header({
     onSearchChange("");
   };
 
+  const handleSetShowHelpModal = () => {
+    setShowHelpModal(!showHelpModal)
+  }
+
   return (
     <header className="radar-header">
       <div className="header-left">
@@ -50,10 +55,35 @@ function Header({
           src={Logo} 
           alt="Logo" 
           className="logo" 
-          onClick={() => navigate('/radar')}
+          onClick={() => navigate('/')}
           style={{ cursor: 'pointer' }}
         />
         <h1 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Digital Landscape</h1>
+        <nav className="desktop-nav">
+          <button 
+            onClick={() => navigate('/radar')} 
+            className={location.pathname === '/radar' ? 'active' : ''}
+          >
+            Tech Radar
+          </button>
+          <button 
+            onClick={() => navigate('/statistics')} 
+            className={location.pathname === '/statistics' ? 'active' : ''}
+          >
+            Statistics
+          </button>
+          <button 
+            onClick={() => navigate('/projects')} 
+            className={location.pathname === '/projects' ? 'active' : ''}
+          >
+            Projects
+          </button>
+          <button 
+            onClick={() => handleSetShowHelpModal()}
+          >
+            Help
+          </button>
+        </nav>
       </div>
       <div className="header-right">
         {!hideSearch && (
@@ -83,9 +113,9 @@ function Header({
                   >
                     <span className="search-result-title">{result.title}</span>
                     <span
-                      className={`search-result-ring ${result.timeline[0].ringId.toLowerCase()}`}
+                      className={`search-result-ring ${result.timeline[result.timeline.length - 1].ringId.toLowerCase()}`}
                     >
-                      {result.timeline[0].ringId}
+                      {result.timeline[result.timeline.length - 1].ringId}
                     </span>
                   </div>
                 ))}
@@ -93,18 +123,15 @@ function Header({
             )}
           </div>
         )}
-        <MenuDropdown 
-          onOpenProjects={onOpenProjects} 
-          onStatsTechClick={onStatsTechClick}
-        />
-        <button
-          className="help-button"
-          onClick={() => setShowHelpModal(true)}
-          title="Help"
-        >
-          <FaQuestion size={14} />
-        </button>
-        <HelpModal show={showHelpModal} onClose={() => setShowHelpModal(false)} />
+        <div className="mobile-menu">
+          <MenuDropdown 
+            onOpenProjects={onOpenProjects} 
+            onStatsTechClick={onStatsTechClick}
+            setShowHelpModal={handleSetShowHelpModal}
+          />
+        </div>
+        <ThemeToggle />
+        <HelpModal show={showHelpModal} onClose={() => handleSetShowHelpModal()} />
       </div>
     </header>
   );
