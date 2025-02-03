@@ -25,12 +25,12 @@ import ThemeToggle from '../ThemeToggle/ThemeToggle';
  * @param {boolean} props.hideSearch - Whether to hide the search bar.
  */
 function Header({
-  searchTerm,
-  onSearchChange,
-  searchResults,
-  onSearchResultClick,
-  onOpenProjects,
-  onStatsTechClick,
+  searchTerm = "",
+  onSearchChange = () => {},
+  searchResults = [],
+  onSearchResultClick = () => {},
+  onOpenProjects = () => {},
+  onStatsTechClick = () => {},
   hideSearch = false
 }) {
   const navigate = useNavigate();
@@ -103,7 +103,7 @@ function Header({
             >
               <IoClose />
             </button>
-            {searchResults.length > 0 && (
+            {searchResults && searchResults.length > 0 && (
               <div className="search-results">
                 {searchResults.map((result) => (
                   <div

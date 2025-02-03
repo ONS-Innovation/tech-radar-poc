@@ -416,28 +416,3 @@ font-size: 14px;
 .projects-refresh-button svg {
   transition: transform 0.3s ease;
 }
-
-/* Add tooltip styles */
-.projects-refresh-button::before {
-  content: attr(title);
-  position: absolute;
-  bottom: calc(100% + 5px);
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 4px 8px;
-  background: hsl(var(--popover));
-  color: hsl(var(--popover-foreground));
-  font-size: 14px;
-  border-radius: var(--radius);
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-  border: 1px solid hsl(var(--border));
-}
-
-.projects-refresh-button:hover::before {
-  opacity: 1;
-  visibility: visible;
-}
-

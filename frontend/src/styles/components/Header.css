@@ -116,7 +116,7 @@
 .search-results {
   position: absolute;
   top: 100%;
-  left: 0;
+  right: 0;
   width: 300px;
   background: hsl(var(--card));
   border-radius: var(--radius);
@@ -146,6 +146,7 @@
 
 .search-result-title {
   font-weight: 500;
+  text-align: left;
 }
 
 .search-result-ring {
@@ -211,9 +212,9 @@
   .desktop-nav button {
     background: none;
     border: none;
-    color: hsl(var(--foreground));
+    color: hsl(var(--foreground) / .75);
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 500;
     padding: 0;
     cursor: pointer;
     border-radius: var(--radius);
@@ -221,11 +222,15 @@
   }
 
   .desktop-nav button:hover{
-    color: hsl(var(--foreground) / .75);
+    color: hsl(var(--foreground) / .5);
   }
 
   .desktop-nav button.active {
-    font-weight: 500;
+    color: hsl(var(--foreground));
+    text-decoration: underline;
+    text-underline-offset: 8px;
+    text-decoration-style:solid;
+    text-decoration-color: hsl(var(--foreground) / .75);
   }
 
   .mobile-menu {

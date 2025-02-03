@@ -8,7 +8,8 @@ body {
 }
 
 .loading-container {
-  min-height: 100vh;
+  margin-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
   width: 100vw;
   display: flex;
   align-items: center;
