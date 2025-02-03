@@ -42,6 +42,9 @@ const ReviewPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [showAddTechnologyModal, setShowAddTechnologyModal] = useState(false);
+  const [showMoveModal, setShowMoveModal] = useState(false);
+  const [pendingMove, setPendingMove] = useState(null);
+  const [moveDescription, setMoveDescription] = useState("");
 
   // Fields to scan from CSV and their corresponding categories
   const fieldsToScan = {
@@ -231,41 +234,64 @@ const ReviewPage = () => {
 
       if (sourceList === destList) return;
 
-      const updatedEntries = { ...entries };
-      updatedEntries[sourceList] = updatedEntries[sourceList].filter(
-        (entry) => entry.id !== item.id
-      );
-
-      // Calculate movement value
-      const lastRing =
-        item.timeline[item.timeline.length - 1].ringId.toLowerCase();
-      const movement = calculateRingMovement(lastRing, destList);
-
-      // Update the item's timeline with the new ring
-      const now = new Date().toISOString().split("T")[0];
-      const updatedItem = {
-        ...item,
-        timeline: [
-          ...item.timeline,
-          {
-            moved: movement,
-            ringId: destList.toLowerCase(),
-            date: now,
-            description: `Moved from ${lastRing} to ${destList}`,
-          },
-        ],
-      };
-
-      updatedEntries[destList] = [...updatedEntries[destList], updatedItem];
-      setEntries(updatedEntries);
-
-      // Update the timeline if the dropped item is currently selected
-      if (selectedItem && selectedItem.id === item.id) {
-        setSelectedItem(updatedItem);
-      }
+      // Set up the pending move
+      const lastRing = item.timeline[item.timeline.length - 1].ringId.toLowerCase();
+      const defaultDescription = `Moved from ${lastRing} to ${destList}`;
+      
+      setPendingMove({
+        item,
+        sourceList,
+        destList,
+        lastRing
+      });
+      setMoveDescription(defaultDescription);
+      setShowMoveModal(true);
+      
     } catch (error) {
       console.error("Error handling drop:", error);
     }
+  };
+
+  const handleMoveConfirm = () => {
+    const { item, sourceList, destList, lastRing } = pendingMove;
+    
+    const updatedEntries = { ...entries };
+    updatedEntries[sourceList] = updatedEntries[sourceList].filter(
+      (entry) => entry.id !== item.id
+    );
+
+    const movement = calculateRingMovement(lastRing, destList);
+    const now = new Date().toISOString().split("T")[0];
+    
+    const updatedItem = {
+      ...item,
+      timeline: [
+        ...item.timeline,
+        {
+          moved: movement,
+          ringId: destList.toLowerCase(),
+          date: now,
+          description: moveDescription,
+        },
+      ],
+    };
+
+    updatedEntries[destList] = [...updatedEntries[destList], updatedItem];
+    setEntries(updatedEntries);
+
+    if (selectedItem && selectedItem.id === item.id) {
+      setSelectedItem(updatedItem);
+    }
+
+    setShowMoveModal(false);
+    setPendingMove(null);
+    setMoveDescription("");
+  };
+
+  const handleMoveCancel = () => {
+    setShowMoveModal(false);
+    setPendingMove(null);
+    setMoveDescription("");
   };
 
   const handleSaveClick = () => {
@@ -559,10 +585,10 @@ const ReviewPage = () => {
                     )}
                 </span>
                 {expandedTimelineEntry === index && (
-                  <span className="timeline-ring">{entry.ringId}</span>
-                )}
-                {expandedTimelineEntry === index && (
-                  <span>{entry.description}</span>
+                  <>
+                    <span> - </span>
+                    <span>{entry.description}</span>
+                  </>
                 )}
               </div>
               {index < array.length - 1 && (
@@ -826,6 +852,30 @@ const ReviewPage = () => {
             <div className="modal-buttons">
               <button onClick={handleAddConfirmModalYes}>Yes</button>
               <button onClick={handleAddConfirmModalNo}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showMoveModal && pendingMove && (
+        <div className="modal-overlay">
+          <div className="admin-modal">
+            <h3>Move Technology</h3>
+            <p>Moving {pendingMove.item.title}</p>
+            <p>From: <span className={pendingMove.lastRing}>{pendingMove.lastRing}</span></p>
+            <p>To: <span className={pendingMove.destList}>{pendingMove.destList}</span></p>
+            <div className="admin-modal-field">
+              <label>Description</label>
+              <textarea
+                value={moveDescription}
+                onChange={(e) => setMoveDescription(e.target.value)}
+                className="technology-input"
+                rows={3}
+                placeholder="Enter move description"
+              />
+            </div>
+            <div className="modal-buttons">
+              <button onClick={handleMoveConfirm} disabled={moveDescription.length < 1}>Confirm</button>
+              <button onClick={handleMoveCancel}>Cancel</button>
             </div>
           </div>
         </div>
