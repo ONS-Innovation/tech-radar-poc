@@ -315,7 +315,8 @@
   scrollbar-color: hsl(var(--border)) hsl(var(--muted)); /* For Firefox */
 }
 
-.droppable-area::-webkit-scrollbar {
+.droppable-area::-webkit-scrollbar
+ {
   width: 2px; /* For Chrome, Safari, and Edge */
 }
 
@@ -399,6 +400,7 @@
 .timeline-display {
 
   overflow-x: auto;
+  scrollbar-width: 1px;
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
@@ -412,6 +414,10 @@ justify-content: center;
   min-width: 400px;
   max-width: 400px;
   min-height: 100px;
+}
+
+.timeline-display::-webkit-scrollbar{
+  width: 1px;
 }
 
 @media (max-width:1250px) {
