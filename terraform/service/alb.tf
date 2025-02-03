@@ -96,44 +96,6 @@ module "alb_listener_priority" {
   listener_arn          = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
 }
 
-# Deny access to review paths for github audit pool users (highest priority)
-resource "aws_lb_listener_rule" "deny_review_paths" {
-  listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
-  priority     = module.alb_listener_priority.highest_priority + 1
-
-  condition {
-    host_header {
-      values = ["${local.service_url}"]
-    }
-  }
-
-  condition {
-    path_pattern {
-      values = ["/review/*"]
-    }
-  }
-
-  condition {
-    http_header {
-      http_header_name = "X-Amzn-Oidc-Identity"
-      values = [data.terraform_remote_state.ecs_auth.outputs.cognito_user_pool_id]
-    }
-  }
-
-  action {
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "application/json"
-      message_body = jsonencode({
-        error   = "Access Denied"
-        message = "This path requires reviewer authentication"
-      })
-      status_code = "403"
-    }
-  }
-}
-
 # Review frontend paths - restricted to reviewer pool only (second priority)
 resource "aws_lb_listener_rule" "tech_radar_reviewer_frontend_rule" {
   listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
