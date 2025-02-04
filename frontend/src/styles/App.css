@@ -756,22 +756,6 @@ foreignObject {
   cursor: pointer;
 }
 
-
-/* Base styles */
-:root {
-  --color-adopt: #008a00;
-  --color-trial: #cb00b4;
-  --color-assess: #0069e5;
-  --color-hold: #de001a;
-  --color-review: hsl(var(--muted-foreground));
-  --color-bg-adopt: #e6ffe6;
-  --color-bg-trial: #ffe6f9;
-  --color-bg-assess: #e6f0ff;
-  --color-bg-hold: #ffe6e8;
-  --color-bg-review: hsl(var(--muted));
-
-}
-
 /* Ring status badges */
 .entry-ring,
 .search-result-ring {

@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import "../../styles/components/Statistics.css";
-import { IoSearch } from 'react-icons/io5';
 import { subMonths, isValid, parseISO } from 'date-fns';
 import SkeletonStatCard from './Skeletons/SkeletonStatCard';
 import SkeletonLanguageCard from './Skeletons/SkeletonLanguageCard';
@@ -16,6 +15,7 @@ import MultiSelect from '../MultiSelect/MultiSelect';
  * @param {boolean} props.isLoading - Whether the data is loading.
  * @param {Array} props.projectsData - Array of projects data from CSV.
  * @param {Function} props.onProjectsChange - Function to handle projects selection change.
+ * @param {string} props.searchTerm - The current search term.
  */
 function Statistics({ 
   data, 
@@ -23,9 +23,9 @@ function Statistics({
   onDateChange, 
   isLoading,
   projectsData,
-  onProjectsChange 
+  onProjectsChange,
+  searchTerm = ""
 }) {
-  const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'repo_count', direction: 'desc' });
   const [selectedDate, setSelectedDate] = useState('all');
   const [hoveredLanguage, setHoveredLanguage] = useState(null);
@@ -83,7 +83,7 @@ function Statistics({
     const entry = data.radar_entries.find(
       entry => entry.title.toLowerCase() === language.toLowerCase()
     );
-    return entry ? entry.timeline[0].ringId.toLowerCase() : null;
+    return entry ? entry.timeline[entry.timeline.length - 1].ringId.toLowerCase() : null;
   }, [data]);
 
   /**
@@ -300,61 +300,64 @@ function Statistics({
         </div>
       </div>
       
-      {!stats && !isLoading ? (
+      {isLoading ? (
+        <>
+          <div className="stats-grid">
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+          </div>
+          <div className="language-section">
+            <div className="language-header">
+              <div className="language-header-left">
+                <h3>Language Statistics</h3>
+              </div>
+            </div>
+            <div className="language-grid">
+              <SkeletonLanguageCard />
+              <SkeletonLanguageCard />
+              <SkeletonLanguageCard />
+              <SkeletonLanguageCard />
+              <SkeletonLanguageCard />
+              <SkeletonLanguageCard />
+              <SkeletonLanguageCard />
+              <SkeletonLanguageCard />
+            </div>
+          </div>
+        </>
+      ) : !stats ? (
         <div className="no-data-message">
           <p>No statistics available</p>
         </div>
       ) : (
         <>
           <div className="stats-grid">
-            {isLoading ? (
-              <>
-                <SkeletonStatCard />
-                <SkeletonStatCard />
-                <SkeletonStatCard />
-                <SkeletonStatCard />
-              </>
-            ) : (
-              <>
-                <div className="stat-card">
-                  <h3>Total Repositories</h3>
-                  <p>{hoveredLanguage && languageStats ? 
-                      getRepoCountDisplay(languageStats[hoveredLanguage]?.repo_count) :
-                      stats.total || 0}
-                  </p>
-                </div>
-                <div className="stat-card">
-                  <h3>Public Repos</h3>
-                  <p>{stats.public || 0}</p>
-                </div>
-                <div className="stat-card">
-                  <h3>Private Repos</h3>
-                  <p>{stats.private || 0}</p>
-                </div>
-                <div className="stat-card">
-                  <h3>Internal Repos</h3>
-                  <p>{stats.internal || 0}</p>
-                </div>
-              </>
-            )}
+            <div className="stat-card">
+              <h3>Total Repositories</h3>
+              <p>{hoveredLanguage && languageStats ? 
+                  getRepoCountDisplay(languageStats[hoveredLanguage]?.repo_count) :
+                  stats.total || 0}
+              </p>
+            </div>
+            <div className="stat-card">
+              <h3>Public Repos</h3>
+              <p>{stats.public || 0}</p>
+            </div>
+            <div className="stat-card">
+              <h3>Private Repos</h3>
+              <p>{stats.private || 0}</p>
+            </div>
+            <div className="stat-card">
+              <h3>Internal Repos</h3>
+              <p>{stats.internal || 0}</p>
+            </div>
           </div>
 
           <div className="language-section">
             <div className="language-header">
               <div className="language-header-left">
                 <h3>Language Statistics</h3>
-              </div>
-              <div className="language-header-right">
-                <div className="search-box">
-                  <IoSearch size={16} />
-                  <input
-                    type="text"
-                    placeholder="Search languages..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </div>
               </div>
             </div>
 
@@ -404,50 +407,37 @@ function Statistics({
             </div>
 
             <div className="language-grid">
-              {isLoading ? (
-                <>
-                  <SkeletonLanguageCard />
-                  <SkeletonLanguageCard />
-                  <SkeletonLanguageCard />
-                  <SkeletonLanguageCard />
-                  <SkeletonLanguageCard />
-                  <SkeletonLanguageCard />
-                  <SkeletonLanguageCard />
-                  <SkeletonLanguageCard />
-                </>
-              ) : (
-                sortedAndFilteredLanguages.map(([language, stats]) => {
-                  const status = getTechnologyStatus(language);
-                  return (
-                    <div 
-                      key={language} 
-                      className={`language-card ${status || ''} ${status ? 'clickable' : ''}`}
-                      onClick={() => handleLanguageClick(language)}
-                      onMouseEnter={() => setHoveredLanguage(language)}
-                      onMouseLeave={() => setHoveredLanguage(null)}
-                    >
-                      <h4>{language}</h4>
-                      <div className="language-stats">
-                        <p>
-                          <strong>{stats.repo_count}</strong> repos
-                        </p>
-                        <p>
-                          <strong>{stats.average_percentage.toFixed(1)}%</strong> avg usage
-                        </p>
-                        <p>
-                          <strong>{(() => {
-                            const bytes = showTotalSize ? stats.total_size : (stats.total_size / stats.repo_count);
-                            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-                            if (bytes === 0) return '0 B';
-                            const i = Math.floor(Math.log(bytes) / Math.log(1024));
-                            return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
-                          })()}</strong> {showTotalSize ? 'total' : 'avg'} size
-                        </p>
-                      </div>
+              {sortedAndFilteredLanguages.map(([language, stats]) => {
+                const status = getTechnologyStatus(language);
+                return (
+                  <div 
+                    key={language} 
+                    className={`language-card ${status || ''} ${status ? 'clickable' : ''}`}
+                    onClick={() => handleLanguageClick(language)}
+                    onMouseEnter={() => setHoveredLanguage(language)}
+                    onMouseLeave={() => setHoveredLanguage(null)}
+                  >
+                    <h4>{language}</h4>
+                    <div className="language-stats">
+                      <p>
+                        <strong>{stats.repo_count}</strong> repos
+                      </p>
+                      <p>
+                        <strong>{stats.average_percentage.toFixed(1)}%</strong> avg usage
+                      </p>
+                      <p>
+                        <strong>{(() => {
+                          const bytes = showTotalSize ? stats.total_size : (stats.total_size / stats.repo_count);
+                          const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+                          if (bytes === 0) return '0 B';
+                          const i = Math.floor(Math.log(bytes) / Math.log(1024));
+                          return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
+                        })()}</strong> {showTotalSize ? 'total' : 'avg'} size
+                      </p>
                     </div>
-                  );
-                })
-              )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </>

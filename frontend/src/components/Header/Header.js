@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown/MenuDropdown";
 import HelpModal from "./HelpModal";
@@ -36,6 +36,20 @@ function Header({
   const navigate = useNavigate();
   const location = useLocation();
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   /**
    * Clears the search term.
@@ -46,6 +60,23 @@ function Header({
 
   const handleSetShowHelpModal = () => {
     setShowHelpModal(!showHelpModal)
+  }
+
+  // Get search placeholder based on current route
+  const getSearchPlaceholder = () => {
+    switch (location.pathname) {
+      case '/projects':
+        return 'Search projects...';
+      case '/statistics':
+        return 'Search languages...';
+      default:
+        return 'Search technologies...';
+    }
+  }
+
+  // Only show search results dropdown on radar page
+  const shouldShowSearchResults = () => {
+    return location.pathname === '/radar' && searchResults && searchResults.length > 0;
   }
 
   return (
@@ -78,6 +109,13 @@ function Header({
           >
             Projects
           </button>
+          {/* This is an <a> tag as it forces a refresh of state when loaded, whereas the 'navigate' uses JS to change the route without refreshing state. */}
+          <a 
+            href="/review/dashboard"
+            className={location.pathname === '/review/dashboard' ? 'active' : ''}
+          >
+            Review
+          </a>
           <button 
             onClick={() => handleSetShowHelpModal()}
           >
@@ -90,33 +128,43 @@ function Header({
           <div className="search-container">
             <IoSearch className="search-icon" />
             <input
+              ref={searchInputRef}
               type="text"
-              placeholder="Search technologies..."
+              placeholder={getSearchPlaceholder()}
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               className="search-input"
             />
-            <button
-              className="search-clear"
-              onClick={clearSearch}
-              style={{ display: searchTerm ? "block" : "none" }}
-            >
-              <IoClose />
-            </button>
-            {searchResults && searchResults.length > 0 && (
+            {searchTerm ? (
+              <button
+                className="search-clear"
+                onClick={clearSearch}
+              >
+                <IoClose />
+              </button>
+            ) : (
+              <div className="search-shortcut">
+                <span>⌘ + K</span>
+              </div>
+            )}
+            {shouldShowSearchResults() && (
               <div className="search-results">
                 {searchResults.map((result) => (
                   <div
-                    key={result.id}
+                    key={result.id || result.Project || result.title}
                     className="search-result-item"
                     onClick={() => onSearchResultClick(result)}
                   >
-                    <span className="search-result-title">{result.title}</span>
-                    <span
-                      className={`search-result-ring ${result.timeline[result.timeline.length - 1].ringId.toLowerCase()}`}
-                    >
-                      {result.timeline[result.timeline.length - 1].ringId}
+                    <span className="search-result-title">
+                      {result.title || result.Project || result.language}
                     </span>
+                    {result.timeline && (
+                      <span
+                        className={`search-result-ring ${result.timeline[result.timeline.length - 1].ringId.toLowerCase()}`}
+                      >
+                        {result.timeline[result.timeline.length - 1].ringId}
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>

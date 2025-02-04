@@ -39,7 +39,7 @@
 }
 
 .admin-search-box {
-  background: hsl(var(--input));
+  background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   padding: 8px 12px;

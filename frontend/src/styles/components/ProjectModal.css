@@ -275,7 +275,9 @@
 
 @media (max-width: 768px) {
   .modal-content {
-    width: 90vw;
+    width: 100vw;
+    border-left: none;
+    border-right:none;
     padding: 16px;
   }
 

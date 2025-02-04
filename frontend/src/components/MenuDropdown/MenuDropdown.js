@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import "../../styles/components/MenuDropdown.css";
-import { IoHome, IoMenu, IoStatsChart, IoPeople, IoHelp } from 'react-icons/io5'
+import { IoHome, IoMenu, IoStatsChart, IoPeople, IoHelp} from 'react-icons/io5'
+import { FaEdit } from "react-icons/fa";
 import { MdOutlineRadar } from "react-icons/md";
 
 /**
@@ -70,6 +71,10 @@ function MenuDropdown({ setShowHelpModal }) {
                 <IoPeople size={16} />
                 Projects
               </button>
+              <a href='/review/dashboard' className={location.pathname === '/review/dashboard' ? 'active' : ''}>
+                <FaEdit size={16} />
+                Review
+              </a>
             </div>
             <div className="help-button-container">
               <button onClick={handleHelpClick}>

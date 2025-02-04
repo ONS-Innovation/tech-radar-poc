@@ -361,7 +361,8 @@
   }
 
   .language-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
   }
 
   .search-box input {
@@ -481,7 +482,6 @@
   background: hsl(var(--muted));
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
-  margin: 24px 0;
 }
 
 .no-data-message p {

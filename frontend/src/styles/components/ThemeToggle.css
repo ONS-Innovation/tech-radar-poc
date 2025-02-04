@@ -11,6 +11,8 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  border: 1px solid hsl(var(--border))
+
 }
 
 .theme-toggle:hover {
@@ -19,4 +21,11 @@
 
 .theme-toggle svg{
   margin-left: 1px;
+}
+
+
+@media (min-width:1024px){
+  .theme-toggle {
+    height: 36px;
+  }
 }

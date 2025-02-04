@@ -5,7 +5,7 @@
 }
 
 .multi-select-control {
-  background: hsl(var(--input));
+  background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   height: 27px;
@@ -17,6 +17,7 @@
   cursor: pointer;
   overflow-x: auto;
   scrollbar-width: none;
+  max-width: 200px;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
