@@ -1,5 +1,3 @@
-.PHONY: dev docker docker-build docker-up docker-down install clean test frontend backend
-
 # Development environment
 dev:
 	@echo "Starting frontend and backend in development mode..."
@@ -58,11 +56,11 @@ logs:
 ps:
 	docker-compose ps
 
-# Combined commands
 setup: install docker-build
 
-# Linting commands
 lint: lint-frontend lint-backend
+
+lint-fix: lint-fix-frontend lint-fix-backend
 
 lint-frontend:
 	cd frontend && npm run lint
@@ -79,19 +77,31 @@ lint-fix-backend:
 # Default help command
 help:
 	@echo "Available commands:"
-	@echo "  make dev          - Run in development mode (uses dev.sh)"
-	@echo "  make install      - Install production dependencies only"
-	@echo "  make install-dev  - Install all dependencies (including dev)"
-	@echo "  make docker-build - Build Docker images"
-	@echo "  make docker-up    - Start Docker containers"
-	@echo "  make docker-down  - Stop Docker containers"
-	@echo "  make clean        - Clean up node_modules, build artifacts, and Docker resources"
-	@echo "  make test         - Run tests"
-	@echo "  make lint         - Run linting for both frontend and backend"
-	@echo "  make lint-fix     - Fix linting issues for both frontend and backend"
-	@echo "  make logs         - View Docker logs"
-	@echo "  make ps           - List running Docker containers"
-	@echo "  make setup        - Install dependencies and build Docker images"
+	@echo "  make dev          			- Run in development mode (uses dev.sh)"
+	@echo "  make frontend     			- Run just the frontend"
+	@echo "  make backend      			- Run just the backend"
+	@echo " "
+	@echo "  make install      			- Install production dependencies only"
+	@echo "  make install-dev  			- Install all dependencies (including dev)"
+	@echo " "
+	@echo "  make docker-build 			- Build Docker images"
+	@echo "  make docker-up    			- Start Docker containers"
+	@echo "  make docker-down  			- Stop Docker containers"
+	@echo " "
+	@echo "  make clean        			- Clean up node_modules, build artifacts, and Docker resources"
+	@echo "  make test         			- Run tests"
+	@echo "  make lint         			- Run linting for both frontend and backend"
+	@echo "  make lint-fix     			- Fix linting issues for both frontend and backend"
+	@echo " "
+	@echo "  make lint-frontend         		- Run linting for frontend without fix"
+	@echo "  make lint-fix-frontend     		- Fix linting for frontend and fix"
+	@echo " "
+	@echo "  make lint-backend         		- Run linting for backend without fix"
+	@echo "  make lint-fix-backend     		- Fix linting for backend and fix"
+	@echo " "
+	@echo "  make logs         			- View Docker logs"
+	@echo "  make ps           			- List running Docker containers"
+	@echo "  make setup        			- Install dependencies and build Docker images"
 
 # Default target
 .DEFAULT_GOAL := help
