@@ -203,8 +203,9 @@ function RadarPage() {
           entry.timeline[entry.timeline.length - 1].ringId.toLowerCase();
 
         // Exclude entries where most recent ring is review or ignore
-        if (mostRecentRing === "review" || mostRecentRing === "ignore")
+        if (mostRecentRing === "review" || mostRecentRing === "ignore"){
           return false;
+        }
 
         // Check if title or description matches search term
         return (
@@ -549,7 +550,7 @@ function RadarPage() {
       return (
         <span key={index}>
           {index > 0 && "; "}
-          {isInRadar ? (
+          {isInRadar && status && status !== "review" && status !== "ignore" ? (
             <span
               className={`clickable-tech ${status}`}
               onClick={() => handleTechClick(trimmedTech)}

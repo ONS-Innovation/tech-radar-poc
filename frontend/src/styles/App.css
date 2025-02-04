@@ -243,6 +243,7 @@ body {
 
 .entry-number {
   width: 30px;
+  font-size: 10px;
   color: hsl(var(--muted-foreground));
 }
 

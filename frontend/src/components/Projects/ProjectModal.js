@@ -101,12 +101,13 @@ const ProjectModal = ({
                     const status = getTechnologyStatus
                       ? getTechnologyStatus(lang.name)
                       : null;
+                    const isClickable = status && status !== 'review' && status !== 'ignore';
                     return (
                       <span
                         key={i}
-                        className={`language-label ${status ? `clickable-tech ${status}` : ""}`}
+                        className={`language-label ${isClickable ? `clickable-tech ${status}` : ""}`}
                         onClick={() =>
-                          status && onTechClick && onTechClick(lang.name)
+                          isClickable && onTechClick && onTechClick(lang.name)
                         }
                         title={`${lang.name} (${lang.percentage.toFixed(1)}%)`}
                       >

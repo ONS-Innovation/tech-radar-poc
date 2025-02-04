@@ -44,10 +44,11 @@ export function ThemeProvider({ children }) {
           duration: 3000,
           style: {
             background: "hsl(var(--background))",
+            opacity: "1",
             color: "hsl(var(--foreground))",
             border: "1px solid hsl(var(--border))",
             borderRadius: "var(--radius)",
-            boxShadow: "0 2px 0 hsl(var(--border))",
+            textAlign: "left"
           },
         }}
       />
