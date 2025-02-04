@@ -56,13 +56,13 @@ function HomePage() {
               <p>View all projects and their technology stacks across the organisation.</p>
             </div>
 
-            <div className="nav-card" onClick={() => navigate('/review/dashboard')}>
+            <a className="nav-card" href='/review/dashboard'>
               <div className="nav-card-header">
                 <FaEdit />
                 <h2>Review</h2>
               </div>
               <p>Authorised users can update the data on the Tech Radar.</p>
-            </div>
+            </a>
           </div>
         </div>
       </div>

@@ -22,7 +22,7 @@
   width: 100%;
   border-bottom: 1px solid hsl(var(--border));
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
 }
@@ -94,7 +94,7 @@
 @media (max-width:1250px) {
   .admin-details {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
   }
 
@@ -159,35 +159,50 @@
 
 .admin-grid-container {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: space-between;
-  padding: 16px 24px;
   box-sizing: border-box;
-  gap: 16px;
   width: 100%;
+  min-height: calc(100vh - 70px - 150px);
+}
+
+.admin-divider {
+  height: auto;
+  border-left: 1px solid hsl(var(--border));
+  width: 1px;
+  align-self: stretch;
 }
 
 @media (max-width:1250px) {
   .admin-grid-container{
     flex-direction: column;
   }
+
+  .admin-divider {
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid hsl(var(--border));
+    box-sizing: border-box;
+    border-left: none;
+  }
 }
 
 .admin-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 24px;
+  padding: 16px 24px;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
 }
 
-.admin-grid:nth-child(2){
+.admin-grid:nth-child(3){
   grid-template-columns: repeat(1, 1fr);
   width: 50%;
 }
 @media (max-width:1250px) {
-  .admin-grid:nth-child(2){
+  .admin-grid:nth-child(3){
     grid-template-columns: repeat(2, 1fr);
     width: 100%;
   }
@@ -405,7 +420,6 @@
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   padding: 8px 16px;
-  padding-bottom: 0px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -500,7 +514,7 @@ justify-content: center;
 
 .timeline-entry span {
   font-size: 12px;
-  padding: 0 8px;
+  padding: 0 4px;
   font-weight: 400;
   white-space: nowrap;
   overflow: hidden;
@@ -581,6 +595,8 @@ justify-content: center;
 
 .technology-input {
   width: 100%;
+  max-width: 100%;
+  max-height: 300px;
   background: hsl(var(--background));
   color: hsl(var(--foreground));
   border: 1px solid hsl(var(--border));
@@ -591,7 +607,11 @@ justify-content: center;
   outline: none;
   transition: border-color 0.2s;
   font-family: inherit
+}
 
+textarea.technology-input{
+  min-height: 100px;
+  min-width: 100%;
 }
 
 .category-select {
@@ -703,19 +723,6 @@ justify-content: center;
 .edit-title-input:focus,
 .edit-category-select:focus {
   border-color: hsl(var(--primary));
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: hsla(var(--background)/.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
 }
 
 @media (max-width:600px){
