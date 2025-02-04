@@ -190,13 +190,24 @@ app.get("/api/json", async (req, res) => {
 
 /**
  * Endpoint for updating the tech radar JSON in S3.
- * It receives the updated entries and saves them back to the S3 bucket.
+ * @route POST /review/api/tech-radar/update
+ * @param {Object} req.body - The update data
+ * @param {Object[]} [req.body.entries] - Array of entry objects to update
+ * @param {string} [req.body.title] - The title of the tech radar (for full updates)
+ * @param {Object[]} [req.body.quadrants] - Array of quadrant definitions (for full updates)
+ * @param {Object[]} [req.body.rings] - Array of ring definitions (for full updates)
+ * @returns {Object} Success message or error response
+ * @returns {string} response.message - Success confirmation message
+ * @throws {Error} 400 - If entries data is invalid
+ * @throws {Error} 500 - If update operation fails
  */
 app.post("/review/api/tech-radar/update", async (req, res) => {
   try {
     const { entries } = req.body;
-    if (!entries || !Array.isArray(entries)) {
-      return res.status(400).json({ error: "Invalid entries data" });
+
+    // Validate entries is present, is an array, and is not empty
+    if (!entries || !Array.isArray(entries) || entries.length === 0) {
+      return res.status(400).json({ error: "Invalid or empty entries data" });
     }
 
     const bucketName = process.env.BUCKET_NAME ? process.env.BUCKET_NAME : "sdp-dev-tech-radar";
@@ -209,23 +220,66 @@ app.post("/review/api/tech-radar/update", async (req, res) => {
 
     const { Body } = await s3Client.send(getCommand);
     const existingData = JSON.parse(await Body.transformToString());
-    
-    // Create a map of existing entries for easy lookup
-    const existingEntriesMap = new Map(existingData.entries.map(entry => [entry.id, entry]));
-    
-    // Update entries while preserving all properties
-    const updatedEntries = entries.map(newEntry => {
-      const existingEntry = existingEntriesMap.get(newEntry.id);
-      if (!existingEntry) return newEntry;
 
-      return {
-        ...existingEntry,
-        timeline: newEntry.timeline, // Only update the timeline
-      };
+    // Get valid quadrant and ring IDs from either the update or existing data
+    const validQuadrantIds = new Set((existingData.quadrants).map(q => q.id));
+    const validRingIds = new Set([...(existingData.rings).map(r => r.id), "ignore", "review"]);
+    console.log(validQuadrantIds, validRingIds)
+
+    // Validate each entry
+    const validEntries = entries.every(entry => {
+      // Required fields validation
+      if (!entry.id || typeof entry.id !== 'string' ||
+          !entry.title || typeof entry.title !== 'string' ||
+          !entry.quadrant || !validQuadrantIds.has(entry.quadrant)) {
+        return false;
+      }
+
+      // Timeline validation
+      if (!Array.isArray(entry.timeline)) return false;
+
+      const validTimeline = entry.timeline.every(t => 
+        typeof t.moved === 'number' &&
+        validRingIds.has(t.ringId) &&
+        typeof t.date === 'string' &&
+        typeof t.description === 'string'
+      );
+      if (!validTimeline) return false;
+
+      // Optional fields validation
+      if (entry.description && typeof entry.description !== 'string') return false;
+      if (entry.key && typeof entry.key !== 'string') return false;
+      if (entry.url && typeof entry.url !== 'string') return false;
+      if (entry.links && !Array.isArray(entry.links)) return false;
+
+      return true;
     });
 
+    if (!validEntries) {
+      return res.status(400).json({ error: "Invalid entry structure" });
+    }
+
+    // Handle entries update based on count
+    if (entries.length < 30) {
+      // For small updates, merge with existing entries
+      const existingEntriesMap = new Map(existingData.entries.map(entry => [entry.id, entry]));
+      
+      // Update or add new entries
+      entries.forEach(newEntry => {
+        existingEntriesMap.set(newEntry.id, {
+          ...(existingEntriesMap.get(newEntry.id) || {}),
+          ...newEntry
+        });
+      });
+      
+      existingData.entries = Array.from(existingEntriesMap.values());
+    } else {
+      // For large updates, replace all entries
+      existingData.entries = entries;
+    }
+
     // Sort entries to maintain consistent order
-    updatedEntries.sort((a, b) => {
+    existingData.entries.sort((a, b) => {
       // First by quadrant
       if (a.quadrant !== b.quadrant) {
         return parseInt(a.quadrant) - parseInt(b.quadrant);
@@ -233,9 +287,6 @@ app.post("/review/api/tech-radar/update", async (req, res) => {
       // Then by title
       return a.title.localeCompare(b.title);
     });
-
-    // Update only the entries array while preserving everything else
-    existingData.entries = updatedEntries;
 
     // Save the updated JSON back to S3
     const putCommand = new PutObjectCommand({

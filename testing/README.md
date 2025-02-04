@@ -38,6 +38,22 @@ make test
 
 Ensure tests are passing before committing.
 
+## Running a specific test
+
+Make sure the backend server is running on localhost:5001 before running the test.
+
+Find the test name and add it to this structure:
+
+```bash
+python3 -m pytest backend/test_main.py::<test_name> -v
+```
+
+For example:
+
+```bash
+python3 -m pytest backend/test_main.py::test_tech_radar_update_valid_structure -v
+```
+
 ## Cleaning Up
 
 To clean Python cache files:
