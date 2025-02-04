@@ -235,18 +235,18 @@ const ReviewPage = () => {
       if (sourceList === destList) return;
 
       // Set up the pending move
-      const lastRing = item.timeline[item.timeline.length - 1].ringId.toLowerCase();
+      const lastRing =
+        item.timeline[item.timeline.length - 1].ringId.toLowerCase();
       const defaultDescription = `Moved from ${lastRing} to ${destList}`;
-      
+
       setPendingMove({
         item,
         sourceList,
         destList,
-        lastRing
+        lastRing,
       });
       setMoveDescription(defaultDescription);
       setShowMoveModal(true);
-      
     } catch (error) {
       console.error("Error handling drop:", error);
     }
@@ -254,7 +254,7 @@ const ReviewPage = () => {
 
   const handleMoveConfirm = () => {
     const { item, sourceList, destList, lastRing } = pendingMove;
-    
+
     const updatedEntries = { ...entries };
     updatedEntries[sourceList] = updatedEntries[sourceList].filter(
       (entry) => entry.id !== item.id
@@ -262,7 +262,7 @@ const ReviewPage = () => {
 
     const movement = calculateRingMovement(lastRing, destList);
     const now = new Date().toISOString().split("T")[0];
-    
+
     const updatedItem = {
       ...item,
       timeline: [
@@ -757,7 +757,7 @@ const ReviewPage = () => {
             {renderBox("Assess", entries.assess, "assess")}
             {renderBox("Hold", entries.hold, "hold")}
           </div>
-          <div className="admin-divider">  </div>
+          <div className="admin-divider"> </div>
           <div className="admin-grid">
             {renderBox("Review", entries.review, "review")}
             {renderBox("Ignore", entries.ignore, "ignore")}
@@ -861,8 +861,18 @@ const ReviewPage = () => {
           <div className="admin-modal">
             <h3>Move Technology</h3>
             <p>Moving {pendingMove.item.title}</p>
-            <p>From: <span className={pendingMove.lastRing}>{pendingMove.lastRing}</span></p>
-            <p>To: <span className={pendingMove.destList}>{pendingMove.destList}</span></p>
+            <p>
+              From:{" "}
+              <span className={pendingMove.lastRing}>
+                {pendingMove.lastRing}
+              </span>
+            </p>
+            <p>
+              To:{" "}
+              <span className={pendingMove.destList}>
+                {pendingMove.destList}
+              </span>
+            </p>
             <div className="admin-modal-field">
               <label>Description</label>
               <textarea
@@ -874,7 +884,12 @@ const ReviewPage = () => {
               />
             </div>
             <div className="modal-buttons">
-              <button onClick={handleMoveConfirm} disabled={moveDescription.length < 1}>Confirm</button>
+              <button
+                onClick={handleMoveConfirm}
+                disabled={moveDescription.length < 1}
+              >
+                Confirm
+              </button>
               <button onClick={handleMoveCancel}>Cancel</button>
             </div>
           </div>

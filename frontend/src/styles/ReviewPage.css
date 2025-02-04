@@ -69,7 +69,7 @@
   width: 100%;
 }
 
-@media (max-width:650px) {
+@media (max-width: 650px) {
   .admin-filter-search-flex {
     flex-direction: column;
     align-items: flex-start;
@@ -91,7 +91,7 @@
   width: fit-content;
 }
 
-@media (max-width:1250px) {
+@media (max-width: 1250px) {
   .admin-details {
     flex-direction: column;
     align-items: center;
@@ -101,19 +101,18 @@
   .admin-header-left {
     gap: 16px;
     width: 100%;
-
   }
-  
+
   .admin-search-filter {
     width: 100%;
   }
 }
 
-.admin-review-title{
+.admin-review-title {
   width: 100%;
 }
 
-.admin-details h1{
+.admin-details h1 {
   margin: 0;
   font-size: 24px;
 }
@@ -132,7 +131,7 @@
   gap: 16px;
   box-sizing: border-box;
   border-radius: var(--radius);
-  border: 1px solid hsl(var(--border))
+  border: 1px solid hsl(var(--border));
 }
 
 .admin-container h1 {
@@ -154,7 +153,7 @@
 .admin-container span {
   font-size: 12px;
   text-align: left;
-  color: hsl(var(--muted-foreground))
+  color: hsl(var(--muted-foreground));
 }
 
 .admin-grid-container {
@@ -173,8 +172,8 @@
   align-self: stretch;
 }
 
-@media (max-width:1250px) {
-  .admin-grid-container{
+@media (max-width: 1250px) {
+  .admin-grid-container {
     flex-direction: column;
   }
 
@@ -197,12 +196,12 @@
   box-sizing: border-box;
 }
 
-.admin-grid:nth-child(3){
+.admin-grid:nth-child(3) {
   grid-template-columns: repeat(1, 1fr);
   width: 50%;
 }
-@media (max-width:1250px) {
-  .admin-grid:nth-child(3){
+@media (max-width: 1250px) {
+  .admin-grid:nth-child(3) {
     grid-template-columns: repeat(2, 1fr);
     width: 100%;
   }
@@ -212,7 +211,6 @@
   .admin-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
 }
 
 .admin-box {
@@ -320,7 +318,9 @@
   box-sizing: border-box;
   border-radius: var(--radius);
   border: 1px solid transparent;
-  transition: background-color 0.2s, border 0.2s;
+  transition:
+    background-color 0.2s,
+    border 0.2s;
   max-height: 300px;
   overflow-y: auto;
   display: flex;
@@ -330,8 +330,7 @@
   scrollbar-color: hsl(var(--border)) hsl(var(--muted)); /* For Firefox */
 }
 
-.droppable-area::-webkit-scrollbar
- {
+.droppable-area::-webkit-scrollbar {
   width: 2px; /* For Chrome, Safari, and Edge */
 }
 
@@ -347,7 +346,6 @@
 .droppable-area::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--accent)); /* For Chrome, Safari, and Edge */
 }
-
 
 .droppable-area.drag-over {
   background-color: hsl(var(--card));
@@ -369,12 +367,11 @@
   height: max-content;
 }
 
-@media (max-width:800px){
+@media (max-width: 800px) {
   .draggable-item {
     padding: 4px 12px;
   }
 }
-
 
 .draggable-item:hover {
   background-color: hsl(var(--accent));
@@ -399,7 +396,7 @@
 }
 
 .save-button:hover {
-  background-color: hsl(var(--primary) / .75);
+  background-color: hsl(var(--primary) / 0.75);
 }
 
 .save-button:active {
@@ -413,7 +410,6 @@
 }
 
 .timeline-display {
-
   overflow-x: auto;
   scrollbar-width: 1px;
   background: hsl(var(--card));
@@ -423,19 +419,19 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-justify-content: center;
+  justify-content: center;
   gap: 8px;
   min-width: 400px;
   max-width: 400px;
   min-height: 100px;
 }
 
-.timeline-display::-webkit-scrollbar{
+.timeline-display::-webkit-scrollbar {
   width: 1px;
 }
 
-@media (max-width:1250px) {
-  .timeline-display{ 
+@media (max-width: 1250px) {
+  .timeline-display {
     max-width: none;
     width: 100%;
   }
@@ -464,7 +460,6 @@ justify-content: center;
   background: hsl(var(--muted));
   color: hsl(var(--muted-foreground));
   padding: 2px 8px;
-
 }
 
 .timeline-display-header {
@@ -493,12 +488,12 @@ justify-content: center;
 
 .timeline-entries {
   display: flex;
-    align-items: center;
-    overflow-x: auto;
-    margin: 0;
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--muted)) transparent;
-    position: relative;
+  align-items: center;
+  overflow-x: auto;
+  margin: 0;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted)) transparent;
+  position: relative;
 }
 
 .timeline-entry {
@@ -509,8 +504,6 @@ justify-content: center;
   border-radius: var(--radius);
   cursor: pointer;
 }
-
-
 
 .timeline-entry span {
   font-size: 12px;
@@ -564,7 +557,7 @@ justify-content: center;
   width: 100%;
   box-sizing: border-box;
   border-radius: var(--radius);
-  border: 1px solid hsl(var(--border))
+  border: 1px solid hsl(var(--border));
 }
 
 .add-technology-container div:first-of-type {
@@ -577,10 +570,10 @@ justify-content: center;
 .add-technology-container span {
   font-size: 12px;
   text-align: left;
-  color: hsl(var(--muted-foreground))
+  color: hsl(var(--muted-foreground));
 }
 
-.add-technology-child{
+.add-technology-child {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -606,10 +599,10 @@ justify-content: center;
   font-size: 12px;
   outline: none;
   transition: border-color 0.2s;
-  font-family: inherit
+  font-family: inherit;
 }
 
-textarea.technology-input{
+textarea.technology-input {
   min-height: 100px;
   min-width: 100%;
 }
@@ -625,7 +618,7 @@ textarea.technology-input{
   outline: none;
   transition: border-color 0.2s;
   cursor: pointer;
-  font-family: inherit
+  font-family: inherit;
 }
 
 .category-select:focus {
@@ -649,7 +642,7 @@ textarea.technology-input{
 }
 
 .add-button:hover {
-  background-color: hsl(var(--primary) / .75);
+  background-color: hsl(var(--primary) / 0.75);
 }
 
 .add-button:active {
@@ -662,7 +655,9 @@ textarea.technology-input{
   cursor: not-allowed;
 }
 
-.edit-button, .edit-confirm-button, .edit-cancel-button {
+.edit-button,
+.edit-confirm-button,
+.edit-cancel-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -683,7 +678,6 @@ textarea.technology-input{
 .edit-confirm-button:hover {
   background-color: var(--color-adopt);
   color: hsl(var(--destructive-foreground));
-
 }
 
 .edit-cancel-button:hover {
@@ -725,7 +719,7 @@ textarea.technology-input{
   border-color: hsl(var(--primary));
 }
 
-@media (max-width:600px){
+@media (max-width: 600px) {
   .modal-overlay {
     align-items: flex-end;
     justify-content: flex-end;
@@ -743,9 +737,8 @@ textarea.technology-input{
   margin: 0;
 }
 
-
 .modal-automatic {
-  color: hsl(var(--muted-foreground))
+  color: hsl(var(--muted-foreground));
 }
 
 .modal-automatic i {
@@ -773,7 +766,6 @@ textarea.technology-input{
   width: fit-content;
 }
 
-
 .modal-buttons {
   display: flex;
   justify-content: space-between;
@@ -790,7 +782,7 @@ textarea.technology-input{
   transition: all 0.2s ease;
 }
 
-.modal-buttons button:disabled{
+.modal-buttons button:disabled {
   opacity: 0.5;
 }
 
@@ -801,7 +793,7 @@ textarea.technology-input{
 }
 
 .modal-buttons button:first-child:hover {
-  background: hsl(var(--primary)/.9);
+  background: hsl(var(--primary) / 0.9);
 }
 
 .modal-buttons button:last-child {
@@ -811,7 +803,7 @@ textarea.technology-input{
 }
 
 .modal-buttons button:last-child:hover {
-  background: hsl(var(--destructive)/.9);
+  background: hsl(var(--destructive) / 0.9);
 }
 
 .admin-actions {
@@ -828,7 +820,7 @@ textarea.technology-input{
   width: fit-content;
 }
 
-.admin-actions .buttons{
+.admin-actions .buttons {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -853,7 +845,7 @@ textarea.technology-input{
 }
 
 .admin-button:hover {
-  background-color: hsl(var(--muted) / .75);
+  background-color: hsl(var(--muted) / 0.75);
   transform: translateY(3px);
   box-shadow: none;
 }
@@ -880,15 +872,13 @@ textarea.technology-input{
   text-align: left;
 }
 
-
-@media (max-width:600px){
+@media (max-width: 600px) {
   .admin-modal {
     border: none;
     width: 100%;
     border-top: 1px solid hsl(var(--border));
   }
 }
-
 
 .admin-modal h3 {
   margin: 0;

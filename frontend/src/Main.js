@@ -1,10 +1,10 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Radar from './pages/RadarPage';
-import Statistics from './pages/StatisticsPage';
-import Home from './pages/HomePage';
-import Projects from './pages/ProjectsPage';
-import ReviewDashboard from './pages/ReviewPage';
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Radar from "./pages/RadarPage";
+import Statistics from "./pages/StatisticsPage";
+import Home from "./pages/HomePage";
+import Projects from "./pages/ProjectsPage";
+import ReviewDashboard from "./pages/ReviewPage";
 const Main = () => {
   return (
     <Routes>
@@ -16,6 +16,6 @@ const Main = () => {
       <Route path="/review/dashboard" element={<ReviewDashboard />} />
     </Routes>
   );
-}
+};
 
 export default Main;

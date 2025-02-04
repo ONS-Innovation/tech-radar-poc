@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import "../../../styles/components/SkeletonLoading.css";
 
 function SkeletonStatCard() {
@@ -10,4 +10,4 @@ function SkeletonStatCard() {
   );
 }
 
-export default SkeletonStatCard; 
+export default SkeletonStatCard;

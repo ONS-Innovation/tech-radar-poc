@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import "../../../styles/components/SkeletonLoading.css";
 
 function SkeletonLanguageCard() {
@@ -14,4 +14,4 @@ function SkeletonLanguageCard() {
   );
 }
 
-export default SkeletonLanguageCard; 
+export default SkeletonLanguageCard;

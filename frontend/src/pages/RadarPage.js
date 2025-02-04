@@ -60,7 +60,7 @@ function RadarPage() {
    * useEffect hook to fetch the tech radar data from S3.
    */
   useEffect(() => {
-      fetchTechRadarJSONFromS3().then((data) => setData(data));
+    fetchTechRadarJSONFromS3().then((data) => setData(data));
   }, []);
 
   /**
@@ -199,10 +199,12 @@ function RadarPage() {
     const results = data.entries
       .filter((entry) => {
         // Get the most recent timeline entry
-        const mostRecentRing = entry.timeline[entry.timeline.length - 1].ringId.toLowerCase();
+        const mostRecentRing =
+          entry.timeline[entry.timeline.length - 1].ringId.toLowerCase();
 
         // Exclude entries where most recent ring is review or ignore
-        if (mostRecentRing === "review" || mostRecentRing === "ignore") return false;
+        if (mostRecentRing === "review" || mostRecentRing === "ignore")
+          return false;
 
         // Check if title or description matches search term
         return (
@@ -212,7 +214,7 @@ function RadarPage() {
       })
       .map((entry) => ({
         ...entry,
-        timeline: entry.timeline
+        timeline: entry.timeline,
       }));
 
     setSearchResults(results);
@@ -435,18 +437,20 @@ function RadarPage() {
     }
   }, [location.state, data]);
 
-  if (!data) return (
-        <ThemeProvider>
+  if (!data)
+    return (
+      <ThemeProvider>
         <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading Radar...</p>
+          <div className="loading-spinner"></div>
+          <p>Loading Radar...</p>
         </div>
-    </ThemeProvider>
-  );
+      </ThemeProvider>
+    );
 
   const groupedEntries = data.entries.reduce((acc, entry) => {
     const quadrant = entry.quadrant;
-    const mostRecentRing = entry.timeline[entry.timeline.length - 1].ringId.toLowerCase()
+    const mostRecentRing =
+      entry.timeline[entry.timeline.length - 1].ringId.toLowerCase();
 
     // Skip if the most recent timeline entry has ringId of "review" or "ignore"
     if (mostRecentRing === "review" || mostRecentRing === "ignore") return acc;
@@ -523,7 +527,9 @@ function RadarPage() {
     const entry = data.entries.find(
       (entry) => entry.title.toLowerCase() === tech.trim().toLowerCase()
     );
-    return entry ? entry.timeline[entry.timeline.length - 1].ringId.toLowerCase() : null;
+    return entry
+      ? entry.timeline[entry.timeline.length - 1].ringId.toLowerCase()
+      : null;
   };
 
   /**
@@ -623,9 +629,15 @@ function RadarPage() {
                   <span
                     className={`info-box-ring ${(
                       selectedBlip || lockedBlip
-                    ).timeline[selectedBlip.timeline.length - 1].ringId.toLowerCase()}`}
+                    ).timeline[
+                      selectedBlip.timeline.length - 1
+                    ].ringId.toLowerCase()}`}
                   >
-                    {(selectedBlip || lockedBlip).timeline[selectedBlip.timeline.length - 1].ringId}
+                    {
+                      (selectedBlip || lockedBlip).timeline[
+                        selectedBlip.timeline.length - 1
+                      ].ringId
+                    }
                   </span>
                 </div>
 
@@ -653,9 +665,12 @@ function RadarPage() {
                   {[...(selectedBlip || lockedBlip).timeline]
                     .reverse()
                     .slice()
-                    [timelineAscending ? 'reverse' : 'slice']()
+                    [timelineAscending ? "reverse" : "slice"]()
                     .map((timelineItem, index, array) => (
-                      <div key={timelineItem.date+timelineItem.ringId+index} className="timeline-item">
+                      <div
+                        key={timelineItem.date + timelineItem.ringId + index}
+                        className="timeline-item"
+                      >
                         <div
                           className={`timeline-node ${timelineItem.ringId.toLowerCase()}`}
                           onClick={() =>
@@ -940,7 +955,8 @@ function RadarPage() {
               {Object.entries(groupedEntries).map(([quadrant, rings]) =>
                 Object.entries(rings).map(
                   ([ring, entries]) =>
-                    ring !== "review" && ring !== "ignore" &&
+                    ring !== "review" &&
+                    ring !== "ignore" &&
                     entries.map((entry, index) => {
                       const position = calculateBlipPosition(
                         quadrant,

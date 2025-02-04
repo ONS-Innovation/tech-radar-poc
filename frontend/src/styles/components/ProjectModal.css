@@ -47,7 +47,7 @@
   font-size: 24px;
   cursor: pointer;
   border-radius: var(--radius);
-  transition: all .2s ease;
+  transition: all 0.2s ease;
   padding: 4px;
   display: flex;
   align-items: center;
@@ -120,7 +120,7 @@
 }
 
 .project-link:hover {
- color: hsl(var(--foreground));
+  color: hsl(var(--foreground));
 }
 
 .project-link::after {
@@ -165,8 +165,7 @@
   transition: all 0.2s;
   background: hsl(var(--background));
   color: hsl(var(--foreground));
-  display: flex
-;
+  display: flex;
   align-items: center;
   justify-content: flex-start;
 }
@@ -197,7 +196,6 @@
   color: hsl(var(--muted-foreground));
   font-size: 16px;
   margin-left: 0;
-
 }
 
 /* Project details and groups */
@@ -230,7 +228,6 @@
   top: 0;
   background: hsl(var(--card));
   z-index: 10;
-
 }
 
 .group-content {
@@ -311,7 +308,6 @@
 .project-details::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
 }
-
 
 .repo-info h3 {
   margin-bottom: 1rem;
@@ -430,7 +426,6 @@
   border: none;
 }
 
-
 .language-bar:hover {
   opacity: 1;
 }
@@ -455,7 +450,6 @@
 .language-label.clickable-tech {
   cursor: pointer;
 }
-
 
 .repo-info-loading {
   font-size: 12px;

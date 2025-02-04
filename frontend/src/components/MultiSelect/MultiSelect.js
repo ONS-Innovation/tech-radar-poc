@@ -1,22 +1,31 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { IoClose } from 'react-icons/io5';
-import '../../styles/components/MultiSelect.css';
+import React, { useState, useRef, useEffect } from "react";
+import { IoClose } from "react-icons/io5";
+import "../../styles/components/MultiSelect.css";
 
-const MultiSelect = ({ options, value, onChange, placeholder = 'Select...', isDisabled = false }) => {
+const MultiSelect = ({
+  options,
+  value,
+  onChange,
+  placeholder = "Select...",
+  isDisabled = false,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleInputClick = () => {
@@ -25,25 +34,25 @@ const MultiSelect = ({ options, value, onChange, placeholder = 'Select...', isDi
   };
 
   const handleOptionClick = (option) => {
-    const isSelected = value.some(v => v.value === option.value);
+    const isSelected = value.some((v) => v.value === option.value);
     let newValue;
     if (isSelected) {
-      newValue = value.filter(v => v.value !== option.value);
+      newValue = value.filter((v) => v.value !== option.value);
     } else {
       newValue = [...value, option];
     }
     onChange(newValue);
-    setSearchTerm('');
+    setSearchTerm("");
     inputRef.current?.focus();
   };
 
   const handleRemoveValue = (optionValue, e) => {
     e.stopPropagation();
-    const newValue = value.filter(v => v.value !== optionValue);
+    const newValue = value.filter((v) => v.value !== optionValue);
     onChange(newValue);
   };
 
-  const filteredOptions = options.filter(option =>
+  const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -64,7 +73,7 @@ const MultiSelect = ({ options, value, onChange, placeholder = 'Select...', isDi
             className="multi-select-input"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder={value.length === 0 ? placeholder : ''}
+            placeholder={value.length === 0 ? placeholder : ""}
             disabled={isDisabled}
           />
         </div>
@@ -75,7 +84,7 @@ const MultiSelect = ({ options, value, onChange, placeholder = 'Select...', isDi
             <div
               key={option.label + option.value}
               className={`multi-select-option ${
-                value.some(v => v.value === option.value) ? 'selected' : ''
+                value.some((v) => v.value === option.value) ? "selected" : ""
               }`}
               onClick={() => handleOptionClick(option)}
             >
@@ -88,4 +97,4 @@ const MultiSelect = ({ options, value, onChange, placeholder = 'Select...', isDi
   );
 };
 
-export default MultiSelect; 
+export default MultiSelect;

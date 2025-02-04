@@ -8,7 +8,6 @@
   background: hsl(var(--background));
 }
 
-
 .statistics-content {
   background: hsl(var(--card));
   border-radius: var(--radius);
@@ -85,7 +84,7 @@
 
 .stat-card h3 {
   font-size: 12px;
-  margin: 0 ;
+  margin: 0;
   color: hsl(var(--muted-foreground));
 }
 
@@ -181,9 +180,8 @@
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   color: hsl(var(--foreground));
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
-
 
 .filter-button:hover {
   background: hsl(var(--muted));
@@ -193,7 +191,6 @@
   background: hsl(var(--accent));
   color: hsl(var(--accent-foreground));
 }
-
 
 .sort-options {
   display: grid;
@@ -228,7 +225,7 @@
 
 .sort-options button.active {
   color: hsl(var(--foreground));
-  border-color: hsl(var(--foreground) / .4);
+  border-color: hsl(var(--foreground) / 0.4);
   box-shadow: none;
   transform: translateY(2px);
 }
@@ -401,7 +398,7 @@
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   color: hsl(var(--foreground));
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   cursor: pointer;
   outline: none;
   min-width: 120px;
@@ -411,7 +408,6 @@
   background-position: right 8px center;
   background-size: 8px;
   padding-right: 24px;
-  
 }
 
 .date-selector select:disabled {
@@ -433,7 +429,7 @@
   outline: none;
   width: 150px;
   height: 18px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .custom-date-input::-webkit-calendar-picker-indicator {
@@ -458,7 +454,6 @@
   background: hsl(var(--muted));
 }
 
-
 .loading-spinner {
   width: 40px;
   height: 40px;
@@ -469,8 +464,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .no-data-message {
@@ -515,7 +514,7 @@
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   color: hsl(var(--foreground));
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   cursor: pointer;
   outline: none;
   min-width: 120px;
@@ -542,4 +541,4 @@
   background: hsl(var(--accent));
   color: hsl(var(--accent-foreground));
   border-color: transparent;
-} 
+}

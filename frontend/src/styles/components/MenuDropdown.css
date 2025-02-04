@@ -59,11 +59,11 @@
 }
 
 .theme-toggle-container {
-    border-top: 1px solid hsl(var(--border));
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-} 
+  border-top: 1px solid hsl(var(--border));
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
 
 .home-button-container {
   border-bottom: 1px solid hsl(var(--border));

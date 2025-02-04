@@ -9,10 +9,10 @@ import { FaQuestion } from "react-icons/fa";
 
 /**
  * Header component for the Tech Radar application.
- * 
- * This component renders the header section of the application, including the logo, search bar, 
+ *
+ * This component renders the header section of the application, including the logo, search bar,
  * file upload functionality, and theme toggle.
- * 
+ *
  * @param {Object} props - The props passed to the Header component.
  * @param {string} props.searchTerm - The current search term.
  * @param {Function} props.onSearchChange - Function to call when the search term changes.
@@ -31,7 +31,7 @@ function Header({
   onSearchResultClick,
   onOpenProjects,
   onStatsTechClick,
-  hideSearch = false
+  hideSearch = false,
 }) {
   const navigate = useNavigate();
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -46,14 +46,16 @@ function Header({
   return (
     <header className="radar-header">
       <div className="header-left">
-        <img 
-          src={Logo} 
-          alt="Logo" 
-          className="logo" 
-          onClick={() => navigate('/radar')}
-          style={{ cursor: 'pointer' }}
+        <img
+          src={Logo}
+          alt="Logo"
+          className="logo"
+          onClick={() => navigate("/radar")}
+          style={{ cursor: "pointer" }}
         />
-        <h1 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Digital Landscape</h1>
+        <h1 onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
+          Digital Landscape
+        </h1>
       </div>
       <div className="header-right">
         {!hideSearch && (
@@ -93,8 +95,8 @@ function Header({
             )}
           </div>
         )}
-        <MenuDropdown 
-          onOpenProjects={onOpenProjects} 
+        <MenuDropdown
+          onOpenProjects={onOpenProjects}
           onStatsTechClick={onStatsTechClick}
         />
         <button
@@ -104,7 +106,10 @@ function Header({
         >
           <FaQuestion size={14} />
         </button>
-        <HelpModal show={showHelpModal} onClose={() => setShowHelpModal(false)} />
+        <HelpModal
+          show={showHelpModal}
+          onClose={() => setShowHelpModal(false)}
+        />
       </div>
     </header>
   );

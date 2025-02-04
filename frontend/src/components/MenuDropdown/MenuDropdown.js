@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import "../../styles/components/MenuDropdown.css";
-import { IoHome, IoMenu, IoStatsChart, IoPeople } from 'react-icons/io5'
+import { IoHome, IoMenu, IoStatsChart, IoPeople } from "react-icons/io5";
 import { MdOutlineRadar } from "react-icons/md";
 
 /**
  * MenuDropdown component for displaying a dropdown menu with navigation links.
- * 
+ *
  * @param {Object} props - The props passed to the MenuDropdown component.
  * @param {boolean} props.show - Whether the dropdown menu should be shown.
  * @param {Function} props.onClose - Function to call when the dropdown menu is closed.
@@ -25,13 +25,13 @@ function MenuDropdown() {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   /**
    * handleNavClick function navigates to the specified path and closes the dropdown menu.
-   * 
+   *
    * @param {string} path - The path to navigate to.
    */
   const handleNavClick = (path) => {
@@ -47,26 +47,38 @@ function MenuDropdown() {
 
       {isOpen && (
         <div className="dropdown-content">
-            <div className="home-button-container">
-              <button onClick={() => handleNavClick('/')} className={location.pathname === '/' ? 'active' : ''}>
-                <IoHome size={16} />
-                Home
-              </button>
-            </div>
-            <div>
-              <button onClick={() => handleNavClick('/radar')} className={location.pathname === '/radar' ? 'active' : ''}>
-                <MdOutlineRadar size={16} />
-                Tech Radar
-              </button>
-              <button onClick={() => handleNavClick('/statistics')} className={location.pathname === '/statistics' ? 'active' : ''}>
-                <IoStatsChart size={16} />
-                Statistics
-              </button>
-              <button onClick={() => handleNavClick('/projects')} className={location.pathname === '/projects' ? 'active' : ''}>
-                <IoPeople size={16} />
-                Projects
-              </button>
-            </div>
+          <div className="home-button-container">
+            <button
+              onClick={() => handleNavClick("/")}
+              className={location.pathname === "/" ? "active" : ""}
+            >
+              <IoHome size={16} />
+              Home
+            </button>
+          </div>
+          <div>
+            <button
+              onClick={() => handleNavClick("/radar")}
+              className={location.pathname === "/radar" ? "active" : ""}
+            >
+              <MdOutlineRadar size={16} />
+              Tech Radar
+            </button>
+            <button
+              onClick={() => handleNavClick("/statistics")}
+              className={location.pathname === "/statistics" ? "active" : ""}
+            >
+              <IoStatsChart size={16} />
+              Statistics
+            </button>
+            <button
+              onClick={() => handleNavClick("/projects")}
+              className={location.pathname === "/projects" ? "active" : ""}
+            >
+              <IoPeople size={16} />
+              Projects
+            </button>
+          </div>
 
           <div className="theme-toggle-container">
             <ThemeToggle />
@@ -77,4 +89,4 @@ function MenuDropdown() {
   );
 }
 
-export default MenuDropdown; 
+export default MenuDropdown;
