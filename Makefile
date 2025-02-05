@@ -1,3 +1,5 @@
+.PHONY: dev frontend backend install install-dev docker-build docker-up docker-down clean test logs ps setup lint lint-frontend lint-fix-frontend lint-backend lint-fix-backend help
+
 # Development environment
 dev:
 	@echo "Starting frontend and backend in development mode..."
