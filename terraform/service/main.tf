@@ -90,7 +90,7 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
         },
         {
           name  = "TAT_BUCKET_NAME",
-          value = var.other_s3_bucket_name
+          value = var.api_s3_bucket_name
         }
       ],
       logConfiguration = {

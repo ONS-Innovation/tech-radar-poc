@@ -127,7 +127,7 @@ variable "s3_bucket_name" {
   default     = "sdp-dev-tech-radar"
 }
 
-variable "other_s3_bucket_name" {
+variable "api_s3_bucket_name" {
   description = "Name of the S3 bucket that the application needs to access"
   type        = string
   default     = "sdp-dev-tech-audit-tool-api"
