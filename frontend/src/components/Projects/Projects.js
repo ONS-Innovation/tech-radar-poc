@@ -260,6 +260,7 @@ const Projects = ({
           </span>
         </div>
       </div>
+      </div>
 
       <div className="projects-list">
         {filteredAndSortedProjects.map((project, index) => {
@@ -365,6 +366,7 @@ const Projects = ({
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );

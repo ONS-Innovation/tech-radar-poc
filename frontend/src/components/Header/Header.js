@@ -156,11 +156,6 @@ function Header({
                     onClick={() => onSearchResultClick(result)}
                   >
                     <span className="search-result-title">{result.title}</span>
-                    <span
-                      className={`search-result-ring ${result.timeline[result.timeline.length - 1].ringId.toLowerCase()}`}
-                    >
-                      {result.timeline[0].ringId}
-                    </span>
                     {result.timeline && (
                       <span
                         className={`search-result-ring ${result.timeline[result.timeline.length - 1].ringId.toLowerCase()}`}

@@ -1,14 +1,3 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ThemeProvider } from '../contexts/ThemeContext';
-import Header from '../components/Header/Header';
-import Statistics from '../components/Statistics/Statistics';
-import { fetchRepositoryData } from '../utilities/getRepositoryData';
-import { fetchCSVFromS3 } from '../utilities/getCSVData';
-import { fetchTechRadarJSONFromS3 } from '../utilities/getTechRadarJson';
-import toast from 'react-hot-toast';
-import '../styles/StatisticsPage.css';
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Statistics from "../components/Statistics/Statistics";
@@ -18,6 +7,8 @@ import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
 import { fetchCSVFromS3 } from "../utilities/getCSVData";
 import { fetchRepositoryData } from "../utilities/getRepositoryData";
 import { toast } from "react-hot-toast";
+import '../styles/StatisticsPage.css';
+
 /**
  * StatisticsPage component for displaying the statistics page.
  *
@@ -42,15 +33,6 @@ function StatisticsPage() {
         setProjectsData(data);
       } catch (error) {
         toast.error("Error fetching projects.");
-      }
-    };
-
-    const fetchRadarData = async () => {
-      try {
-        const data = await fetchTechRadarJSONFromS3();
-        setRadarData(data);
-      } catch (error) {
-        console.error('Failed to load radar data:', error);
       }
     };
 

@@ -112,7 +112,6 @@
   color: hsl(var(--foreground));
   margin-top: 2px;
   padding: 10px;
-  display: none;
 }
 
 .search-clear svg {

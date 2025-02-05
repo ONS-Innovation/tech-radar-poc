@@ -27,7 +27,6 @@ function Statistics({
   onProjectsChange,
   searchTerm = ""
 }) {
-  const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({
     key: "repo_count",
     direction: "desc",

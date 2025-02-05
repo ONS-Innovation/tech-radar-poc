@@ -119,21 +119,6 @@ function ProjectsPage() {
   };
 
   /**
-   * getFilteredProjects function gets the filtered projects based on search term.
-   * 
-   * @returns {Array} - The filtered projects.
-   */
-  const getFilteredProjects = () => {
-    if (!projectsData) return [];
-    if (!searchTerm.trim()) return projectsData;
-
-    return projectsData.filter(project => {
-      const searchString = `${project.Project} ${project.Project_Short} ${project.Project_Area} ${project.Team}`.toLowerCase();
-      return searchString.includes(searchTerm.toLowerCase());
-    });
-  };
-
-  /**
    * renderTechnologyList function renders the technology list.
    *
    * @param {string} technologies - The technologies to render.
@@ -157,7 +142,6 @@ function ProjectsPage() {
               {trimmedTech}
             </span>
           ) : (
-            trimmedTech
             trimmedTech
           )}
         </span>
