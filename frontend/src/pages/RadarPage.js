@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import "../styles/App.css";
 import Header from "../components/Header/Header";
 import { ThemeProvider } from "../contexts/ThemeContext";
+import { useBanner } from "../contexts/banner";
 import {
   IoInformationCircle,
   IoGridOutline,
@@ -55,6 +56,11 @@ function RadarPage() {
   const [timelineAscending, setTimelineAscending] = useState(false);
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
   const location = useLocation();
+
+  useBanner(
+    'Tech Radar numbering does not correlate to technology popularity or usage.',
+    'hasSeenNumberingInfo'
+  );
 
   /**
    * useEffect hook to fetch the tech radar data from S3.
