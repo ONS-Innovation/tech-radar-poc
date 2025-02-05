@@ -5,7 +5,7 @@
 
 .menu-button {
   background: transparent;
-  border: 1px solid hsl(var(--border));
+  border: 1px solid transparent;
   color: hsl(var(--foreground));
   padding: 8px;
   border-radius: var(--radius);
@@ -14,6 +14,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  border: 1px solid hsl(var(--border))
 }
 
 .menu-button:hover {
@@ -22,7 +23,7 @@
 
 .dropdown-content {
   position: absolute;
-  right: 0;
+  right: -42px;
   top: 100%;
   margin-top: 8px;
   background: hsl(var(--card));
@@ -34,7 +35,7 @@
   overflow: hidden;
 }
 
-.dropdown-content button {
+.dropdown-content button, .dropdown-content a {
   width: 100%;
   padding: 12px 16px;
   text-align: left;
@@ -47,24 +48,29 @@
   gap: 8px;
   transition: all 0.2s ease;
   font-weight: 400;
+  text-decoration: none;
+  font-size: 12px;
 }
 
-.dropdown-content button:hover {
+.dropdown-content button:hover, .dropdown-content a:hover {
   background: hsl(var(--muted));
 }
 
-.dropdown-content button.active {
+.dropdown-content button.active, .dropdown-content a.active {
   background: hsl(var(--muted));
   font-weight: 600;
 }
 
 .theme-toggle-container {
-  border-top: 1px solid hsl(var(--border));
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} 
 
 .home-button-container {
   border-bottom: 1px solid hsl(var(--border));
+}
+
+.help-button-container {
+  border-top: 1px solid hsl(var(--border));
 }

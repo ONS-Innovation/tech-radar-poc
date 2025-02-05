@@ -144,7 +144,7 @@ const Projects = ({
           return 0;
       }
     });
-  }, [projectsData, searchTerm, sortBy, calculateTechnologyDistribution]);
+  }, [projectsData, sortBy, calculateTechnologyDistribution]);
 
   if (!isOpen || !projectsData) return null;
 
@@ -153,123 +153,105 @@ const Projects = ({
       className="projects-modal-content"
       onClick={(e) => e.stopPropagation()}
     >
-      <h2>Projects</h2>
-      <span className="projects-modal-content-subtitle">
-        Click on a project to view its details. Hover over the coloured bar to
-        see the technology distribution.
-      </span>
-
-      <div className="projects-search-container">
-        <div className="projects-search-input-wrapper">
-          <IoSearch className="projects-search-icon" />
-          <input
-            type="text"
-            placeholder="Search projects..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="projects-search-input"
-          />
-          {searchTerm && (
-            <button
-              className="projects-search-clear"
-              onClick={() => setSearchTerm("")}
-            >
-              <IoClose />
-            </button>
-          )}
-        </div>
-
-        <div className="projects-filter-wrapper">
-          <button
-            className="projects-filter-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsFilterOpen(!isFilterOpen);
-            }}
-          >
-            <IoOptions />
-            Sort by
-          </button>
-          {isFilterOpen && (
-            <div className="projects-filter-dropdown">
-              <div className="filter-group">
-                <div className="filter-group-title">Name</div>
-                <button
-                  className={sortBy === "name-asc" ? "active" : ""}
-                  onClick={() => setSortBy("name-asc")}
-                >
-                  A to Z
-                </button>
-                <button
-                  className={sortBy === "name-desc" ? "active" : ""}
-                  onClick={() => setSortBy("name-desc")}
-                >
-                  Z to A
-                </button>
-              </div>
-              <div className="filter-group">
-                <div className="filter-group-title">Technologies</div>
-                <button
-                  className={sortBy === "tech-most" ? "active" : ""}
-                  onClick={() => setSortBy("tech-most")}
-                >
-                  Most technologies
-                </button>
-                <button
-                  className={sortBy === "tech-least" ? "active" : ""}
-                  onClick={() => setSortBy("tech-least")}
-                >
-                  Least technologies
-                </button>
-              </div>
-              <div className="filter-group">
-                <div className="filter-group-title">Technology Status</div>
-                <div className="filter-controls">
-                  <div className="filter-select-wrapper">
-                    <select
-                      className="filter-select"
-                      value={selectedType}
-                      onChange={(e) => {
-                        setSelectedType(e.target.value);
-                        setSortBy(`${e.target.value}-${selectedRatio}`);
-                      }}
+      <div className="projects-content-header">
+        <h2>Projects</h2>
+        <div className="projects-content-header-flex">
+          <span className="projects-modal-content-subtitle">
+            Click on a project to view its details. Hover over the coloured bar
+            to see the technology distribution.
+          </span>
+          <div className="projects-search-container">
+            <div className="projects-filter-wrapper">
+              <button
+                className="projects-filter-button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFilterOpen(!isFilterOpen);
+                }}
+              >
+                <IoOptions />
+                Sort by
+              </button>
+              {isFilterOpen && (
+                <div className="projects-filter-dropdown">
+                  <div className="filter-group">
+                    <div className="filter-group-title">Name</div>
+                    <button
+                      className={sortBy === "name-asc" ? "active" : ""}
+                      onClick={() => setSortBy("name-asc")}
                     >
-                      <option value="adopt">Adopt</option>
-                      <option value="trial">Trial</option>
-                      <option value="assess">Assess</option>
-                      <option value="hold">Hold</option>
-                    </select>
-                    <IoChevronDown className="select-chevron" />
+                      A to Z
+                    </button>
+                    <button
+                      className={sortBy === "name-desc" ? "active" : ""}
+                      onClick={() => setSortBy("name-desc")}
+                    >
+                      Z to A
+                    </button>
                   </div>
-
-                  <div className="filter-select-wrapper">
-                    <select
-                      className="filter-select"
-                      value={selectedRatio}
-                      onChange={(e) => {
-                        setSelectedRatio(e.target.value);
-                        setSortBy(`${selectedType}-${e.target.value}`);
-                      }}
+                  <div className="filter-group">
+                    <div className="filter-group-title">Technologies</div>
+                    <button
+                      className={sortBy === "tech-most" ? "active" : ""}
+                      onClick={() => setSortBy("tech-most")}
                     >
-                      <option value="high">Most Ratio</option>
-                      <option value="low">Least Ratio</option>
-                    </select>
-                    <IoChevronDown className="select-chevron" />
+                      Most technologies
+                    </button>
+                    <button
+                      className={sortBy === "tech-least" ? "active" : ""}
+                      onClick={() => setSortBy("tech-least")}
+                    >
+                      Least technologies
+                    </button>
+                  </div>
+                  <div className="filter-group">
+                    <div className="filter-group-title">Technology Status</div>
+                    <div className="filter-controls">
+                      <div className="filter-select-wrapper">
+                        <select
+                          className="filter-select"
+                          value={selectedType}
+                          onChange={(e) => {
+                            setSelectedType(e.target.value);
+                            setSortBy(`${e.target.value}-${selectedRatio}`);
+                          }}
+                        >
+                          <option value="adopt">Adopt</option>
+                          <option value="trial">Trial</option>
+                          <option value="assess">Assess</option>
+                          <option value="hold">Hold</option>
+                        </select>
+                        <IoChevronDown className="select-chevron" />
+                      </div>
+
+                      <div className="filter-select-wrapper">
+                        <select
+                          className="filter-select"
+                          value={selectedRatio}
+                          onChange={(e) => {
+                            setSelectedRatio(e.target.value);
+                            setSortBy(`${selectedType}-${e.target.value}`);
+                          }}
+                        >
+                          <option value="high">Most Ratio</option>
+                          <option value="low">Least Ratio</option>
+                        </select>
+                        <IoChevronDown className="select-chevron" />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
-          )}
-        </div>
 
-        <button
-          className="projects-filter-button projects-refresh-button"
-          onClick={onRefresh}
-          title="Refresh the data"
-        >
-          <IoRefresh />
-          Refresh
-        </button>
+            <button
+              className="projects-filter-button projects-refresh-button"
+              onClick={onRefresh}
+              title="Refresh the data"
+            >
+              <IoRefresh />
+              Refresh
+            </button>
 
         <div className="projects-search-results">
           <span className="projects-search-count">
@@ -291,10 +273,12 @@ const Projects = ({
               onClick={() => handleProjectClick(project)}
             >
               <div className="project-item-header">
-                <div className="project-name">{project.Project}</div>{" "}
-                <span className="project-name-short">
-                  {project.Project_Short ? `(${project.Project_Short})` : ""}
-                </span>
+                <div className="project-name">
+                  <span>{project.Project}</span>
+                  <span className="project-name-short">
+                    {project.Project_Short ? `(${project.Project_Short})` : ""}
+                  </span>
+                </div>
               </div>
 
               <div className="technology-distribution">

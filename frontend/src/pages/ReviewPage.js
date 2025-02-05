@@ -741,9 +741,7 @@ const ReviewPage = () => {
           </div>
           <div className="admin-search-filter">
             {isLoading ? (
-              <div className="timeline-display">
-                <SkeletonStatCard />
-              </div>
+                <SkeletonStatCard minWidth="400px"/>
             ) : (
               renderTimeline()
             )}

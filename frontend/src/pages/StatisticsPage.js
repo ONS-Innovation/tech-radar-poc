@@ -1,3 +1,14 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ThemeProvider } from '../contexts/ThemeContext';
+import Header from '../components/Header/Header';
+import Statistics from '../components/Statistics/Statistics';
+import { fetchRepositoryData } from '../utilities/getRepositoryData';
+import { fetchCSVFromS3 } from '../utilities/getCSVData';
+import { fetchTechRadarJSONFromS3 } from '../utilities/getTechRadarJson';
+import toast from 'react-hot-toast';
+import '../styles/StatisticsPage.css';
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Statistics from "../components/Statistics/Statistics";
@@ -20,7 +31,9 @@ function StatisticsPage() {
   const [projectsData, setProjectsData] = useState(null);
   const [selectedRepositories, setSelectedRepositories] = useState([]);
   const [currentDate, setCurrentDate] = useState(null);
-  const [currentRepoView, setCurrentRepoView] = useState("unarchived");
+  const [currentRepoView, setCurrentRepoView] = useState('unarchived');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [radarData, setRadarData] = useState(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -32,7 +45,26 @@ function StatisticsPage() {
       }
     };
 
+    const fetchRadarData = async () => {
+      try {
+        const data = await fetchTechRadarJSONFromS3();
+        setRadarData(data);
+      } catch (error) {
+        console.error('Failed to load radar data:', error);
+      }
+    };
+
+    const fetchRadarData = async () => {
+      try {
+        const data = await fetchTechRadarJSONFromS3();
+        setRadarData(data);
+      } catch (error) {
+        console.error('Failed to load radar data:', error);
+      }
+    };
+
     fetchProjects();
+    fetchRadarData();
   }, []);
 
   /**
@@ -88,7 +120,11 @@ function StatisticsPage() {
             }),
         };
       } else {
-        // Construct URL with parameters for general statistics
+        // Fetch general statistics
+        const baseUrl = process.env.NODE_ENV === "development" 
+          ? 'http://localhost:5001/api/json'
+          : '/api/json';
+
         const params = new URLSearchParams();
         if (date && date !== "all") params.append("datetime", date);
         if (repoView === "archived") params.append("archived", "true");
@@ -165,6 +201,8 @@ function StatisticsPage() {
 
       setStatsData(mappedStats);
     } catch (error) {
+      console.error('Error fetching statistics:', error);
+      toast.error('Failed to load statistics.');
       setStatsData({
         stats_unarchived: {
           total: 0,
@@ -196,10 +234,12 @@ function StatisticsPage() {
     }
   };
 
-  // Update useEffect to use current filters
+  // Update useEffect to use current filters and refetch when radar data changes
   useEffect(() => {
-    fetchStatistics(currentDate, currentRepoView);
-  }, [selectedRepositories, currentDate, currentRepoView]);
+    if (radarData) {
+      fetchStatistics(currentDate, currentRepoView);
+    }
+  }, [selectedRepositories, currentDate, currentRepoView, radarData]);
 
   const handleDateChange = (date, repoView = "unarchived") => {
     setCurrentDate(date === "all" ? null : date);
@@ -221,15 +261,31 @@ function StatisticsPage() {
     setSelectedRepositories(allRepoUrls);
   };
 
+  const getFilteredLanguages = () => {
+    if (!statsData) return [];
+    
+    const languageStats = statsData.language_statistics_unarchived || {};
+    const languages = Object.entries(languageStats)
+      .filter(([language]) => {
+        return language.toLowerCase().includes(searchTerm.toLowerCase());
+      })
+      .map(([language, stats]) => ({
+        language,
+        ...stats
+      }));
+
+    return languages;
+  };
+
+  const filteredLanguages = getFilteredLanguages();
+
   return (
     <ThemeProvider>
-      <Header
-        searchTerm=""
-        onSearchChange={() => {}}
+      <Header 
+        searchTerm={searchTerm}
+        onSearchChange={(value) => setSearchTerm(value)}
         searchResults={[]}
-        onSearchResultClick={() => {}}
-        hideSearch={true}
-        onOpenProjects={() => setIsProjectsModalOpen(!isProjectsModalOpen)}
+        onSearchResultClick={(result) => handleTechClick(result.language)}
       />
       <div className="statistics-page">
         <Statistics
@@ -239,6 +295,8 @@ function StatisticsPage() {
           isLoading={isLoading}
           projectsData={projectsData}
           onProjectsChange={handleProjectsChange}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
         />
       </div>
     </ThemeProvider>

@@ -61,6 +61,7 @@ function RadarPage() {
    */
   useEffect(() => {
     fetchTechRadarJSONFromS3().then((data) => setData(data));
+    fetchTechRadarJSONFromS3().then((data) => setData(data));
   }, []);
 
   /**
@@ -441,6 +442,8 @@ function RadarPage() {
   if (!data)
     return (
       <ThemeProvider>
+        <Header
+        />
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Radar...</p>

@@ -19,6 +19,7 @@ function ProjectsPage() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [radarData, setRadarData] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -103,6 +104,36 @@ function ProjectsPage() {
   };
 
   /**
+   * getFilteredProjects function gets the filtered projects based on search term.
+   * 
+   * @returns {Array} - The filtered projects.
+   */
+  const getFilteredProjects = () => {
+    if (!projectsData) return [];
+    if (!searchTerm.trim()) return projectsData;
+
+    return projectsData.filter(project => {
+      const searchString = `${project.Project} ${project.Project_Short} ${project.Project_Area} ${project.Team}`.toLowerCase();
+      return searchString.includes(searchTerm.toLowerCase());
+    });
+  };
+
+  /**
+   * getFilteredProjects function gets the filtered projects based on search term.
+   * 
+   * @returns {Array} - The filtered projects.
+   */
+  const getFilteredProjects = () => {
+    if (!projectsData) return [];
+    if (!searchTerm.trim()) return projectsData;
+
+    return projectsData.filter(project => {
+      const searchString = `${project.Project} ${project.Project_Short} ${project.Project_Area} ${project.Team}`.toLowerCase();
+      return searchString.includes(searchTerm.toLowerCase());
+    });
+  };
+
+  /**
    * renderTechnologyList function renders the technology list.
    *
    * @param {string} technologies - The technologies to render.
@@ -127,23 +158,33 @@ function ProjectsPage() {
             </span>
           ) : (
             trimmedTech
+            trimmedTech
           )}
         </span>
       );
     });
   };
 
+  const filteredProjects = getFilteredProjects();
+
   return (
     <ThemeProvider>
-      <Header hideSearch />
+      <Header 
+        searchTerm={searchTerm}
+        onSearchChange={(value) => setSearchTerm(value)}
+        searchResults={[]}
+        onSearchResultClick={handleProjectClick}
+      />
       <div className="projects-page">
         <Projects
           isOpen={true}
           onClose={() => {}}
-          projectsData={projectsData}
+          projectsData={filteredProjects}
           handleProjectClick={handleProjectClick}
           getTechnologyStatus={getTechnologyStatus}
           onRefresh={handleRefresh}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
         />
         {isProjectModalOpen && (
           <ProjectModal

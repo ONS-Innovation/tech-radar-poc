@@ -1,7 +1,7 @@
 .statistics-page {
   width: 100%;
   height: 100%;
-  margin-top: 70px;
+  margin-top: var(--header-height);
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -358,7 +358,8 @@
   }
 
   .language-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
   }
 
   .search-box input {
@@ -480,7 +481,6 @@
   background: hsl(var(--muted));
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
-  margin: 24px 0;
 }
 
 .no-data-message p {

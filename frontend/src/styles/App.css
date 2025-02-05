@@ -4,11 +4,12 @@ body {
 
 .App {
   text-align: center;
-  height: calc(100vh - 70px);
+  height: calc(100vh - var(--header-height));
 }
 
 .loading-container {
-  min-height: 100vh;
+  margin-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
   width: 100vw;
   display: flex;
   align-items: center;
@@ -139,7 +140,7 @@ body {
   transition: none;
   display: flex;
   flex-direction: column;
-  max-height: calc(50vh - 70px);
+  max-height: calc(50vh - var(--header-height));
   width: 350px;
   border: 1px solid hsl(var(--border));
 }
@@ -194,7 +195,7 @@ body {
 
 @media (max-width: 1400px) {
   .quadrant-list ul {
-    max-height: calc(50vh - 70px);
+    max-height: calc(50vh - var(--header-height));
   }
 }
 
@@ -671,8 +672,8 @@ foreignObject {
 }
 
 .radar-page {
-  padding-top: 80px;
-  height: calc(100vh - 70px);
+  padding-top: 80px; 
+  height: calc(100vh - var(--header-height));
 }
 
 .info-box-close {
@@ -747,20 +748,6 @@ foreignObject {
   justify-content: center;
   transition: transform 0.3s ease;
   cursor: pointer;
-}
-
-/* Base styles */
-:root {
-  --color-adopt: #008a00;
-  --color-trial: #cb00b4;
-  --color-assess: #0069e5;
-  --color-hold: #de001a;
-  --color-review: hsl(var(--muted-foreground));
-  --color-bg-adopt: #e6ffe6;
-  --color-bg-trial: #ffe6f9;
-  --color-bg-assess: #e6f0ff;
-  --color-bg-hold: #ffe6e8;
-  --color-bg-review: hsl(var(--muted));
 }
 
 /* Ring status badges */
