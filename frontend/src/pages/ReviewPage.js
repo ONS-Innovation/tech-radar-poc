@@ -668,11 +668,11 @@ const ReviewPage = () => {
   return (
     <ThemeProvider>
       <Header
-        searchTerm=""
-        onSearchChange={() => {}}
+        searchTerm={searchTerm}
+        onSearchChange={(value) => setSearchTerm(value)}
         searchResults={[]}
         onSearchResultClick={() => {}}
-        hideSearch={true}
+        hideSearch={false}
       />
       <div className="admin-page">
         <div className="admin-details">
@@ -687,16 +687,6 @@ const ReviewPage = () => {
             </div>
             <div className="admin-filter-search-flex">
               <div className="admin-filter-section-container">
-                <div className="admin-filter-section">
-                  <h4>Search for technology</h4>
-                  <input
-                    type="text"
-                    className="admin-search-box"
-                    placeholder="Python, Java etc."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
                 <div className="admin-filter-section">
                   <h4>Filter by Category</h4>
                   <MultiSelect
