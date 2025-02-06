@@ -1,0 +1,53 @@
+.toast-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.toast-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px
+}
+
+.toast-header h1 {
+    width: fit-content;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.toast-header-left{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toast-close{
+    margin: 0;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    background: transparent;
+    color: hsl(var(--foreground));
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 2px;
+}
+
+.toast-close svg {
+    margin-top: 2px;
+}
+
+.toast-close:hover{
+    transform: scale(1.4);
+}
+
+.toast-message {
+    font-size: 14px;
+    text-align: left;
+}

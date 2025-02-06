@@ -4,11 +4,12 @@ body {
 
 .App {
   text-align: center;
-  height: calc(100vh - 70px);
+  height: calc(100vh - var(--header-height));
 }
 
 .loading-container {
-  min-height: 100vh;
+  margin-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
   width: 100vw;
   display: flex;
   align-items: center;
@@ -88,7 +89,7 @@ body {
 
 .quadrant-label {
   font-size: 24px;
-  fill: hsl(var(--foreground) / .75);
+  fill: hsl(var(--foreground) / 0.75);
   text-anchor: middle;
   font-family: inherit;
 }
@@ -100,12 +101,9 @@ body {
   font-family: inherit;
 }
 
-
-
 .blip-container:hover .blip-text {
   opacity: 1;
 }
-
 
 .radar-page {
   background-color: hsl(var(--background));
@@ -142,7 +140,7 @@ body {
   transition: none;
   display: flex;
   flex-direction: column;
-  max-height: calc(50vh - 70px);
+  max-height: calc(50vh - var(--header-height));
   width: 350px;
   border: 1px solid hsl(var(--border));
 }
@@ -157,7 +155,6 @@ body {
 
 .quadrant-list.expanded {
   /* max-height: calc(50vh - 40px); */
-  
 }
 
 .quadrant-list.top-left {
@@ -198,7 +195,7 @@ body {
 
 @media (max-width: 1400px) {
   .quadrant-list ul {
-    max-height: calc(50vh - 70px);
+    max-height: calc(50vh - var(--header-height));
   }
 }
 
@@ -247,6 +244,7 @@ body {
 
 .entry-number {
   width: 30px;
+  font-size: 10px;
   color: hsl(var(--muted-foreground));
 }
 
@@ -314,7 +312,9 @@ foreignObject {
   overflow: visible !important;
 }
 
-circle, line, text {
+circle,
+line,
+text {
   pointer-events: none;
 }
 
@@ -356,14 +356,13 @@ circle, line, text {
 }
 
 @media (max-width: 1400px) {
-
   .quadrant-lists {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
     height: auto;
     overflow: visible;
     padding: 0 8px 36px 8px;
-    
+
     box-sizing: border-box;
   }
 
@@ -397,11 +396,18 @@ circle, line, text {
     grid-column: 1;
   }
 
-  .quadrant-list.top-left { grid-row: 2; }
-  .quadrant-list.top-right { grid-row: 3; }
-  .quadrant-list.bottom-left { grid-row: 4; }
-  .quadrant-list.bottom-right { grid-row: 5; }
-
+  .quadrant-list.top-left {
+    grid-row: 2;
+  }
+  .quadrant-list.top-right {
+    grid-row: 3;
+  }
+  .quadrant-list.bottom-left {
+    grid-row: 4;
+  }
+  .quadrant-list.bottom-right {
+    grid-row: 5;
+  }
 }
 
 @media (max-width: 850px) {
@@ -431,7 +437,7 @@ circle, line, text {
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
   padding: 16px;
-  box-sizing: border-box; 
+  box-sizing: border-box;
   z-index: 1000;
   min-height: 64px;
   display: flex;
@@ -444,7 +450,6 @@ circle, line, text {
 .info-box:active::before {
   cursor: grabbing;
 }
-
 
 .info-box h3 {
   margin: 0;
@@ -501,7 +506,6 @@ circle, line, text {
 .blip-container {
   cursor: pointer;
 }
-
 
 .blip {
   pointer-events: all;
@@ -567,7 +571,6 @@ foreignObject {
 .info-box-links {
   padding: 0;
   margin: 0;
-
 }
 
 .info-box-links a {
@@ -585,7 +588,7 @@ foreignObject {
   padding: 2px 8px;
   box-sizing: border-box;
   border-radius: 12px;
-  margin-bottom: -2px
+  margin-bottom: -2px;
 }
 
 .blip-highlight {
@@ -600,9 +603,6 @@ foreignObject {
 .blip-container:hover .blip {
   opacity: 1;
 }
-
-
-
 
 /* Modal styles */
 .modal-overlay {
@@ -626,12 +626,12 @@ foreignObject {
   gap: 8px;
 }
 
-
 .modal-info {
   margin-top: 20px;
 }
 
-.modal-ring, .info-box-ring {
+.modal-ring,
+.info-box-ring {
   display: inline-block;
   padding: 2px 12px;
   border-radius: 12px;
@@ -641,7 +641,6 @@ foreignObject {
 
   color: hsl(var(--muted-foreground));
   background: hsl(var(--muted));
-
 }
 
 .modal-links {
@@ -674,10 +673,8 @@ foreignObject {
 
 .radar-page {
   padding-top: 80px; 
-  height: calc(100vh - 70px);
+  height: calc(100vh - var(--header-height));
 }
-
-
 
 .info-box-close {
   position: absolute;
@@ -743,8 +740,6 @@ foreignObject {
   display: none;
 }
 
-
-
 /* Update the arrow rotation */
 .accordion-arrow {
   color: hsl(var(--muted-foreground));
@@ -753,19 +748,6 @@ foreignObject {
   justify-content: center;
   transition: transform 0.3s ease;
   cursor: pointer;
-}
-
-
-/* Base styles */
-:root {
-  --color-adopt: #008a00;
-  --color-trial: #cb00b4;
-  --color-assess: #0069e5;
-  --color-hold: #de001a;
-  --color-bg-adopt: #e6ffe6;
-  --color-bg-trial: #ffe6f9;
-  --color-bg-assess: #e6f0ff;
-  --color-bg-hold: #ffe6e8;
 }
 
 /* Ring status badges */
@@ -820,6 +802,22 @@ foreignObject {
   color: var(--color-hold);
 }
 
+.review,
+.entry-ring.review,
+.search-result-ring.review,
+.info-box-ring.review {
+  background: var(--color-bg-review);
+  color: var(--color-review);
+}
+
+.ignore,
+.entry-ring.ignore,
+.search-result-ring.ignore,
+.info-box-ring.ignore {
+  background: var(--color-bg-ignore);
+  color: var(--color-review);
+}
+
 /* Ring styles */
 .ring {
   fill: none;
@@ -829,12 +827,18 @@ foreignObject {
   stroke-opacity: 0.1;
 }
 
-.ring.adopt { stroke: var(--color-adopt);}
-.ring.trial { stroke: var(--color-trial); }
-.ring.assess { stroke: var(--color-assess); }
-.ring.hold { stroke: var(--color-hold); }
-
-
+.ring.adopt {
+  stroke: var(--color-adopt);
+}
+.ring.trial {
+  stroke: var(--color-trial);
+}
+.ring.assess {
+  stroke: var(--color-assess);
+}
+.ring.hold {
+  stroke: var(--color-hold);
+}
 
 .info-box-projects {
   margin-top: 4px;
@@ -914,7 +918,6 @@ foreignObject {
   opacity: 0.8;
 }
 
-
 .info-icon {
   color: hsl(var(--muted-foreground));
   margin-left: 8px;
@@ -963,7 +966,7 @@ foreignObject {
 
 /* Add back the tooltip arrow */
 .tooltip::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 100%;
   left: 50%;
@@ -1027,7 +1030,6 @@ foreignObject {
   padding: 18px 2px;
   flex: 1;
 }
-
 
 .timeline-container {
   display: flex;
@@ -1128,12 +1130,16 @@ foreignObject {
   color: hsl(var(--muted-foreground));
 }
 
+.timeline-node.ignore {
+  background: var(--color-bg-ignore);
+  color: hsl(var(--muted-foreground));
+}
+
 .timeline-header {
   margin-top: 4px;
   padding: 0 2px;
   padding-top: 10px;
   border-top: 1px solid hsl(var(--border));
-
 }
 
 .timeline-header h4 {

@@ -2,7 +2,7 @@ import { toast } from "react-hot-toast";
 /**
  * fetchCSVFromS3 function to fetch the CSV data from the S3 bucket.
  * Falls back to local CSV if S3 fetch fails.
- * 
+ *
  * @returns {Promise<Object>} - The CSV data.
  */
 export const fetchCSVFromS3 = async () => {

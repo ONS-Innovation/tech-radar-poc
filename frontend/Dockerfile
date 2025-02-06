@@ -8,9 +8,9 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 ARG NODE_ENV="production"
 # Make NODE_ENV available at runtime too
 ENV NODE_ENV=$NODE_ENV
+# Add Node memory settings for both build and runtime
 ENV NODE_OPTIONS="--max-old-space-size=2048"
 
-# Install serve globally if production (do this before switching to non-root user)
 # Install serve globally if production
 RUN if [ "$NODE_ENV" = "production" ]; then \
         npm install -g serve; \

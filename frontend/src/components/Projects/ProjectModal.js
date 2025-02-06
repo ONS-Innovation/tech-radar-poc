@@ -79,22 +79,21 @@ const ProjectModal = ({
                     >
                       {repo.name}
                     </a>
-                    
                   </div>
                   <div className="repo-badges">
-                      <span className="repo-badge">
-                        {repo.visibility.toLowerCase()}
-                      </span>
-                      <span className="repo-badge">
-                        {repo.is_archived ? "Archived" : "Active"}
-                      </span>
-                      <p
-                        className={`repo-last-commit ${!repo.is_archived && new Date(repo.last_commit) < new Date(Date.now() - 180 * 24 * 60 * 60 * 1000) ? "last-commit-threshold" : ""}`}
-                      >
-                        Last commit:{" "}
-                        {new Date(repo.last_commit).toLocaleDateString()}
-                      </p>
-                    </div>
+                    <span className="repo-badge">
+                      {repo.visibility.toLowerCase()}
+                    </span>
+                    <span className="repo-badge">
+                      {repo.is_archived ? "Archived" : "Active"}
+                    </span>
+                    <p
+                      className={`repo-last-commit ${!repo.is_archived && new Date(repo.last_commit) < new Date(Date.now() - 180 * 24 * 60 * 60 * 1000) ? "last-commit-threshold" : ""}`}
+                    >
+                      Last commit:{" "}
+                      {new Date(repo.last_commit).toLocaleDateString()}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="language-labels">
@@ -102,12 +101,13 @@ const ProjectModal = ({
                     const status = getTechnologyStatus
                       ? getTechnologyStatus(lang.name)
                       : null;
+                    const isClickable = status && status !== 'review' && status !== 'ignore';
                     return (
                       <span
                         key={i}
-                        className={`language-label ${status ? `clickable-tech ${status}` : ""}`}
+                        className={`language-label ${isClickable ? `clickable-tech ${status}` : ""}`}
                         onClick={() =>
-                          status && onTechClick && onTechClick(lang.name)
+                          isClickable && onTechClick && onTechClick(lang.name)
                         }
                         title={`${lang.name} (${lang.percentage.toFixed(1)}%)`}
                       >
@@ -137,7 +137,8 @@ const ProjectModal = ({
           </div>
         ) : (
           <div className="repo-info-loading">
-            No repository information available. The repositories may not have been found yet or from another organisation.
+            No repository information available. The repositories may not have
+            been found yet or from another organisation.
           </div>
         )}
       </div>

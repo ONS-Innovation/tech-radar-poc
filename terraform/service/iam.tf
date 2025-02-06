@@ -50,7 +50,8 @@ resource "aws_iam_role_policy" "s3_read_only" {
         Action = [
           "s3:GetObject",
           "s3:ListBucket",
-          "s3:GetObjectVersion"
+          "s3:GetObjectVersion",
+          "s3:PutObject"
         ]
         Resource = [
           "arn:aws:s3:::${var.s3_bucket_name}",

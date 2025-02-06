@@ -9,7 +9,7 @@ import {
 /**
  * ThemeToggle component allows users to switch between light and dark theme.
  * It uses the useTheme hook from ThemeContext to get the current theme and toggleTheme function.
- * 
+ *
  * @returns A button that toggles the theme when clicked.
  */
 function ThemeToggle() {
@@ -21,9 +21,7 @@ function ThemeToggle() {
       className="theme-toggle"
       aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
     >
-      
       {theme === "light" ? <SunIcon /> : <MoonIcon />}
-      Toggle Theme
     </button>
   );
 }

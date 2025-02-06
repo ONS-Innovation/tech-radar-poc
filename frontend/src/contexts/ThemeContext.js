@@ -7,7 +7,7 @@ const ThemeContext = createContext();
 
 /**
  * Provides the theme state and toggle function to its children.
- * 
+ *
  * @param {React.ReactNode} children - The children components to be wrapped.
  * @returns {React.ReactNode} The children wrapped in the ThemeContext.Provider.
  */
@@ -37,17 +37,21 @@ export function ThemeProvider({ children }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <Toaster 
+      <Toaster
         position="bottom-right"
         reverseOrder={false}
         toastOptions={{
           duration: 3000,
           style: {
-            background: 'hsl(var(--background))',
-            color: 'hsl(var(--foreground))',
-            border: '1px solid hsl(var(--border))',
-            borderRadius: 'var(--radius)',
-            boxShadow: '0 2px 0 hsl(var(--border))',
+            background: "hsl(var(--background))",
+            opacity: "1",
+            color: "hsl(var(--foreground))",
+            border: "1px solid hsl(var(--border))",
+            borderRadius: "var(--radius)",
+            textAlign: "left",
+            padding: "10px 16px",
+            boxSizing: "border-box",
+            boxShadow: "0 3px 10px hsl(var(--foreground) / .05), 0 3px 3px hsl(var(--foreground) / .01)"
           },
         }}
       />
@@ -58,7 +62,7 @@ export function ThemeProvider({ children }) {
 
 /**
  * Hook to use the theme context.
- * 
+ *
  * @returns {Object} The theme state and toggle function.
  * @throws {Error} If used outside of a ThemeProvider.
  */

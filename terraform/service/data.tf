@@ -17,8 +17,6 @@ data "terraform_remote_state" "ecs_auth" {
   }
 }
 
-
-
 data "aws_route53_zone" "route53_domain" {
   name = local.url
 }

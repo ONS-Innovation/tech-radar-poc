@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import "../styles/App.css";
 import Header from "../components/Header/Header";
 import { ThemeProvider } from "../contexts/ThemeContext";
+import { useBanner } from "../contexts/banner";
 import {
   IoInformationCircle,
   IoGridOutline,
@@ -56,11 +57,17 @@ function RadarPage() {
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
   const location = useLocation();
 
+  useBanner(
+    'Tech Radar numbering does not correlate to technology popularity or usage.',
+    'hasSeenNumberingInfo'
+  );
+
   /**
    * useEffect hook to fetch the tech radar data from S3.
    */
   useEffect(() => {
-      fetchTechRadarJSONFromS3().then((data) => setData(data));
+    fetchTechRadarJSONFromS3().then((data) => setData(data));
+    fetchTechRadarJSONFromS3().then((data) => setData(data));
   }, []);
 
   /**
@@ -198,27 +205,24 @@ function RadarPage() {
     }
     const results = data.entries
       .filter((entry) => {
-        // Get timeline entries excluding 'review' ring
-        const validTimeline = entry.timeline.filter(
-          (t) => t.ringId.toLowerCase() !== "review"
-        );
+        // Get the most recent timeline entry
+        const mostRecentRing =
+          entry.timeline[entry.timeline.length - 1].ringId.toLowerCase();
 
-        // Sort by date descending to get latest entry
-        validTimeline.sort((a, b) => new Date(b.date) - new Date(a.date));
+        // Exclude entries where most recent ring is review or ignore
+        if (mostRecentRing === "review" || mostRecentRing === "ignore"){
+          return false;
+        }
 
-        // Only include if latest valid ring exists and title/description matches search
+        // Check if title or description matches search term
         return (
-          validTimeline.length > 0 &&
-          (entry.title.toLowerCase().includes(term.toLowerCase()) ||
-            entry.description.toLowerCase().includes(term.toLowerCase()))
+          entry.title.toLowerCase().includes(term.toLowerCase()) ||
+          entry.description.toLowerCase().includes(term.toLowerCase())
         );
       })
       .map((entry) => ({
         ...entry,
-        // Filter out review entries and sort by date
-        timeline: entry.timeline
-          .filter((t) => t.ringId.toLowerCase() !== "review")
-          .sort((a, b) => new Date(b.date) - new Date(a.date)),
+        timeline: entry.timeline,
       }));
 
     setSearchResults(results);
@@ -441,21 +445,25 @@ function RadarPage() {
     }
   }, [location.state, data]);
 
-  if (!data) return (
-        <ThemeProvider>
+  if (!data)
+    return (
+      <ThemeProvider>
+        <Header
+        />
         <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading Radar...</p>
+          <div className="loading-spinner"></div>
+          <p>Loading Radar...</p>
         </div>
-    </ThemeProvider>
-  );
+      </ThemeProvider>
+    );
 
   const groupedEntries = data.entries.reduce((acc, entry) => {
     const quadrant = entry.quadrant;
-    const mostRecentRing = entry.timeline[entry.timeline.length - 1].ringId.toLowerCase()
+    const mostRecentRing =
+      entry.timeline[entry.timeline.length - 1].ringId.toLowerCase();
 
-    // Skip if the most recent timeline entry has ringId of "review"
-    if (mostRecentRing === "review") return acc;
+    // Skip if the most recent timeline entry has ringId of "review" or "ignore"
+    if (mostRecentRing === "review" || mostRecentRing === "ignore") return acc;
 
     if (!acc[quadrant]) acc[quadrant] = {};
     if (!acc[quadrant][mostRecentRing]) acc[quadrant][mostRecentRing] = [];
@@ -529,7 +537,9 @@ function RadarPage() {
     const entry = data.entries.find(
       (entry) => entry.title.toLowerCase() === tech.trim().toLowerCase()
     );
-    return entry ? entry.timeline[entry.timeline.length - 1].ringId.toLowerCase() : null;
+    return entry
+      ? entry.timeline[entry.timeline.length - 1].ringId.toLowerCase()
+      : null;
   };
 
   /**
@@ -549,7 +559,7 @@ function RadarPage() {
       return (
         <span key={index}>
           {index > 0 && "; "}
-          {isInRadar ? (
+          {isInRadar && status && status !== "review" && status !== "ignore" ? (
             <span
               className={`clickable-tech ${status}`}
               onClick={() => handleTechClick(trimmedTech)}
@@ -629,9 +639,15 @@ function RadarPage() {
                   <span
                     className={`info-box-ring ${(
                       selectedBlip || lockedBlip
-                    ).timeline[selectedBlip.timeline.length - 1].ringId.toLowerCase()}`}
+                    ).timeline[
+                      selectedBlip.timeline.length - 1
+                    ].ringId.toLowerCase()}`}
                   >
-                    {(selectedBlip || lockedBlip).timeline[selectedBlip.timeline.length - 1].ringId}
+                    {
+                      (selectedBlip || lockedBlip).timeline[
+                        selectedBlip.timeline.length - 1
+                      ].ringId
+                    }
                   </span>
                 </div>
 
@@ -659,9 +675,12 @@ function RadarPage() {
                   {[...(selectedBlip || lockedBlip).timeline]
                     .reverse()
                     .slice()
-                    [timelineAscending ? 'reverse' : 'slice']()
+                    [timelineAscending ? "reverse" : "slice"]()
                     .map((timelineItem, index, array) => (
-                      <div key={timelineItem.date+timelineItem.ringId} className="timeline-item">
+                      <div
+                        key={timelineItem.date + timelineItem.ringId + index}
+                        className="timeline-item"
+                      >
                         <div
                           className={`timeline-node ${timelineItem.ringId.toLowerCase()}`}
                           onClick={() =>
@@ -947,6 +966,7 @@ function RadarPage() {
                 Object.entries(rings).map(
                   ([ring, entries]) =>
                     ring !== "review" &&
+                    ring !== "ignore" &&
                     entries.map((entry, index) => {
                       const position = calculateBlipPosition(
                         quadrant,

@@ -2,7 +2,7 @@ import { toast } from "react-hot-toast";
 
 /**
  * fetchTechRadarJSONFromS3 function to fetch the tech radar data from S3.
- * 
+ *
  * @returns {Promise<Object>} - The tech radar data.
  */
 export const fetchTechRadarJSONFromS3 = async () => {
