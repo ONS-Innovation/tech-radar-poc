@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import SkeletonStatCard from "../components/Statistics/Skeletons/SkeletonStatCard";
 import MultiSelect from "../components/MultiSelect/MultiSelect";
+import { IoArrowUpOutline, IoArrowDownOutline, IoRemoveOutline } from "react-icons/io5";
 
 const ReviewPage = () => {
   const [entries, setEntries] = useState({
@@ -176,22 +177,19 @@ const ReviewPage = () => {
 
   // Add this function to calculate ring movement
   const calculateRingMovement = (sourceRing, destRing) => {
-    const ringOrder = ["hold", "assess", "trial", "adopt"];
+    const ringOrder = ["hold", "assess", "trial", "adopt", "review", "ignore"];
     const sourceIndex = ringOrder.indexOf(sourceRing.toLowerCase());
     const destIndex = ringOrder.indexOf(destRing.toLowerCase());
 
     // If either ring is 'review', 'ignore' or rings are the same, no movement
     if (
-      sourceRing === "review" ||
-      destRing === "review" ||
-      sourceRing === "ignore" ||
-      destRing === "ignore" ||
       sourceRing === destRing
     ) {
       return 0;
     }
 
     // Calculate movement based on index difference
+    console.log(destIndex, sourceIndex, destIndex - sourceIndex)
     return destIndex - sourceIndex;
   };
 
@@ -560,41 +558,34 @@ const ReviewPage = () => {
         </div>
         <div className="timeline-entries">
           {timelineEntries.map((entry, index, array) => (
-            <React.Fragment key={index}>
+            <div
+              key={entry.date + entry.ringId + index}
+              className="timeline-item"
+            >
               <div
-                className={`timeline-entry ${entry.ringId.toLowerCase()} ${expandedTimelineEntry === index ? "expanded" : ""}`}
-                onClick={() => handleTimelineEntryClick(index)}
+                className={`timeline-node ${entry.ringId.toLowerCase()}`}
+                onClick={() =>
+                  setExpandedTimelineEntry(
+                    expandedTimelineEntry === index ? null : index
+                  )
+                }
               >
-                <span>
-                  {new Date(entry.date)
-                    .toLocaleDateString("en-GB", {
-                      day: "numeric",
-                      month: "short",
-                      year: "2-digit",
-                    })
-                    .replace(
-                      /(\d+)/,
-                      "$1" +
-                        (new Date(entry.date).getDate() === 1
-                          ? "st"
-                          : new Date(entry.date).getDate() === 2
-                            ? "nd"
-                            : new Date(entry.date).getDate() === 3
-                              ? "rd"
-                              : "th")
-                    )}
+                <span className="timeline-movement">
+                  {entry.moved > 0 && <IoArrowUpOutline size={10} />}
+                  {entry.moved === 0 && <IoRemoveOutline size={10} />}
+                  {entry.moved < 0 && <IoArrowDownOutline size={10} />}
                 </span>
-                {expandedTimelineEntry === index && (
-                  <>
-                    <span> - </span>
-                    <span>{entry.description}</span>
-                  </>
-                )}
+                {expandedTimelineEntry === index
+                  ? entry.description
+                  : new Date(entry.date).toLocaleDateString("en-GB", {
+                      month: "short",
+                      year: "numeric",
+                    })}
               </div>
               {index < array.length - 1 && (
                 <div className="timeline-connector" />
               )}
-            </React.Fragment>
+            </div>
           ))}
         </div>
       </div>

@@ -54,14 +54,20 @@ const Projects = ({
         "Language_Main",
         "Language_Others",
         "Language_Frameworks",
+        "Infrastructure",
+        "CICD",
+        "Cloud_Services",
+        "IAM_Services",
         "Testing_Frameworks",
+        "Containers",
         "Static_Analysis",
         "Code_Formatter",
         "Monitoring",
         "Datastores",
-        "Cloud_Providers",
-        "CICD",
-        "Infrastructure",
+        "Data_Output_Formats",
+        "Integrations_ONS",
+        "Integrations_External",
+        "Database_Technologies",
       ];
 
       const technologies = techColumns.reduce((acc, column) => {
@@ -83,12 +89,14 @@ const Projects = ({
 
       technologies.forEach((tech) => {
         const status = getTechnologyStatus(tech);
-        if (status && status !== "review") {
+        if (status && status !== "review" && status !== "ignore") {
           distribution[status]++;
         } else {
           distribution.unknown++;
         }
       });
+
+      console.log(distribution)
 
       return distribution;
     },
