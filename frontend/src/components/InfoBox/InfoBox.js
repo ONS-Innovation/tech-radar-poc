@@ -27,6 +27,8 @@ const InfoBox = ({
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState(initialPosition);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [localTitle, setLocalTitle] = useState(selectedItem?.title || "");
+  const [localCategory, setLocalCategory] = useState(selectedItem?.description || "");
 
   const handleMouseDown = (e) => {
     e.stopPropagation(); // Prevent event from bubbling to parent
@@ -66,6 +68,13 @@ const InfoBox = ({
       document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging, dragOffset]);
+
+  useEffect(() => {
+    if (selectedItem) {
+      setLocalTitle(selectedItem.title);
+      setLocalCategory(selectedItem.description);
+    }
+  }, [selectedItem]);
 
   const handleEditClick = () => {
     setEditedTitle(selectedItem.title);
@@ -173,7 +182,7 @@ const InfoBox = ({
           </>
         ) : (
           <>
-            <h3>{selectedItem.title}</h3>
+            <h3>{localTitle}</h3>
             {isAdmin && (
               <button className="edit-button" onClick={handleEditClick}>
                 <FaEdit size={12} />
@@ -183,7 +192,7 @@ const InfoBox = ({
         )}
       </div>
       <div className="info-box-header">
-        <p className="info-box-ring">{selectedItem.description}</p>
+        <p className="info-box-ring">{localCategory}</p>
         <span
           className={`info-box-ring ${selectedItem.timeline[
             selectedItem.timeline.length - 1

@@ -5,20 +5,8 @@ import Header from "../components/Header/Header";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import "../styles/ReviewPage.css";
 import { toast } from "react-hot-toast";
-import {
-  FaSortAmountDownAlt,
-  FaSortAmountUpAlt,
-  FaEdit,
-  FaCheck,
-  FaTimes,
-} from "react-icons/fa";
 import SkeletonStatCard from "../components/Statistics/Skeletons/SkeletonStatCard";
 import MultiSelect from "../components/MultiSelect/MultiSelect";
-import {
-  IoArrowUpOutline,
-  IoArrowDownOutline,
-  IoRemoveOutline,
-} from "react-icons/io5";
 import InfoBox from "../components/InfoBox/InfoBox";
 
 const ReviewPage = () => {
@@ -355,10 +343,6 @@ const ReviewPage = () => {
     setSelectedItem(selectedItem?.id === item.id ? null : item);
   };
 
-  const handleTimelineEntryClick = (index) => {
-    setExpandedTimelineEntry(expandedTimelineEntry === index ? null : index);
-  };
-
   const handleAddClick = () => {
     if (!newTechnology.trim()) {
       toast.error("Please enter a technology name");
@@ -419,8 +403,6 @@ const ReviewPage = () => {
       ...selectedItem,
       title: editedTitle,
       description: editedCategory,
-      id: `${editedTitle.toLowerCase().replace(/\s+/g, "")}-${Date.now()}`,
-      key: `${editedTitle.toLowerCase().replace(/\s+/g, "")}-${Date.now()}`,
       quadrant: categoryToQuadrant[editedCategory],
     });
   };
@@ -434,7 +416,7 @@ const ReviewPage = () => {
 
   const handleConfirmModalYes = () => {
     const currentRing =
-      selectedItem.timeline[selectedItem.timeline.length - 1].ringId;
+      selectedItem.timeline[selectedItem.timeline.length - 1].ringId.toLowerCase();
 
     // Create timeline entry for the change
     const now = new Date().toISOString().split("T")[0];
@@ -447,7 +429,10 @@ const ReviewPage = () => {
 
     // Update the item with new values and timeline
     const updatedItem = {
-      ...editedItem,
+      ...selectedItem,
+      title: editedTitle,
+      description: editedCategory,
+      quadrant: categoryToQuadrant[editedCategory],
       timeline: [...selectedItem.timeline, timelineEntry],
     };
 
