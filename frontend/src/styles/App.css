@@ -442,13 +442,86 @@ text {
   min-height: 64px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
   text-align: left;
-  user-select: none; /* Prevent text selection while dragging */
+  user-select: none;
+  resize: both;
+  overflow: auto;
+  max-width: 800px;
+  min-width: 400px;
+  max-height: 80vh;
+  min-height: 160px;
 }
-.info-box:active::before {
+
+.info-box-drag-handle {
+  padding: 4px;
+  cursor: grab;
+  color: hsl(var(--muted-foreground));
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.info-box-drag-handle:hover {
+  opacity: 1;
+  background: hsl(var(--muted));
+}
+
+.info-box-drag-handle:active {
   cursor: grabbing;
+  opacity: 1;
+  background: hsl(var(--muted));
+}
+
+/* Update resize handle styling */
+.info-box::-webkit-resizer {
+  border-radius: 0 0 var(--radius) 0;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  cursor: se-resize;
+}
+
+/* Add padding to account for drag handle */
+.info-box-header {
+  padding-left: 0px;
+}
+
+/* Update close button position */
+.info-box-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.info-box-close:hover {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+/* Ensure content area is scrollable */
+.info-box-content {
+  overflow: auto;
+  flex: 1;
 }
 
 .info-box h3 {
@@ -594,10 +667,6 @@ foreignObject {
 .blip-highlight {
   transition: all 0.2s ease;
   pointer-events: none;
-}
-
-.blip-container {
-  cursor: pointer;
 }
 
 .blip-container:hover .blip {
