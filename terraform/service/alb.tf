@@ -135,7 +135,7 @@ resource "aws_lb_listener_rule" "tech_radar_reviewer_frontend_rule" {
 # Review backend paths - restricted to reviewer pool only (third priority)
 resource "aws_lb_listener_rule" "tech_radar_reviewer_backend_rule" {
   listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
-  priority     = module.alb_listener_priority.highest_priority + 4
+  priority     = module.alb_listener_priority.highest_priority + 3
 
   condition {
     host_header {
@@ -171,7 +171,7 @@ resource "aws_lb_listener_rule" "tech_radar_reviewer_backend_rule" {
 # General API access (fourth priority)
 resource "aws_lb_listener_rule" "digital_landscape_api_rule" {
   listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
-  priority     = module.alb_listener_priority.highest_priority + 6
+  priority     = module.alb_listener_priority.highest_priority + 4
 
   condition {
     host_header {
@@ -194,7 +194,7 @@ resource "aws_lb_listener_rule" "digital_landscape_api_rule" {
 # General frontend access (lowest priority)
 resource "aws_lb_listener_rule" "digital_landscape_frontend_rule" {
   listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
-  priority     = module.alb_listener_priority.highest_priority + 7
+  priority     = module.alb_listener_priority.highest_priority + 5
 
   condition {
     host_header {
