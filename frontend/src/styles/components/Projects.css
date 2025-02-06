@@ -33,15 +33,16 @@
 .projects-content-header {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid hsl(var(--border));
-  padding-bottom: 16px;
-  box-sizing: border-box;
 }
 
 .projects-content-header-flex{
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid hsl(var(--border));
+
+  box-sizing: border-box;
 }
 
 .projects-modal-content h2 {
