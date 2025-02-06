@@ -72,6 +72,7 @@ body {
   min-height: 800px;
   width: 100%;
   height: 100%;
+  overflow: visible;
 }
 
 .ring {
@@ -88,10 +89,51 @@ body {
 }
 
 .quadrant-label {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: bounding-box;
+}
+
+.quadrant-label text {
+  pointer-events: none; /* Prevent text from interfering with clicks */
+}
+
+.quadrant-label.dimmed {
+  opacity: 0.3;
+}
+
+.quadrant-label:hover {
+  opacity: 0.8;
+}
+
+.quadrant-label-text {
   font-size: 24px;
   fill: hsl(var(--foreground) / 0.75);
   text-anchor: middle;
   font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+/* Ensure quadrant labels are above other elements */
+.quadrant-labels {
+  pointer-events: all;
+  z-index: 100;
+}
+
+/* Reset pointer events for other SVG elements */
+circle, 
+line {
+  pointer-events: none;
+}
+
+.blip {
+  pointer-events: all;
+}
+
+/* Add a subtle highlight for the selected quadrant */
+.quadrant-label:not(.dimmed) .quadrant-label-text {
+  fill: hsl(var(--primary));
+  font-weight: 500;
 }
 
 .ring-label {
