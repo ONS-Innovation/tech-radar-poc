@@ -43,6 +43,8 @@
     --constructive-foreground: 0 0% 98%;
 
     --header-height: 60px;
+    --info-box: #e5edf2;
+    --info-box-border: #0e5888
   }
 
   .dark {
@@ -81,6 +83,9 @@
     --color-bg-hold: rgba(222, 0, 26, 0.2);
     --color-bg-review: rgba(102, 102, 102, 0.2);
     --color-bg-ignore: rgba(153, 153, 153, 0.2);
+
+    --info-box: #0e5888;
+    --info-box-border: #e5edf2;
   }
 }
 

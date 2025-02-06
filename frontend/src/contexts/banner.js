@@ -16,7 +16,7 @@ export function useBanner(message, localStorageKey) {
       
       if (bannerData) {
         const { dismissedAt } = JSON.parse(bannerData);
-        const timeAgo = 24 * 60 * 60 * 1000;
+        const timeAgo = 24 * 60 * 60 * 1000 * 7; // 7 days
         const timeSinceDismissal = currentTime - dismissedAt;
 
         // If it's been more than a day, remove the storage and show banner again
@@ -35,7 +35,7 @@ export function useBanner(message, localStorageKey) {
           <div className="toast-wrapper">
             <div className="toast-header">
               <div className="toast-header-left">
-                <h1>Important</h1>
+                <h1>Info</h1>
               </div>
 
               <button
@@ -57,6 +57,10 @@ export function useBanner(message, localStorageKey) {
         {
           duration: Infinity,
           position: "bottom-right",
+          style: {
+            background: "var(--info-box)",
+            borderLeft: "4px solid var(--info-box-border)"
+          }
         }
       );
     };
