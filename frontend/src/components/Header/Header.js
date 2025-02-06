@@ -37,6 +37,14 @@ function Header({
   const location = useLocation();
   const [showHelpModal, setShowHelpModal] = useState(false);
   const searchInputRef = useRef(null);
+  const [shortcutKey, setShortcutKey] = useState('⌘');
+
+  useEffect(() => {
+    // More reliable OS detection
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isMac = /macintosh|macintel|macppc|mac68k|darwin/i.test(userAgent);
+    setShortcutKey(isMac ? '⌘' : 'CTRL');
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -144,7 +152,7 @@ function Header({
               </button>
             ) : (
               <div className="search-shortcut">
-                <span>⌘ + K</span>
+                <span>{shortcutKey} + K</span>
               </div>
             )}
             {shouldShowSearchResults() && (

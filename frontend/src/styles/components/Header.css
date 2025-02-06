@@ -74,7 +74,7 @@
 
 .search-container {
   position: relative;
-  width: 225px;
+  width: 250px;
   height: 36px;
   box-sizing: border-box;
   border: 1px solid hsl(var(--border));
