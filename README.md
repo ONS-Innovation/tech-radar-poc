@@ -24,6 +24,10 @@ This tool aims to provide a visual representation of the digital landscape at ON
 - This displays the project data collected from the Tech Audit Tool.
 - Multiple features such as alphabetically, most/least tech and tech radar ring ratio per project are available.
 
+**Review Page**
+- On the deployed version, this page is only available to users from the Cognito user pool.
+- Grants a user the ability to move, edit and bring new technology on to the Radar.
+
 **Homepage:**
 - This is the homepage of the tool.
 - It provides a brief overview of the tool and its purpose.
