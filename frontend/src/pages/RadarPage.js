@@ -38,6 +38,7 @@ function RadarPage() {
     3: true,
     4: true,
   });
+  const [filteredQuadrant, setFilteredQuadrant] = useState(null);
   const [projectsData, setProjectsData] = useState(null);
   const [projectsForTech, setProjectsForTech] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -159,26 +160,42 @@ function RadarPage() {
   const calculateBlipPosition = (quadrant, ring, index, total) => {
     const baseAngle = quadrantAngles[quadrant];
     const [innerRadius, outerRadius] = ringRadii[ring.toLowerCase()];
-
     const ringWidth = outerRadius - innerRadius;
 
-    const radiusSteps = Math.ceil(Math.sqrt(total));
-    const angleSteps = Math.ceil(total / radiusSteps);
+    if (filteredQuadrant) {
+      // When filtered, distribute evenly around the full circle
+      const angleStep = (2 * Math.PI) / total;
+      const angle = -Math.PI / 2 + index * angleStep; // Start from top (-90 degrees)
+      
+      // Randomize the radius slightly within the ring
+      const radiusVariation = ringWidth * 0.4; // Use 40% of ring width for variation
+      const radiusOffset = (1 * radiusVariation) - (radiusVariation / 2);
+      const radius = innerRadius + (ringWidth / 2) + radiusOffset;
 
-    const radiusIndex = Math.floor(index / angleSteps + 0.75);
-    const angleIndex = index % angleSteps;
+      return {
+        x: Math.cos(angle) * radius,
+        y: Math.sin(angle) * radius,
+      };
+    } else {
+      // Normal quadrant view
+      const radiusSteps = Math.ceil(Math.sqrt(total));
+      const angleSteps = Math.ceil(total / radiusSteps);
 
-    const radiusStep = ringWidth / (radiusSteps + 1.5);
-    const radius = innerRadius + (radiusIndex + 1) * radiusStep;
+      const radiusIndex = Math.floor(index / angleSteps + 0.75);
+      const angleIndex = index % angleSteps;
 
-    const angleStep = Math.PI / 2.4 / angleSteps;
-    const adjustedBaseAngle = (baseAngle - 117.5) * (Math.PI / 180);
-    const angle = adjustedBaseAngle + angleIndex * angleStep;
+      const radiusStep = ringWidth / (radiusSteps + 2);
+      const radius = innerRadius + (radiusIndex + 1) * radiusStep;
 
-    return {
-      x: Math.cos(angle) * radius,
-      y: Math.sin(angle) * radius,
-    };
+      const angleStep = Math.PI / 2.4 / angleSteps;
+      const adjustedBaseAngle = (baseAngle - 117.5) * (Math.PI / 180);
+      const angle = adjustedBaseAngle + angleIndex * angleStep;
+
+      return {
+        x: Math.cos(angle) * radius,
+        y: Math.sin(angle) * radius,
+      };
+    }
   };
 
   const getColorForRing = (ring) => {
@@ -583,6 +600,19 @@ function RadarPage() {
     }
   };
 
+  /**
+   * handleQuadrantFilter function to handle quadrant filtering.
+   *
+   * @param {string} quadrantId - The quadrant ID to filter by.
+   */
+  const handleQuadrantFilter = (quadrantId) => {
+    if (filteredQuadrant === quadrantId) {
+      setFilteredQuadrant(null); // Unfilter if clicking the same quadrant
+    } else {
+      setFilteredQuadrant(quadrantId); // Filter by new quadrant
+    }
+  };
+
   return (
     <ThemeProvider>
       <Header
@@ -940,27 +970,87 @@ function RadarPage() {
                 ADOPT
               </text>
 
-              <text x="250" y="-400" className="quadrant-label">
-                Languages
-              </text>
-              <text x="250" y="400" className="quadrant-label">
-                Frameworks
-              </text>
-              <text x="-250" y="400" className="quadrant-label">
-                Supporting Tools
-              </text>
-              <text x="-250" y="-400" className="quadrant-label">
-                Infrastructure
-              </text>
+              <g className="quadrant-labels">
+                <g 
+                  transform="translate(250, -400)" 
+                  className={`quadrant-label ${filteredQuadrant && filteredQuadrant !== "1" ? "dimmed" : ""}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleQuadrantFilter("1");
+                  }}
+                >
+                  <rect
+                    x="-60"
+                    y="-20"
+                    width="120"
+                    height="40"
+                    fill="transparent"
+                  />
+                  <text className="quadrant-label-text">Languages</text>
+                </g>
+                <g 
+                  transform="translate(250, 400)" 
+                  className={`quadrant-label ${filteredQuadrant && filteredQuadrant !== "2" ? "dimmed" : ""}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleQuadrantFilter("2");
+                  }}
+                >
+                  <rect
+                    x="-60"
+                    y="-20"
+                    width="120"
+                    height="40"
+                    fill="transparent"
+                  />
+                  <text className="quadrant-label-text">Frameworks</text>
+                </g>
+                <g 
+                  transform="translate(-250, 400)" 
+                  className={`quadrant-label ${filteredQuadrant && filteredQuadrant !== "3" ? "dimmed" : ""}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleQuadrantFilter("3");
+                  }}
+                >
+                  <rect
+                    x="-60"
+                    y="-20"
+                    width="120"
+                    height="40"
+                    fill="transparent"
+                  />
+                  <text className="quadrant-label-text">Supporting Tools</text>
+                </g>
+                <g 
+                  transform="translate(-250, -400)" 
+                  className={`quadrant-label ${filteredQuadrant && filteredQuadrant !== "4" ? "dimmed" : ""}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleQuadrantFilter("4");
+                  }}
+                >
+                  <rect
+                    x="-60"
+                    y="-20"
+                    width="120"
+                    height="40"
+                    fill="transparent"
+                  />
+                  <text className="quadrant-label-text">Infrastructure</text>
+                </g>
+              </g>
 
+              {/* Modify the blips rendering section */}
               {Object.entries(groupedEntries).map(([quadrant, rings]) =>
+                (!filteredQuadrant || quadrant === filteredQuadrant) &&
                 Object.entries(rings).map(
                   ([ring, entries]) =>
                     ring !== "review" &&
                     ring !== "ignore" &&
                     entries.map((entry, index) => {
                       const position = calculateBlipPosition(
-                        quadrant,
+                        quadrant, // Use actual quadrant, the function now handles filtering
                         ring,
                         index,
                         entries.length

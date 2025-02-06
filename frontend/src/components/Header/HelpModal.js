@@ -69,6 +69,9 @@ function HelpModal({ show, onClose }) {
                 <li>
                   Use the search bar to find specific technologies on the Radar
                 </li>
+                <li>
+                  Click the quadrant label on the Radar to filter the Radar to that specific quadrant
+                </li>
               </ul>
               <h5>Quadrants and Rings</h5>
               <ul className="help-modal-list">
