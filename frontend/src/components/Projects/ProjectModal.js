@@ -171,6 +171,13 @@ const ProjectModal = ({
       "Project_Tools",
       "Other_Tools",
       "Datasets_Used",
+      "Code_Editors",
+      "Communication",
+      "Collaboration",
+      "Incident_Management",
+      "Documentation_Tools",
+      "UI_Tools",
+      "Diagram_Tools",
     ],
   };
 
@@ -223,25 +230,32 @@ const ProjectModal = ({
       );
     });
   };
-
   const renderGroup = (title, keys) => {
     const filteredKeys = filterItems(keys);
-    if (filteredKeys.length === 0) return null;
+    const validKeys = filteredKeys.filter(key => {
+      const value = project[key];
+      return value !== "None" && value !== "N/A" && value !== "none";
+    });
+
+    if (validKeys.length === 0) return null;
 
     return (
       <div className="project-group">
         <h3 className="group-title">{title}</h3>
         <div className="group-content">
-          {filteredKeys.map((key) => (
-            <div key={key} className="detail-item">
-              <h3>{fieldLabels[key] || key.replace(/_/g, " ")}:</h3>
-              <p>
-                {technologyListFields.includes(key)
-                  ? renderTechnologyList(project[key])
-                  : project[key].replace(/;/g, "; ")}
-              </p>
-            </div>
-          ))}
+          {validKeys.map((key) => {
+            const value = project[key];
+            return (
+              <div key={key} className="detail-item">
+                <h3>{fieldLabels[key] || key.replace(/_/g, " ")}:</h3>
+                <p>
+                  {technologyListFields.includes(key)
+                    ? renderTechnologyList(value)
+                    : value.replace(/;/g, "; ")}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     );

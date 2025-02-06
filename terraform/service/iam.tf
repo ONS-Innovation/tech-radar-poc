@@ -55,7 +55,9 @@ resource "aws_iam_role_policy" "s3_read_only" {
         ]
         Resource = [
           "arn:aws:s3:::${var.s3_bucket_name}",
-          "arn:aws:s3:::${var.s3_bucket_name}/*"
+          "arn:aws:s3:::${var.s3_bucket_name}/*",
+          "arn:aws:s3:::${var.other_s3_bucket_name}",
+          "arn:aws:s3:::${var.other_s3_bucket_name}/*"
         ]
       }
     ]
