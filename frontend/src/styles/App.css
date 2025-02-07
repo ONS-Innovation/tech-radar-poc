@@ -113,6 +113,14 @@ body {
   transition: all 0.3s ease;
 }
 
+.quadrant-label:hover .quadrant-label-text {
+  text-decoration: underline;
+  text-decoration-line: underline;
+  text-decoration-color: hsl(var(--foreground));
+  font-size: 30px;
+}
+
+
 /* Ensure quadrant labels are above other elements */
 .quadrant-labels {
   pointer-events: all;
