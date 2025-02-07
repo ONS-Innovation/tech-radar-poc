@@ -12,12 +12,13 @@ const {
 } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const fetch = require("node-fetch");
-const Papa = require("papaparse");
-const logger = require("./config/logger");
+const logger = require('./config/logger');
+const { transformProjectToCSVFormat } = require('./utilities/projectDataTransformer');
 
 const app = express();
 const port = process.env.PORT || 5001;
 const bucketName = process.env.BUCKET_NAME || "sdp-dev-tech-radar";
+const tatBucketName = process.env.TAT_BUCKET_NAME || "sdp-dev-tech-audit-tool-api";
 
 app.use(
   cors({
@@ -34,42 +35,30 @@ const s3Client = new S3Client({
 });
 
 /**
- * Endpoint for fetching CSV data from S3.
+ * Endpoint for fetching project data and converting it to CSV format.
  * @route GET /api/csv
- * @returns {Object[]} Array of objects containing parsed CSV data
- * @returns {Object} response.data - Each row from the CSV as an object with column headers as keys
- * @throws {Error} 500 - If CSV fetching or parsing fails
+ * @returns {Object[]} Array of objects containing parsed project data in CSV format
+ * @throws {Error} 500 - If data fetching or processing fails
  */
 app.get("/api/csv", async (req, res) => {
   try {
     const command = new GetObjectCommand({
-      Bucket: bucketName,
-      Key: "onsTechDataAdoption.csv",
+      Bucket: tatBucketName,
+      Key: "new_project_data.json",
     });
 
     const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
 
-    // Fetch the CSV data using the signed URL
+    // Fetch the JSON data using the signed URL
     const response = await fetch(signedUrl);
-    const csvText = await response.text();
+    const jsonData = await response.json();
 
-    // Parse the CSV data and filter out empty or incomplete entries
-    Papa.parse(csvText, {
-      header: true,
-      complete: (results) => {
-        // Filter out empty row
-        const filteredData = results.data.filter(
-          (entry) => Object.keys(entry).length > 1
-        );
-        res.json(filteredData);
-      },
-      error: (error) => {
-        logger.error("Error parsing CSV:", { error });
-        res.status(500).json({ error: "Failed to parse CSV data" });
-      },
-    });
+    // Transform JSON data to CSV format using the utility function
+    const transformedData = jsonData.projects.map(transformProjectToCSVFormat);
+
+    res.json(transformedData);
   } catch (error) {
-    logger.error("Error fetching CSV:", { error: error.message });
+    logger.error("Error fetching and transforming project data:", { error: error.message });
     res.status(500).json({ error: error.message });
   }
 });
