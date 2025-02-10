@@ -97,7 +97,7 @@ function Statistics({
    */
   const handleLanguageClick = (language) => {
     const status = getTechnologyStatus(language);
-    if (status) {
+    if (status && status !== 'review' && status !== 'ignore') {
       onTechClick(language);
     }
   };
@@ -442,7 +442,7 @@ function Statistics({
                 return (
                   <div 
                     key={language} 
-                    className={`language-card ${status || ''} ${status ? 'clickable' : ''}`}
+                    className={`language-card ${status && status !== 'review' && status !== 'ignore' ? status : ''} ${status && status !== 'review' && status !== 'ignore' ? 'clickable' : ''}`}
                     onClick={() => handleLanguageClick(language)}
                     onMouseEnter={() => setHoveredLanguage(language)}
                     onMouseLeave={() => setHoveredLanguage(null)}
