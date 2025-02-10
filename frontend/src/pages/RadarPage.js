@@ -17,6 +17,7 @@ import { FaSortAmountDownAlt, FaSortAmountUpAlt } from "react-icons/fa";
 import { fetchCSVFromS3 } from "../utilities/getCSVData";
 import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
 import ProjectModal from "../components/Projects/ProjectModal";
+import InfoBox from "../components/InfoBox/InfoBox";
 
 /**
  * RadarPage component for displaying the radar page.
@@ -634,167 +635,18 @@ function RadarPage() {
       />
       <div className="radar-page">
         {isInfoBoxVisible && (
-          <div
-            className="info-box"
-            style={{
-              position: "fixed",
-              left: dragPosition.x,
-              top: dragPosition.y,
-              transform: "none",
-              cursor: isDragging ? "grabbing" : "grab",
-              boxShadow: isDragging
-                ? "0 4px 10px 0 hsl(var(--foreground) / 0.1)"
-                : "none",
-            }}
-            onMouseDown={handleMouseDown}
-          >
-            <button
-              className="info-box-close"
-              onClick={() => setIsInfoBoxVisible(false)}
-            >
-              ×
-            </button>
-            {selectedBlip || lockedBlip ? (
-              <>
-                <div className="info-box-header">
-                  <span className="info-box-number">
-                    #{(selectedBlip || lockedBlip).number}
-                  </span>
-                  <h3>{(selectedBlip || lockedBlip).title}</h3>
-                </div>
-                <div className="info-box-header">
-                  <p className="info-box-ring">
-                    {(selectedBlip || lockedBlip).description}
-                  </p>
-                  <span
-                    className={`info-box-ring ${(
-                      selectedBlip || lockedBlip
-                    ).timeline[
-                      selectedBlip.timeline.length - 1
-                    ].ringId.toLowerCase()}`}
-                  >
-                    {
-                      (selectedBlip || lockedBlip).timeline[
-                        selectedBlip.timeline.length - 1
-                      ].ringId
-                    }
-                  </span>
-                </div>
-
-                <div className="timeline-header">
-                  <div className="timeline-header-title">
-                    <h4>Timeline</h4>
-                    <button
-                      className="timeline-sort-button"
-                      onClick={() => setTimelineAscending(!timelineAscending)}
-                      title={
-                        timelineAscending ? "Newest first" : "Oldest first"
-                      }
-                    >
-                      {timelineAscending ? (
-                        <FaSortAmountDownAlt size={12} />
-                      ) : (
-                        <FaSortAmountUpAlt size={12} />
-                      )}
-                    </button>
-                  </div>
-                  <p>Click a box to show the description of the event</p>
-                </div>
-
-                <div className="timeline-container">
-                  {[...(selectedBlip || lockedBlip).timeline]
-                    .reverse()
-                    .slice()
-                    [timelineAscending ? "reverse" : "slice"]()
-                    .map((timelineItem, index, array) => (
-                      <div
-                        key={timelineItem.date + timelineItem.ringId + index}
-                        className="timeline-item"
-                      >
-                        <div
-                          className={`timeline-node ${timelineItem.ringId.toLowerCase()}`}
-                          onClick={() =>
-                            setSelectedTimelineItem(
-                              timelineItem === selectedTimelineItem
-                                ? null
-                                : timelineItem
-                            )
-                          }
-                        >
-                          <span className="timeline-movement">
-                            {timelineItem.moved > 0 && (
-                              <IoArrowUpOutline size={10} />
-                            )}
-                            {timelineItem.moved === 0 && (
-                              <IoRemoveOutline size={10} />
-                            )}
-                            {timelineItem.moved < 0 && (
-                              <IoArrowDownOutline size={10} />
-                            )}
-                          </span>
-                          {selectedTimelineItem === timelineItem
-                            ? timelineItem.description
-                            : new Date(timelineItem.date).toLocaleDateString(
-                                "en-GB",
-                                {
-                                  month: "short",
-                                  year: "numeric",
-                                }
-                              )}
-                        </div>
-                        {index < array.length - 1 && (
-                          <div className="timeline-connector" />
-                        )}
-                      </div>
-                    ))}
-                </div>
-
-                {projectsForTech.length > 0 && (
-                  <div className="info-box-projects">
-                    <h4>
-                      <strong>
-                        {projectsForTech.length}{" "}
-                        {projectsForTech.length === 1 ? "project" : "projects"}
-                      </strong>{" "}
-                      using this technology:
-                    </h4>
-                    <p>Click a project to view more details</p>
-                    <ul>
-                      {projectsForTech.map((project, index) => (
-                        <li
-                          key={index}
-                          onClick={() => handleProjectClick(project)}
-                          className="info-box-project-item clickable-tech"
-                        >
-                          {project.Project || project.Project_Short}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {(selectedBlip || lockedBlip).links &&
-                  (selectedBlip || lockedBlip).links.length > 0 && (
-                    <ul className="info-box-links">
-                      {(selectedBlip || lockedBlip).links.map((link, index) => (
-                        <a
-                          key={index}
-                          href={link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {link}
-                        </a>
-                      ))}
-                    </ul>
-                  )}
-              </>
-            ) : (
-              <p className="info-box-placeholder">
-                Hover over a blip to see details or click to lock the selection
-              </p>
-            )}
-          </div>
+          <InfoBox
+            isAdmin={false}
+            selectedItem={selectedBlip || lockedBlip}
+            initialPosition={{ x: 24, y: 80 }}
+            onClose={() => setIsInfoBoxVisible(false)}
+            timelineAscending={timelineAscending}
+            setTimelineAscending={setTimelineAscending}
+            selectedTimelineItem={selectedTimelineItem}
+            setSelectedTimelineItem={setSelectedTimelineItem}
+            projectsForTech={projectsForTech}
+            handleProjectClick={handleProjectClick}
+          />
         )}
 
         <div className="quadrant-lists">

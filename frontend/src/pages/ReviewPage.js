@@ -5,16 +5,9 @@ import Header from "../components/Header/Header";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import "../styles/ReviewPage.css";
 import { toast } from "react-hot-toast";
-import {
-  FaSortAmountDownAlt,
-  FaSortAmountUpAlt,
-  FaEdit,
-  FaCheck,
-  FaTimes,
-} from "react-icons/fa";
 import SkeletonStatCard from "../components/Statistics/Skeletons/SkeletonStatCard";
 import MultiSelect from "../components/MultiSelect/MultiSelect";
-import { IoArrowUpOutline, IoArrowDownOutline, IoRemoveOutline } from "react-icons/io5";
+import InfoBox from "../components/InfoBox/InfoBox";
 
 const ReviewPage = () => {
   const [entries, setEntries] = useState({
@@ -46,6 +39,9 @@ const ReviewPage = () => {
   const [showMoveModal, setShowMoveModal] = useState(false);
   const [pendingMove, setPendingMove] = useState(null);
   const [moveDescription, setMoveDescription] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragPosition, setDragPosition] = useState({ x: 24, y: 80 });
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   // Fields to scan from CSV and their corresponding categories
   const fieldsToScan = {
@@ -182,14 +178,12 @@ const ReviewPage = () => {
     const destIndex = ringOrder.indexOf(destRing.toLowerCase());
 
     // If either ring is 'review', 'ignore' or rings are the same, no movement
-    if (
-      sourceRing === destRing
-    ) {
+    if (sourceRing === destRing) {
       return 0;
     }
 
     // Calculate movement based on index difference
-    console.log(destIndex, sourceIndex, destIndex - sourceIndex)
+    console.log(destIndex, sourceIndex, destIndex - sourceIndex);
     return destIndex - sourceIndex;
   };
 
@@ -349,10 +343,6 @@ const ReviewPage = () => {
     setSelectedItem(selectedItem?.id === item.id ? null : item);
   };
 
-  const handleTimelineEntryClick = (index) => {
-    setExpandedTimelineEntry(expandedTimelineEntry === index ? null : index);
-  };
-
   const handleAddClick = () => {
     if (!newTechnology.trim()) {
       toast.error("Please enter a technology name");
@@ -413,8 +403,6 @@ const ReviewPage = () => {
       ...selectedItem,
       title: editedTitle,
       description: editedCategory,
-      id: `${editedTitle.toLowerCase().replace(/\s+/g, "")}-${Date.now()}`,
-      key: `${editedTitle.toLowerCase().replace(/\s+/g, "")}-${Date.now()}`,
       quadrant: categoryToQuadrant[editedCategory],
     });
   };
@@ -428,7 +416,7 @@ const ReviewPage = () => {
 
   const handleConfirmModalYes = () => {
     const currentRing =
-      selectedItem.timeline[selectedItem.timeline.length - 1].ringId;
+      selectedItem.timeline[selectedItem.timeline.length - 1].ringId.toLowerCase();
 
     // Create timeline entry for the change
     const now = new Date().toISOString().split("T")[0];
@@ -441,7 +429,10 @@ const ReviewPage = () => {
 
     // Update the item with new values and timeline
     const updatedItem = {
-      ...editedItem,
+      ...selectedItem,
+      title: editedTitle,
+      description: editedCategory,
+      quadrant: categoryToQuadrant[editedCategory],
       timeline: [...selectedItem.timeline, timelineEntry],
     };
 
@@ -481,114 +472,65 @@ const ReviewPage = () => {
     setShowAddConfirmModal(false);
   };
 
-  const renderTimeline = () => {
-    if (!selectedItem) {
-      return (
-        <div className="timeline-display">
-          <div className="timeline-empty">
-            Click on an item to view its timeline and edit the details
-          </div>
-        </div>
-      );
+  // Add mouse handlers
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (isDragging) {
+        setDragPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y,
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     }
 
-    const timelineEntries = timelineAscending
-      ? [...selectedItem.timeline]
-      : [...selectedItem.timeline].reverse();
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
+
+  const renderTimeline = () => {
+    if (!selectedItem) {
+      return null;
+    }
 
     return (
-      <div className="timeline-display">
-        <div className="timeline-display-header">
-          {isEditing ? (
-            <>
-              <input
-                type="text"
-                value={editedTitle}
-                onChange={(e) => setEditedTitle(e.target.value)}
-                className="edit-title-input"
-              />
-              <select
-                value={editedCategory}
-                onChange={(e) => setEditedCategory(e.target.value)}
-                className="edit-category-select"
-              >
-                <option value="Languages">Languages</option>
-                <option value="Frameworks">Frameworks</option>
-                <option value="Supporting Tools">Supporting Tools</option>
-                <option value="Infrastructure">Infrastructure</option>
-              </select>
-              <div className="edit-buttons">
-                <button
-                  className="edit-confirm-button"
-                  onClick={handleConfirmEdit}
-                >
-                  <FaCheck size={12} />
-                </button>
-                <button
-                  className="edit-cancel-button"
-                  onClick={handleCancelEdit}
-                >
-                  <FaTimes size={12} />
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <h3>{selectedItem.title}</h3>
-              <p>{selectedItem.description}</p>
-              <button className="edit-button" onClick={handleEditClick}>
-                <FaEdit size={12} />
-              </button>
-            </>
-          )}
-          <button
-            className="timeline-sort-button"
-            onClick={() => setTimelineAscending(!timelineAscending)}
-            title={timelineAscending ? "Original order" : "Reverse order"}
-          >
-            {timelineAscending ? (
-              <FaSortAmountDownAlt size={12} />
-            ) : (
-              <FaSortAmountUpAlt size={12} />
-            )}
-          </button>
-        </div>
-        <div className="timeline-info">
-          Click a box to show more info about the event
-        </div>
-        <div className="timeline-entries">
-          {timelineEntries.map((entry, index, array) => (
-            <div
-              key={entry.date + entry.ringId + index}
-              className="timeline-item"
-            >
-              <div
-                className={`timeline-node ${entry.ringId.toLowerCase()}`}
-                onClick={() =>
-                  setExpandedTimelineEntry(
-                    expandedTimelineEntry === index ? null : index
-                  )
-                }
-              >
-                <span className="timeline-movement">
-                  {entry.moved > 0 && <IoArrowUpOutline size={10} />}
-                  {entry.moved === 0 && <IoRemoveOutline size={10} />}
-                  {entry.moved < 0 && <IoArrowDownOutline size={10} />}
-                </span>
-                {expandedTimelineEntry === index
-                  ? entry.description
-                  : new Date(entry.date).toLocaleDateString("en-GB", {
-                      month: "short",
-                      year: "numeric",
-                    })}
-              </div>
-              {index < array.length - 1 && (
-                <div className="timeline-connector" />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
+      <InfoBox
+        isAdmin={true}
+        selectedItem={selectedItem}
+        initialPosition={{ x: 24, y: 80 }}
+        onClose={() => setSelectedItem(null)}
+        timelineAscending={timelineAscending}
+        setTimelineAscending={setTimelineAscending}
+        selectedTimelineItem={expandedTimelineEntry}
+        setSelectedTimelineItem={setExpandedTimelineEntry}
+        projectsForTech={[]}
+        handleProjectClick={() => {}}
+        onEditConfirm={(title, category) => {
+          setEditedTitle(title);
+          setEditedCategory(category);
+          handleConfirmEdit();
+        }}
+        onEditCancel={handleCancelEdit}
+      />
     );
   };
 
@@ -722,7 +664,7 @@ const ReviewPage = () => {
           </div>
           <div className="admin-search-filter">
             {isLoading ? (
-                <SkeletonStatCard minWidth="400px"/>
+              <SkeletonStatCard minWidth="400px" />
             ) : (
               renderTimeline()
             )}

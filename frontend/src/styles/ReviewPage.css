@@ -213,6 +213,12 @@
   }
 }
 
+@media (max-width: 580px) {
+  .admin-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
 .admin-box {
   background: hsl(var(--card));
   border-radius: var(--radius);
@@ -311,6 +317,12 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
+}
+
+@media (max-width: 420px) {
+  .droppable-group-items {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .droppable-area {
@@ -749,16 +761,14 @@ textarea.technology-input {
 }
 
 .destructive {
-  border-bottom: 1px solid hsl(var(--destructive)) !important;
-  border-radius: var(--radius);
+  background-color: hsl(var(--destructive) / .4);
   padding: 2px 8px;
   box-sizing: border-box;
   width: fit-content;
 }
 
 .constructive {
-  border-bottom: 1px solid green !important;
-  border-radius: var(--radius);
+  background-color: hsl(120 100% 25% / .4);
   padding: 2px 8px;
   box-sizing: border-box;
   width: fit-content;
