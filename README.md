@@ -201,6 +201,22 @@ terraform plan -var-file=env/dev/dev.tfvars
 terraform apply -var-file=env/dev/dev.tfvars
 ```
 
+Change directory to the storage folder (if in service folder):
+
+```bash
+cd ../storage
+```
+
+Set the environment variables. Check the `terraform/storage/env/dev/example_tfvars.txt` file for the correct values.
+
+Run Terraform:
+
+```bash
+terraform init -backend-config="env/dev/backend-dev" -reconfigure
+terraform plan -var-file=env/dev/dev.tfvars
+terraform apply -var-file=env/dev/dev.tfvars
+```
+
 ### Makefile
 
 To see the available commands, run the following command:
