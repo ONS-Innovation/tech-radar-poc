@@ -9,11 +9,7 @@ import {
   IoGridOutline,
   IoChevronUpOutline,
   IoChevronDownOutline,
-  IoArrowUpOutline,
-  IoArrowDownOutline,
-  IoRemoveOutline,
 } from "react-icons/io5";
-import { FaSortAmountDownAlt, FaSortAmountUpAlt } from "react-icons/fa";
 import { fetchCSVFromS3 } from "../utilities/getCSVData";
 import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
 import ProjectModal from "../components/Projects/ProjectModal";
@@ -350,10 +346,20 @@ function RadarPage() {
         "Language_Main",
         "Language_Others",
         "Language_Frameworks",
-        "Languages",
-        "Frameworks",
         "Infrastructure",
         "CICD",
+        "Cloud_Services",
+        "IAM_Services",
+        "Testing_Frameworks",
+        "Containers",
+        "Static_Analysis",
+        "Code_Formatter",
+        "Monitoring",
+        "Datastores",
+        "Data_Output_Formats",
+        "Integrations_ONS",
+        "Integrations_External",
+        "Database_Technologies",
       ];
 
       return allTechColumns.some((column) => {

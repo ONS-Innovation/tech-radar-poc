@@ -31,7 +31,7 @@ resource "aws_iam_role_policy" "task_logs_policy" {
           "logs:PutLogEvents",
           "logs:DescribeLogStreams"
         ]
-        Resource = "arn:aws:logs:eu-west-2:${var.aws_account_id}:log-group:/ecs/ecs-service-tech-radar-*:*"
+        Resource = "arn:aws:logs:eu-west-2:${var.aws_account_id}:log-group:/ecs/ecs-service-*:*"
       }
     ]
   })
@@ -62,4 +62,4 @@ resource "aws_iam_role_policy" "s3_read_only" {
       }
     ]
   })
-} 
+}

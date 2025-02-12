@@ -1179,7 +1179,6 @@ foreignObject {
   position: relative;
   padding-top: 4px;
 }
-
 .timeline-node {
   padding: 2px 12px;
   box-sizing: border-box;
@@ -1188,12 +1187,14 @@ foreignObject {
   font-weight: 500;
   cursor: pointer;
   position: relative;
-  white-space: nowrap;
+  white-space: normal;
   transition: all 0.2s ease;
   user-select: none;
   display: flex;
   align-items: center;
   gap: 6px;
+  max-width: 300px;
+  overflow-y: auto;
 }
 
 .timeline-movement {
