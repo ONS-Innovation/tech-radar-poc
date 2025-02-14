@@ -910,3 +910,22 @@ textarea.technology-input {
   font-size: 14px;
   font-weight: 600;
 }
+
+.duplicate-details {
+  background: hsl(var(--muted));
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.duplicate-details p {
+  margin: 0.5rem 0;
+}
+
+.duplicate-details p {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.duplicate-details p strong {
+  font-weight: 600;
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
+import { fetchTechRadarJSONFromS3, findExistingTechnology } from "../utilities/getTechRadarJson";
 import { fetchCSVFromS3 } from "../utilities/getCSVData";
 import Header from "../components/Header/Header";
 import { ThemeProvider } from "../contexts/ThemeContext";
@@ -42,6 +42,8 @@ const ReviewPage = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 24, y: 80 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [duplicateEntry, setDuplicateEntry] = useState(null);
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
 
   // Fields to scan from CSV and their corresponding categories
   const fieldsToScan = {
@@ -354,6 +356,30 @@ const ReviewPage = () => {
       return;
     }
 
+    // Get all existing entries
+    const allEntries = [
+      ...entries.adopt,
+      ...entries.trial,
+      ...entries.assess,
+      ...entries.hold,
+      ...entries.review,
+      ...entries.ignore,
+    ];
+
+    // Check for duplicate
+    const existingEntry = findExistingTechnology(newTechnology, allEntries);
+    
+    if (existingEntry) {
+      setDuplicateEntry(existingEntry);
+      setShowDuplicateModal(true);
+      return;
+    }
+
+    // Continue with adding new technology
+    proceedWithAddingTechnology();
+  };
+
+  const proceedWithAddingTechnology = () => {
     // Map category to quadrant number
     const categoryToQuadrant = {
       Languages: "1",
@@ -383,6 +409,7 @@ const ReviewPage = () => {
     setPendingNewTechnology(newEntry);
     setShowAddConfirmModal(true);
     setShowAddTechnologyModal(false);
+    setDuplicateEntry(null);
   };
 
   const handleEditClick = () => {
@@ -470,6 +497,11 @@ const ReviewPage = () => {
   const handleAddConfirmModalNo = () => {
     setPendingNewTechnology(null);
     setShowAddConfirmModal(false);
+  };
+
+  const handleDuplicateModalClose = () => {
+    setShowDuplicateModal(false);
+    setDuplicateEntry(null);
   };
 
   // Add mouse handlers
@@ -812,6 +844,24 @@ const ReviewPage = () => {
                 Confirm
               </button>
               <button onClick={handleMoveCancel}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showDuplicateModal && duplicateEntry && (
+        <div className="modal-overlay">
+          <div className="admin-modal">
+            <h3>Duplicate Technology Warning</h3>
+            <p>A technology with this name already exists:</p>
+            <div className="duplicate-details">
+              <p><strong>Name:</strong> {duplicateEntry.title}</p>
+              <p><strong>Category:</strong> {duplicateEntry.description}</p>
+              <p><strong>Current Ring:</strong> {duplicateEntry.timeline[duplicateEntry.timeline.length - 1].ringId}</p>
+            </div>
+            <p>Do you want to proceed with adding a duplicate entry?</p>
+            <div className="modal-buttons">
+              <button onClick={proceedWithAddingTechnology}>Yes, Add Anyway</button>
+              <button onClick={handleDuplicateModalClose}>No, Cancel</button>
             </div>
           </div>
         </div>

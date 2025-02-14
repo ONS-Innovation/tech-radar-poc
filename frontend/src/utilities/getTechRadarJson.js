@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 /**
  * fetchTechRadarJSONFromS3 function to fetch the tech radar data from S3.
  *
- * @returns {Promise<Object>} - The tech radar data.
+ * @returns {Promise<Object>} - The tech radar data containing entries array.
  */
 export const fetchTechRadarJSONFromS3 = async () => {
   try {
@@ -23,4 +23,18 @@ export const fetchTechRadarJSONFromS3 = async () => {
     toast.error("Error loading tech data.");
     return null;
   }
+};
+
+/**
+ * Checks if a technology name already exists (case insensitive)
+ * @param {string} newTitle - The title to check
+ * @param {Array} existingEntries - Array of existing tech radar entries
+ * @returns {Object|null} - Returns matching entry if found, null otherwise
+ */
+export const findExistingTechnology = (newTitle, existingEntries) => {
+  if (!newTitle || !existingEntries) return null;
+  
+  return existingEntries.find(
+    entry => entry.title.toLowerCase() === newTitle.toLowerCase()
+  );
 };
