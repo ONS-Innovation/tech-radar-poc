@@ -225,11 +225,11 @@ function Statistics({
     return repoCount;
   };
 
-  // Filter projects to only those with repositories
+  // Filter projects to only those with repositories that include github.com/onsdigital lowercase
   const projectOptions = useMemo(() => {
     if (!projectsData) return [];
     return projectsData
-      .filter((project) => project.Repo)
+      .filter((project) => project.Repo && project.Repo.toLowerCase().includes("github.com/onsdigital"))
       .map((project) => ({
         value: project.Repo,
         label: project.Project || project.Project_Short,
