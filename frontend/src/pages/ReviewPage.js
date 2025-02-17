@@ -42,6 +42,7 @@ const ReviewPage = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 24, y: 80 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDuplicate, setIsDuplicate] = useState(false);
 
   // Fields to scan from CSV and their corresponding categories
   const fieldsToScan = {
@@ -343,9 +344,35 @@ const ReviewPage = () => {
     setSelectedItem(selectedItem?.id === item.id ? null : item);
   };
 
+  const checkForDuplicateTechnology = (techName) => {
+    const allTechnologies = [
+      ...entries.adopt,
+      ...entries.trial,
+      ...entries.assess,
+      ...entries.hold,
+      ...entries.review,
+      ...entries.ignore,
+    ];
+
+    return allTechnologies.some(
+      (tech) => tech.title.toLowerCase() === techName.toLowerCase()
+    );
+  };
+
+  const handleTechnologyInputChange = (e) => {
+    const value = e.target.value;
+    setNewTechnology(value);
+    setIsDuplicate(checkForDuplicateTechnology(value));
+  };
+
   const handleAddClick = () => {
     if (!newTechnology.trim()) {
       toast.error("Please enter a technology name");
+      return;
+    }
+
+    if (isDuplicate) {
+      toast.error("This technology is already on the radar");
       return;
     }
 
@@ -695,10 +722,13 @@ const ReviewPage = () => {
                 <input
                   type="text"
                   value={newTechnology}
-                  onChange={(e) => setNewTechnology(e.target.value)}
+                  onChange={handleTechnologyInputChange}
                   placeholder="Enter new technology"
-                  className="technology-input"
+                  className={`technology-input ${isDuplicate ? 'duplicate' : ''}`}
                 />
+                {isDuplicate && (
+                  <span className="error-message">Duplication: Technology already exists</span>
+                )}
               </div>
               <div className="admin-modal-field">
                 <label>Category</label>
