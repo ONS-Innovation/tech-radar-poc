@@ -96,8 +96,6 @@ const Projects = ({
         }
       });
 
-      console.log(distribution)
-
       return distribution;
     },
     [getTechnologyStatus]
