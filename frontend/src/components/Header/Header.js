@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown/MenuDropdown";
 import HelpModal from "./HelpModal";
 import "../../styles/components/Header.css";
@@ -99,34 +99,32 @@ function Header({
         />
         <h1 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Digital Landscape</h1>
         <nav className="desktop-nav">
-          <button 
-            onClick={() => navigate('/radar')} 
+          <Link 
+            to="/radar" 
             className={location.pathname === '/radar' ? 'active' : ''}
           >
             Tech Radar
-          </button>
-          <button 
-            onClick={() => navigate('/statistics')} 
+          </Link>
+          <Link 
+            to="/statistics" 
             className={location.pathname === '/statistics' ? 'active' : ''}
           >
             Statistics
-          </button>
-          <button 
-            onClick={() => navigate('/projects')} 
+          </Link>
+          <Link 
+            to="/projects" 
             className={location.pathname === '/projects' ? 'active' : ''}
           >
             Projects
-          </button>
-          {/* This is an <a> tag as it forces a refresh of state when loaded, whereas the 'navigate' uses JS to change the route without refreshing state. */}
+          </Link>
+          {/* Keep this as an <a> tag since we want to force refresh for review */}
           <a 
             href="/review/dashboard"
             className={location.pathname === '/review/dashboard' ? 'active' : ''}
           >
             Review
           </a>
-          <button 
-            onClick={() => handleSetShowHelpModal()}
-          >
+          <button onClick={() => handleSetShowHelpModal()}>
             Help
           </button>
         </nav>
