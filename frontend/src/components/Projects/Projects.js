@@ -6,6 +6,7 @@ import {
   IoChevronDown,
   IoRefresh,
 } from "react-icons/io5";
+import SkeletonStatCard from "../Statistics/Skeletons/SkeletonStatCard";
 import "../../styles/components/Projects.css";
 
 /**
@@ -152,13 +153,10 @@ const Projects = ({
     });
   }, [projectsData, sortBy, calculateTechnologyDistribution]);
 
-  if (!isOpen || !projectsData) return null;
+  if (!isOpen) return null;
 
   return (
-    <div
-      className="projects-modal-content"
-      onClick={(e) => e.stopPropagation()}
-    >
+    <div className="projects-modal-content" onClick={(e) => e.stopPropagation()}>
       <div className="projects-content-header">
         <h2>Projects</h2>
         <div className="projects-content-header-flex">
@@ -259,120 +257,135 @@ const Projects = ({
               Refresh
             </button>
 
-        <div className="projects-search-results">
-          <span className="projects-search-count">
-            Found {filteredAndSortedProjects.length} project
-            {filteredAndSortedProjects.length !== 1 ? "s" : ""}
-          </span>
+            <div className="projects-search-results">
+              <span className="projects-search-count">
+                Found {filteredAndSortedProjects.length} project
+                {filteredAndSortedProjects.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+          </div>
         </div>
-      </div>
       </div>
 
       <div className="projects-list">
-        {filteredAndSortedProjects.map((project, index) => {
-          const distribution = calculateTechnologyDistribution(project);
-          const total = distribution.total || 1; // Prevent division by zero
-
-          return (
-            <div
-              key={index}
-              className="project-item"
-              onClick={() => handleProjectClick(project)}
-            >
-              <div className="project-item-header">
-                <div className="project-name">
-                  <span>{project.Project}</span>
-                  <span className="project-name-short">
-                    {project.Project_Short ? `(${project.Project_Short})` : ""}
-                  </span>
+        {!projectsData ? (
+          <div className="projects-loading-skeleton">
+            {[...Array(6)].map((_, index) => (
+              <div key={index} className="project-item-skeleton">
+                <SkeletonStatCard />
+                <div className="technology-distribution-skeleton">
+                  <div className="distribution-segment-skeleton" />
                 </div>
               </div>
+            ))}
+          </div>
+        ) : filteredAndSortedProjects.length > 0 ? (
+          filteredAndSortedProjects.map((project, index) => {
+            const distribution = calculateTechnologyDistribution(project);
+            const total = distribution.total || 1;
 
-              <div className="technology-distribution">
-                {distribution.total > 0 ? (
-                  <>
-                    {distribution.adopt > 0 && (
-                      <div
-                        className="distribution-segment adopt"
-                        style={{
-                          width: `${(distribution.adopt / total) * 100}%`,
-                        }}
-                        title={`Adopt (${distribution.adopt}/${total})`}
-                      >
-                        <span className="segment-tooltip">
-                          Adopt ({distribution.adopt}/{total})
-                        </span>
-                      </div>
-                    )}
-                    {distribution.trial > 0 && (
-                      <div
-                        className="distribution-segment trial"
-                        style={{
-                          width: `${(distribution.trial / total) * 100}%`,
-                        }}
-                        title={`Trial (${distribution.trial}/${total})`}
-                      >
-                        <span className="segment-tooltip">
-                          Trial ({distribution.trial}/{total})
-                        </span>
-                      </div>
-                    )}
-                    {distribution.assess > 0 && (
-                      <div
-                        className="distribution-segment assess"
-                        style={{
-                          width: `${(distribution.assess / total) * 100}%`,
-                        }}
-                        title={`Assess (${distribution.assess}/${total})`}
-                      >
-                        <span className="segment-tooltip">
-                          Assess ({distribution.assess}/{total})
-                        </span>
-                      </div>
-                    )}
-                    {distribution.hold > 0 && (
-                      <div
-                        className="distribution-segment hold"
-                        style={{
-                          width: `${(distribution.hold / total) * 100}%`,
-                        }}
-                        title={`Hold (${distribution.hold}/${total})`}
-                      >
-                        <span className="segment-tooltip">
-                          Hold ({distribution.hold}/{total})
-                        </span>
-                      </div>
-                    )}
-                    {distribution.unknown > 0 && (
-                      <div
-                        className="distribution-segment unknown"
-                        style={{
-                          width: `${(distribution.unknown / total) * 100}%`,
-                        }}
-                        title={`Unknown (${distribution.unknown}/${total})`}
-                      >
-                        <span className="segment-tooltip">
-                          Unknown ({distribution.unknown}/{total})
-                        </span>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div
-                    className="distribution-segment unknown"
-                    style={{ width: "100%" }}
-                    title="No technologies found"
-                  >
-                    <span className="segment-tooltip">
-                      No technologies found
+            return (
+              <div
+                key={index}
+                className="project-item"
+                onClick={() => handleProjectClick(project)}
+              >
+                <div className="project-item-header">
+                  <div className="project-name">
+                    <span>{project.Project}</span>
+                    <span className="project-name-short">
+                      {project.Project_Short ? `(${project.Project_Short})` : ""}
                     </span>
                   </div>
-                )}
+                </div>
+
+                <div className="technology-distribution">
+                  {distribution.total > 0 ? (
+                    <>
+                      {distribution.adopt > 0 && (
+                        <div
+                          className="distribution-segment adopt"
+                          style={{
+                            width: `${(distribution.adopt / total) * 100}%`,
+                          }}
+                          title={`Adopt (${distribution.adopt}/${total})`}
+                        >
+                          <span className="segment-tooltip">
+                            Adopt ({distribution.adopt}/{total})
+                          </span>
+                        </div>
+                      )}
+                      {distribution.trial > 0 && (
+                        <div
+                          className="distribution-segment trial"
+                          style={{
+                            width: `${(distribution.trial / total) * 100}%`,
+                          }}
+                          title={`Trial (${distribution.trial}/${total})`}
+                        >
+                          <span className="segment-tooltip">
+                            Trial ({distribution.trial}/{total})
+                          </span>
+                        </div>
+                      )}
+                      {distribution.assess > 0 && (
+                        <div
+                          className="distribution-segment assess"
+                          style={{
+                            width: `${(distribution.assess / total) * 100}%`,
+                          }}
+                          title={`Assess (${distribution.assess}/${total})`}
+                        >
+                          <span className="segment-tooltip">
+                            Assess ({distribution.assess}/{total})
+                          </span>
+                        </div>
+                      )}
+                      {distribution.hold > 0 && (
+                        <div
+                          className="distribution-segment hold"
+                          style={{
+                            width: `${(distribution.hold / total) * 100}%`,
+                          }}
+                          title={`Hold (${distribution.hold}/${total})`}
+                        >
+                          <span className="segment-tooltip">
+                            Hold ({distribution.hold}/{total})
+                          </span>
+                        </div>
+                      )}
+                      {distribution.unknown > 0 && (
+                        <div
+                          className="distribution-segment unknown"
+                          style={{
+                            width: `${(distribution.unknown / total) * 100}%`,
+                          }}
+                          title={`Unknown (${distribution.unknown}/${total})`}
+                        >
+                          <span className="segment-tooltip">
+                            Unknown ({distribution.unknown}/{total})
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div
+                      className="distribution-segment unknown"
+                      style={{ width: "100%" }}
+                      title="No technologies found"
+                    >
+                      <span className="segment-tooltip">
+                        No technologies found
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })
+        ) : (
+          <div className="projects-empty-state">No projects found</div>
+        )}
       </div>
     </div>
   );

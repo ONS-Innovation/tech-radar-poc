@@ -474,3 +474,55 @@ right: none;
   opacity: 1;
   visibility: visible;
 }
+
+.projects-loading-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.project-item-skeleton {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+.technology-distribution-skeleton {
+  margin-top: 1rem;
+  height: 24px;
+  background: hsl(var(--muted));
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.distribution-segment-skeleton {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 0%,
+    hsl(var(--muted-foreground)) 50%,
+    hsl(var(--muted)) 100%
+  );
+  animation: shimmer 2s infinite linear;
+}
+
+.projects-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
