@@ -4,8 +4,7 @@ import { ThemeProvider } from "../contexts/ThemeContext";
 import Header from "../components/Header/Header";
 import Projects from "../components/Projects/Projects";
 import ProjectModal from "../components/Projects/ProjectModal";
-import { fetchCSVFromS3 } from "../utilities/getCSVData";
-import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
+import { useData } from "../contexts/dataContext";
 import toast from "react-hot-toast";
 import "../styles/ProjectsPage.css";
 
@@ -21,30 +20,26 @@ function ProjectsPage() {
   const [radarData, setRadarData] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  
+  const { getCsvData, getTechRadarData } = useData();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchCSVFromS3();
-        setProjectsData(data);
+        const [csvData, techData] = await Promise.all([
+          getCsvData(),
+          getTechRadarData()
+        ]);
+        setProjectsData(csvData);
+        setRadarData(techData);
       } catch (error) {
         console.error(error);
         toast.error("Unexpected error occurred.");
       }
     };
 
-    const fetchRadarData = async () => {
-      try {
-        const data = await fetchTechRadarJSONFromS3();
-        setRadarData(data);
-      } catch (error) {
-        console.error("Failed to load radar data:", error);
-      }
-    };
-
     fetchData();
-    fetchRadarData();
-  }, []);
+  }, [getCsvData, getTechRadarData]);
 
   /**
    * getTechnologyStatus function gets the technology status for a given technology.
@@ -78,7 +73,7 @@ function ProjectsPage() {
    */
   const handleRefresh = async () => {
     try {
-      const newData = await fetchCSVFromS3();
+      const newData = await getCsvData(true); // Pass forceRefresh as true
       setProjectsData(newData);
       toast.success("Data refreshed successfully.");
     } catch (error) {

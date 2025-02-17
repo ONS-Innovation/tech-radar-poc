@@ -4,14 +4,13 @@ import "../styles/App.css";
 import Header from "../components/Header/Header";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { useBanner } from "../contexts/banner";
+import { useData } from "../contexts/dataContext";
 import {
   IoInformationCircle,
   IoGridOutline,
   IoChevronUpOutline,
   IoChevronDownOutline,
 } from "react-icons/io5";
-import { fetchCSVFromS3 } from "../utilities/getCSVData";
-import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
 import ProjectModal from "../components/Projects/ProjectModal";
 import InfoBox from "../components/InfoBox/InfoBox";
 
@@ -55,6 +54,8 @@ function RadarPage() {
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
   const location = useLocation();
 
+  const { getTechRadarData, getCsvData } = useData();
+
   useBanner(
     'Tech Radar numbering does not correlate to technology popularity or usage.',
     'hasSeenNumberingInfo'
@@ -64,21 +65,20 @@ function RadarPage() {
    * useEffect hook to fetch the tech radar data from S3.
    */
   useEffect(() => {
-    fetchTechRadarJSONFromS3().then((data) => setData(data));
-    fetchTechRadarJSONFromS3().then((data) => setData(data));
-  }, []);
+    getTechRadarData().then((data) => setData(data));
+  }, [getTechRadarData]);
 
   /**
    * useEffect hook to fetch the projects data from S3.
    */
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchCSVFromS3();
+      const data = await getCsvData();
       setProjectsData(data);
     };
 
     fetchData();
-  }, []);
+  }, [getCsvData]);
 
   /**
    * useEffect hook to set the allBlips state with the blips array.

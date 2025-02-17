@@ -1,4 +1,5 @@
 import { toast } from "react-hot-toast";
+import { useData } from "../contexts/dataContext";
 /**
  * fetchCSVFromS3 function to fetch the CSV data from the S3 bucket.
  * Falls back to local CSV if S3 fetch fails.
@@ -42,4 +43,13 @@ export const fetchCSVFromS3 = async () => {
       return null;
     }
   }
+};
+
+/**
+ * Hook wrapper for fetchCSVFromS3
+ * @returns {Promise<Object>} - The CSV data
+ */
+export const useCSVData = () => {
+  const { getCsvData } = useData();
+  return getCsvData;
 };

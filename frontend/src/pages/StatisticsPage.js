@@ -3,11 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Statistics from "../components/Statistics/Statistics";
 import Header from "../components/Header/Header";
 import { ThemeProvider } from "../contexts/ThemeContext";
-import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
-import { fetchCSVFromS3 } from "../utilities/getCSVData";
-import { fetchRepositoryData } from "../utilities/getRepositoryData";
 import { toast } from "react-hot-toast";
 import '../styles/StatisticsPage.css';
+import { useData } from "../contexts/dataContext";
 
 /**
  * StatisticsPage component for displaying the statistics page.
@@ -25,29 +23,24 @@ function StatisticsPage() {
   const [currentRepoView, setCurrentRepoView] = useState('unarchived');
   const [searchTerm, setSearchTerm] = useState('');
   const [radarData, setRadarData] = useState(null);
+  const { getTechRadarData, getRepositoryData, getRepositoryStats, getCsvData } = useData();
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchData = async () => {
       try {
-        const data = await fetchCSVFromS3();
-        setProjectsData(data);
+        const [techData, projectData] = await Promise.all([
+          getTechRadarData(),
+          getCsvData()
+        ]);
+        setRadarData(techData);
+        setProjectsData(projectData);
       } catch (error) {
-        toast.error("Error fetching projects.");
+        console.error('Failed to load initial data:', error);
       }
     };
 
-    const fetchRadarData = async () => {
-      try {
-        const data = await fetchTechRadarJSONFromS3();
-        setRadarData(data);
-      } catch (error) {
-        console.error('Failed to load radar data:', error);
-      }
-    };
-
-    fetchProjects();
-    fetchRadarData();
-  }, []);
+    fetchData();
+  }, [getTechRadarData, getCsvData]);
 
   /**
    * fetchStatistics function to fetch the statistics data.
@@ -58,16 +51,10 @@ function StatisticsPage() {
   const fetchStatistics = async (date = null, repoView = "unarchived") => {
     setIsLoading(true);
     try {
-      const baseUrl =
-        process.env.NODE_ENV === "development"
-          ? "http://localhost:5001/api/json"
-          : "/api/json";
-
-      let statsResponse, radarResponse;
-      radarResponse = await fetchTechRadarJSONFromS3();
+      let statsResponse;
+      const radarResponse = await getTechRadarData();
 
       if (selectedRepositories.length > 0) {
-        // Extract repository names from the URLs
         const repoNames = selectedRepositories
           .map((repoUrl) => {
             const match = repoUrl.match(/github\.com\/[^/]+\/([^/]+)/);
@@ -75,71 +62,44 @@ function StatisticsPage() {
           })
           .filter(Boolean);
 
-        // Fetch repository-specific data with all active filters
-        const archived =
-          repoView === "archived"
-            ? "true"
-            : repoView === "unarchived"
-              ? "false"
-              : null;
-        const repoResponse = await fetchRepositoryData(
-          repoNames,
-          date,
-          archived
-        );
+        const archived = repoView === "archived" 
+          ? "true" 
+          : repoView === "unarchived" 
+            ? "false" 
+            : null;
+
+        const repoResponse = await getRepositoryData(repoNames, date, archived);
 
         if (!repoResponse?.repositories) {
           throw new Error("Failed to fetch repository data");
         }
 
         statsResponse = {
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              stats: repoResponse.stats,
-              language_statistics: repoResponse.language_statistics,
-              metadata: repoResponse.metadata,
-            }),
+          stats: repoResponse.stats,
+          language_statistics: repoResponse.language_statistics,
+          metadata: repoResponse.metadata,
         };
       } else {
-        // Fetch general statistics
-        const baseUrl = process.env.NODE_ENV === "development" 
-          ? 'http://localhost:5001/api/json'
-          : '/api/json';
-
-        const params = new URLSearchParams();
-        if (date && date !== "all") params.append("datetime", date);
-        if (repoView === "archived") params.append("archived", "true");
-        else if (repoView === "unarchived") params.append("archived", "false");
-
-        const url = params.toString()
-          ? `${baseUrl}?${params.toString()}`
-          : baseUrl;
-
-        statsResponse = await fetch(url);
+        // Use context for general statistics
+        statsResponse = await getRepositoryStats(
+          date, 
+          repoView === "archived" ? "true" : 
+          repoView === "unarchived" ? "false" : null
+        );
       }
 
-      if (!statsResponse.ok || !radarResponse) {
+      if (!statsResponse || !radarResponse) {
         throw new Error("Failed to fetch data");
-      }
-
-      const [statsData, radarData] = await Promise.all([
-        statsResponse.json(),
-        radarResponse,
-      ]);
-
-      if (!statsData.stats && !statsData.language_statistics) {
-        throw new Error("Invalid response format");
       }
 
       const mappedStats = {
         stats_unarchived:
           repoView === "unarchived"
             ? {
-                total: statsData.stats?.total_repos || 0,
-                private: statsData.stats?.total_private_repos || 0,
-                public: statsData.stats?.total_public_repos || 0,
-                internal: statsData.stats?.total_internal_repos || 0,
+                total: statsResponse.stats?.total_repos || 0,
+                private: statsResponse.stats?.total_private_repos || 0,
+                public: statsResponse.stats?.total_public_repos || 0,
+                internal: statsResponse.stats?.total_internal_repos || 0,
                 active_last_month: 0,
                 active_last_3months: 0,
                 active_last_6months: 0,
@@ -148,10 +108,10 @@ function StatisticsPage() {
         stats_archived:
           repoView === "archived"
             ? {
-                total: statsData.stats?.total_repos || 0,
-                private: statsData.stats?.total_private_repos || 0,
-                public: statsData.stats?.total_public_repos || 0,
-                internal: statsData.stats?.total_internal_repos || 0,
+                total: statsResponse.stats?.total_repos || 0,
+                private: statsResponse.stats?.total_private_repos || 0,
+                public: statsResponse.stats?.total_public_repos || 0,
+                internal: statsResponse.stats?.total_internal_repos || 0,
                 active_last_month: 0,
                 active_last_3months: 0,
                 active_last_6months: 0,
@@ -160,23 +120,23 @@ function StatisticsPage() {
         stats:
           repoView === "total"
             ? {
-                total: statsData.stats?.total_repos || 0,
-                private: statsData.stats?.total_private_repos || 0,
-                public: statsData.stats?.total_public_repos || 0,
-                internal: statsData.stats?.total_internal_repos || 0,
+                total: statsResponse.stats?.total_repos || 0,
+                private: statsResponse.stats?.total_private_repos || 0,
+                public: statsResponse.stats?.total_public_repos || 0,
+                internal: statsResponse.stats?.total_internal_repos || 0,
                 active_last_month: 0,
                 active_last_3months: 0,
                 active_last_6months: 0,
               }
             : null,
         language_statistics_unarchived:
-          repoView === "unarchived" ? statsData.language_statistics || {} : {},
+          repoView === "unarchived" ? statsResponse.language_statistics || {} : {},
         language_statistics_archived:
-          repoView === "archived" ? statsData.language_statistics || {} : {},
+          repoView === "archived" ? statsResponse.language_statistics || {} : {},
         language_statistics:
-          repoView === "total" ? statsData.language_statistics || {} : {},
-        radar_entries: radarData.entries,
-        metadata: statsData.metadata || {
+          repoView === "total" ? statsResponse.language_statistics || {} : {},
+        radar_entries: radarResponse.entries,
+        metadata: statsResponse.metadata || {
           last_updated: new Date().toISOString(),
         },
       };

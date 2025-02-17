@@ -1,4 +1,5 @@
 import { toast } from "react-hot-toast";
+import { useData } from "../contexts/dataContext";
 
 /**
  * fetchTechRadarJSONFromS3 function to fetch the tech radar data from S3.
@@ -23,4 +24,13 @@ export const fetchTechRadarJSONFromS3 = async () => {
     toast.error("Error loading tech data.");
     return null;
   }
+};
+
+/**
+ * Hook wrapper for fetchTechRadarJSONFromS3
+ * @returns {Promise<Object>} - The tech radar data
+ */
+export const useTechRadarData = () => {
+  const { getTechRadarData } = useData();
+  return getTechRadarData;
 };
