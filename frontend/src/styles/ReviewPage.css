@@ -879,6 +879,12 @@ textarea.technology-input {
   gap: 16px;
   text-align: left;
 }
+.tech-confirm-modal div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
 
 @media (max-width: 600px) {
   .admin-modal {
@@ -909,4 +915,21 @@ textarea.technology-input {
 .admin-modal-field label {
   font-size: 14px;
   font-weight: 600;
+}
+
+.error-message {
+  color: hsl(var(--primary));
+  background: hsl(var(--destructive) / 0.3);
+  border: 1px solid hsl(var(--destructive));
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  box-sizing: border-box; 
+  font-size: 12px;
+  display: block;
+}
+
+.error-message strong {
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: var(--radius);
 }
