@@ -12,7 +12,7 @@ data "terraform_remote_state" "ecs_auth" {
   backend = "s3"
   config = {
     bucket = "${var.domain}-tf-state"
-    key    = "${var.domain}-${var.service_subdomain}-auth/terraform.tfstate"
+    key    = "${var.domain}-ecs-${var.service_subdomain}-auth/terraform.tfstate"
     region = "eu-west-2"
   }
 }

@@ -1,4 +1,4 @@
 bucket         = "sdp-dev-tf-state"
-key            = "sdp-dev-tech-radar-auth/terraform.tfstate"
+key            = "sdp-dev-ecs-digital-landscape-auth/terraform.tfstate"
 region         = "eu-west-2"
 dynamodb_table = "terraform-state-lock"
