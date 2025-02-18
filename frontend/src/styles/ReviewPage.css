@@ -879,6 +879,12 @@ textarea.technology-input {
   gap: 16px;
   text-align: left;
 }
+.tech-confirm-modal div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
 
 @media (max-width: 600px) {
   .admin-modal {
@@ -911,10 +917,6 @@ textarea.technology-input {
   font-weight: 600;
 }
 
-.technology-input.duplicate {
-  border-color: hsl(var(--destructive)) !important;
-}
-
 .error-message {
   color: hsl(var(--primary));
   background: hsl(var(--destructive) / 0.3);
@@ -924,4 +926,10 @@ textarea.technology-input {
   box-sizing: border-box; 
   font-size: 12px;
   display: block;
+}
+
+.error-message strong {
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: var(--radius);
 }

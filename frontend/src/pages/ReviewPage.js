@@ -28,9 +28,7 @@ const ReviewPage = () => {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedCategory, setEditedCategory] = useState("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [editedItem, setEditedItem] = useState(null);
   const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
-  const [projectData, setProjectData] = useState([]);
   const [showAddConfirmModal, setShowAddConfirmModal] = useState(false);
   const [pendingNewTechnology, setPendingNewTechnology] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,7 +38,6 @@ const ReviewPage = () => {
   const [pendingMove, setPendingMove] = useState(null);
   const [moveDescription, setMoveDescription] = useState("");
   const [isDragging, setIsDragging] = useState(false);
-  const [dragPosition, setDragPosition] = useState({ x: 24, y: 80 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDuplicate, setIsDuplicate] = useState(false);
 
@@ -365,22 +362,14 @@ const ReviewPage = () => {
     setIsDuplicate(checkForDuplicateTechnology(value));
   };
 
+  const getDuplicateRing = () => {
+    const duplicateRing = Object.keys(entries).find((ring) =>
+      entries[ring].some((entry) => entry.title.toLowerCase() === newTechnology.toLowerCase())
+    );
+    return duplicateRing;
+  };
+
   const handleAddClick = () => {
-    if (!newTechnology.trim()) {
-      toast.error("Please enter a technology name");
-      return;
-    }
-
-    if (isDuplicate) {
-      toast.error("This technology is already on the radar");
-      return;
-    }
-
-    if (!selectedCategory) {
-      toast.error("Please select a category");
-      return;
-    }
-
     // Map category to quadrant number
     const categoryToQuadrant = {
       Languages: "1",
@@ -724,10 +713,10 @@ const ReviewPage = () => {
                   value={newTechnology}
                   onChange={handleTechnologyInputChange}
                   placeholder="Enter new technology"
-                  className={`technology-input ${isDuplicate ? 'duplicate' : ''}`}
+                  className={`technology-input`}
                 />
                 {isDuplicate && (
-                  <span className="error-message">Duplication: Technology already exists</span>
+                  <span className="error-message">Error: technology already exists in the <strong className={`${getDuplicateRing()}-box`}>{getDuplicateRing()}</strong> ring.</span>
                 )}
               </div>
               <div className="admin-modal-field">
@@ -748,7 +737,7 @@ const ReviewPage = () => {
             <div className="modal-buttons">
               <button
                 onClick={handleAddClick}
-                disabled={!newTechnology.trim() || !selectedCategory}
+                disabled={!newTechnology.trim() || !selectedCategory || isDuplicate}
               >
                 Add
               </button>
@@ -795,11 +784,15 @@ const ReviewPage = () => {
           <div className="admin-modal tech-confirm-modal">
             <h3>Add New Technology</h3>
             <p>Are you sure you want to add this technology?</p>
-            <p>Name: {pendingNewTechnology.title}</p>
-            <p className="modal-automatic">
-              Ring: Review <i>automatic</i>
-            </p>
-            <p>Quadrant: {pendingNewTechnology.description}</p>
+            <div>
+              <p>Name:</p><p>{pendingNewTechnology.title}</p>
+            </div>
+            <div className="modal-automatic">
+              <p>Ring:</p><p><i>automatic</i> Review </p>
+            </div>
+            <div>
+              <p>Quadrant:</p><p>{pendingNewTechnology.description}</p>
+            </div>
             <div className="modal-buttons">
               <button onClick={handleAddConfirmModalYes}>Yes</button>
               <button onClick={handleAddConfirmModalNo}>No</button>
