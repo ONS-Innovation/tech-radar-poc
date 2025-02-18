@@ -3,8 +3,20 @@ import { fetchCSVFromS3 } from "../utilities/getCSVData";
 import { fetchTechRadarJSONFromS3 } from "../utilities/getTechRadarJson";
 import { fetchRepositoryData, fetchRepositoryStats } from "../utilities/getRepositoryData";
 
+/**
+ * DataContext provides centralized data management and caching for the application.
+ * It handles fetching and caching of CSV data, Tech Radar data, repository data,
+ * and repository statistics.
+ */
 const DataContext = createContext();
 
+/**
+ * DataProvider component that wraps the application and provides data management functionality.
+ * 
+ * @param {Object} props - The component props
+ * @param {React.ReactNode} props.children - The child components to be wrapped
+ * @returns {JSX.Element} The provider component
+ */
 export function DataProvider({ children }) {
   const [csvData, setCsvData] = useState(null);
   const [techRadarData, setTechRadarData] = useState(null);
@@ -18,6 +30,12 @@ export function DataProvider({ children }) {
     repositoryStats: new Map()
   });
 
+  /**
+   * Fetches and caches CSV data from S3.
+   * 
+   * @param {boolean} [forceRefresh=false] - Whether to force a refresh of the cached data
+   * @returns {Promise<Object>} The CSV data
+   */
   const getCsvData = async (forceRefresh = false) => {
     
     if (!forceRefresh && csvData) {
@@ -38,6 +56,12 @@ export function DataProvider({ children }) {
     return promise;
   };
 
+  /**
+   * Fetches and caches Tech Radar data from S3.
+   * 
+   * @param {boolean} [forceRefresh=false] - Whether to force a refresh of the cached data
+   * @returns {Promise<Object>} The Tech Radar data
+   */
   const getTechRadarData = async (forceRefresh = false) => {
     if (!forceRefresh && techRadarData) {
       return techRadarData;
@@ -59,6 +83,15 @@ export function DataProvider({ children }) {
     return promise;
   };
 
+  /**
+   * Fetches and caches repository data for specific repositories.
+   * 
+   * @param {string[]} repositories - Array of repository names
+   * @param {string} [date=null] - Optional date filter
+   * @param {string} [archived=null] - Optional archived status filter
+   * @param {boolean} [forceRefresh=false] - Whether to force a refresh of the cached data
+   * @returns {Promise<Object>} The repository data
+   */
   const getRepositoryData = async (repositories, date = null, archived = null, forceRefresh = false) => {
     const cacheKey = JSON.stringify({ repositories, date, archived });
     
@@ -82,6 +115,14 @@ export function DataProvider({ children }) {
     return promise;
   };
 
+  /**
+   * Fetches and caches repository statistics.
+   * 
+   * @param {string} [date=null] - Optional date filter
+   * @param {string} [archived=null] - Optional archived status filter
+   * @param {boolean} [forceRefresh=false] - Whether to force a refresh of the cached data
+   * @returns {Promise<Object>} The repository statistics
+   */
   const getRepositoryStats = async (date = null, archived = null, forceRefresh = false) => {
     const cacheKey = JSON.stringify({ date, archived });
 
@@ -133,6 +174,13 @@ export function DataProvider({ children }) {
   );
 }
 
+/**
+ * Hook to access the DataContext.
+ * Must be used within a DataProvider component.
+ * 
+ * @returns {Object} The context value containing all data management methods
+ * @throws {Error} If used outside of a DataProvider
+ */
 export function useData() {
   const context = useContext(DataContext);
   if (context === undefined) {
