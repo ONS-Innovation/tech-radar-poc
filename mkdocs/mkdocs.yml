@@ -1,0 +1,97 @@
+site_name: Digital Landscape
+repo_url: https://github.com/ONS-innovation/keh-digital-landscape
+repo_name: Digital Landscape
+
+nav:
+  - Home: index.md
+  - Pages:
+    - Tech Radar: 
+      - Overview: pages/radar/index.md
+    - Projects:
+      - Overview: pages/projects/index.md
+    - Statistics:
+      - Overview: pages/statistics/index.md
+    - Review:
+      - Overview: pages/review/index.md
+  - Contexts:
+    - Data Context: contexts/dataContext.md
+  - Components:
+    - Header: components/header.md
+    - Info Box: components/infoBox.md
+    - Project Modal: components/projectModal.md
+    - MultiSelect: components/multiSelect.md
+    - Projects: components/projects.md
+    - Skeletons: components/skeletons.md
+    - Statistics: components/statistics.md
+    - Theme Toggle: components/themeToggle.md
+  - Utilities:
+    - Tech Radar Data: utilities/techRadarData.md
+    - Project Data: utilities/projectData.md
+    - Repository Data: utilities/repositoryData.md
+
+theme:
+  name: material
+  language: en
+  palette:
+    # toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: deep purple
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    # toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: white
+      accent: deep purple
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to system preference
+
+  features:
+    - navigation.tracking
+    - navigation.sections
+    - navigation.path
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+    - header.autohide
+
+  logo: assets/logo.png
+  favicon: assets/favicon.ico
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - tables
+
+plugins:
+  - search
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js
+  - https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js

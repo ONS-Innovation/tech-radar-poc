@@ -17,7 +17,7 @@ const { transformProjectToCSVFormat } = require('./utilities/projectDataTransfor
 
 const app = express();
 const port = process.env.PORT || 5001;
-const bucketName = process.env.BUCKET_NAME || "sdp-dev-tech-radar";
+const bucketName = process.env.BUCKET_NAME || "sdp-dev-digital-landscape";
 const tatBucketName = process.env.TAT_BUCKET_NAME || "sdp-dev-tech-audit-tool-api";
 
 app.use(
