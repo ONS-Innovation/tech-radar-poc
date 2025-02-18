@@ -40,7 +40,7 @@ resource "aws_s3_bucket_cors_configuration" "cors_config" {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "PUT", "POST"]
     allowed_origins = [
-      "https://tech-radar.sdp-dev.aws.onsdigital.uk/*",
+      "https://digital-landscape.sdp-dev.aws.onsdigital.uk/*",
       "https://digital-landscape.sdp-prod.aws.onsdigital.uk/*"
     ]
     expose_headers  = ["ETag"]
